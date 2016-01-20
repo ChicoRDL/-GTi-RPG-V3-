@@ -1,0 +1,375 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 28 Dec 2013
+-- Resource: GTIvehicles/manage.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+VEHICLE_BLIP_ID = 48	-- ID of Vehicle Blip
+vehicleBlips = {}		-- Table of Attached Blips by Vehicle
+
+local MAX_RECOVERY = 2500	-- Max Recovery Cost
+
+local supported_paintjob_vehicles={
+    [483]={0},        -- camper
+    [534]={0,1,2},    -- remington
+    [535]={0,1,2},    -- slamvan
+    [536]={0,1,2},    -- blade
+    [558]={0,1,2},    -- uranus
+    [559]={0,1,2},    -- jester
+    [560]={0,1,2},    -- sultan
+    [561]={0,1,2},    -- stratum
+    [562]={0,1,2},    -- elegy
+    [565]={0,1,2},    -- flash
+    [567]={0,1,2},    -- savanna
+    [575]={0,1},      -- broadway
+    [576]={0,1,2},    -- tornado
+}
+
+-- Spawn Vehicle
+----------------->>
+
+function spawnPlayerVehicle(player, slot)
+	local vehID = getVehicleIDFromSlot(player, slot)
+	if (not vehID) then return false end
+
+	if (isVehicleSpawned(vehID)) then return false end
+
+	despawnVehicle(player)
+
+		-- Get Position Info
+	local vehicleID = getVehicleData(vehID, "vehicleID")
+	local pos = getVehicleData(vehID, "position")
+	pos = split(pos, ",")
+	pos[1], pos[2], pos[3], pos[4], pos[5], pos[6] = tonumber(pos[1]), tonumber(pos[2]), tonumber(pos[3]), tonumber(pos[4]), tonumber(pos[5]), tonumber(pos[6])
+		-- Spawn the Vehicle
+	local vehicle = createVehicle(vehicleID, pos[1], pos[2], pos[3], 0, 0, pos[4])
+	setElementInterior(vehicle, pos[5])
+	setElementDimension(vehicle, pos[6])
+		-- Set the color
+	local colors = getVehicleData(vehID, "color")
+	colors = split(colors, ",")
+	local v = {}
+	for i,v2 in ipairs(colors) do
+		v[i] = tonumber(v2)
+	end
+	setVehicleColor(vehicle, v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11], v[12])
+		-- Set the Health
+	local health = getVehicleData(vehID, "health")
+	setElementHealth(vehicle, health)
+		-- Set the Fuel
+	local fuel = getVehicleData(vehID, "fuel")
+	setElementData(vehicle, "fuel", fuel)
+		-- Set the Variant
+	local variant = getVehicleData(vehID, "variant") 		or "0,0"
+	variant = split(variant, ",")
+	setVehicleVariant(vehicle, variant[1], variant[2])
+
+		-- Set Door State (Damage)
+	local door_state = getVehicleData(vehID, "door_state") 	or "0,0;1,0;2,0;3,0;4,0;5,0"
+	door_state = split(door_state, ";")
+	for i,state in ipairs(door_state) do
+		state = split(state, ",")
+		setVehicleDoorState(vehicle, state[1], state[2])
+	end
+		-- Set Light State (Damage)
+	local light_state = getVehicleData(vehID, "light_state") or "0,0;1,0;2,0;3,0"
+	light_state = split(light_state, ";")
+	for i,state in ipairs(light_state) do
+		state = split(state, ",")
+		setVehicleLightState(vehicle, state[1], state[2])
+	end
+		-- Set Panel State (Damage)
+	local panel_state = getVehicleData(vehID, "panel_state") or "0,0;1,0;2,0;3,0;4,0;5,0;6,0"
+	panel_state = split(panel_state, ";")
+	for i,state in ipairs(panel_state) do
+		state = split(state, ",")
+		setVehiclePanelState(vehicle, state[1], state[2])
+	end
+		-- Set Wheel States (Damage)
+	local wheels = getVehicleData(vehID, "wheel_state") 	or "0,0,0,0"
+	wheels = split(wheels, ",")
+	setVehicleWheelStates(vehicle, wheels[1], wheels[2], wheels[3], wheels[4])
+		-- Set Vehicle Paintjob
+	if supported_paintjob_vehicles[getElementModel(vehicle)] then
+		local pj = getVehicleData(vehID, "paintjob") or 3
+		setVehiclePaintjob(vehicle, pj)
+	end
+		-- Set Vehicle Upgrades
+	local upgrades = getVehicleData(vehID, "upgrades") or "0,0;1,0;2,0;3,0;4,0;5,0;6,0;7,0;8,0;9,0;10,0;11,0;12,0;13,0;14,0;15,0;16,0"
+	upgrades = split(upgrades, ";")
+	for i,upgrade in ipairs(upgrades) do
+		upgrade = split(upgrade, ",")
+		addVehicleUpgrade(vehicle, upgrade[2])
+	end
+		-- Set Headlight Color
+	local light_color = getVehicleData(vehID, "light_color") or "255,255,255"
+	light_color = split(light_color, ",")
+	setVehicleHeadLightColor(vehicle, tonumber(light_color[1]), tonumber(light_color[2]), tonumber(light_color[3]))
+
+	if getVehicleType(vehicle) == "Plane" then
+		setVehicleLandingGearDown(vehicle, true)
+	end
+
+	setElementData(vehicle, "vehicleID", vehID, false)
+	local acc_name = getAccountName(getPlayerAccount(player))
+	setElementData(vehicle, "owner", acc_name)
+	local mileage = getVehicleData(vehID, "mileage") or 0
+	setElementData(vehicle, "mileage", mileage)
+
+		-- Set Locked/Unlocked
+	local locked = getVehicleData(vehID, "locked") or 0
+	if (locked == 1) then
+		triggerEvent("GTIdriverlock.lockVehicle", vehicle)
+	end
+	
+	local nos = getVehicleData(vehID, "nosType") or "None"
+	setElementData(vehicle, "nosType", nos)
+	
+	local plate = getVehicleData(vehID, "plateText")
+	if (plate) then
+		setVehiclePlateText(vehicle, plate)
+	end
+
+	table.insert(vehicles[player], vehicle)
+	activeVehicleIDs[vehID] = true
+end
+
+-- Hide Vehicle
+---------------->>
+
+function hidePlayerVehicle(player, slot)
+	local vehID = getVehicleIDFromSlot(player, slot)
+	if (not vehID) then return false end
+	if (not vehicles[player]) then return false end
+	for i=1,MAX_ALLOWED_VEHICLES do
+		local vehicle = vehicles[player][i]
+		if (isElement(vehicle)) then
+			local vehID2 = getElementData(vehicle, "vehicleID")
+			if (vehID2 == vehID) then
+				if (exports.GTIutil:getElementSpeed(vehicle) > 5 and getVehicleOccupant(vehicle) == player) then
+					outputChatBox("* You cannot hide your vehicle while you are driving it.", player, 255, 128, 0)
+				return end
+				destroyElement(vehicle)
+				table.remove(vehicles[player], i)
+				activeVehicleIDs[vehID] = nil
+			end
+		end
+	end
+end
+
+function hideAllPlayerVehicles(player)
+	if (not vehicles[player]) then return true end
+	for k,vehicle in ipairs(vehicles[player]) do
+		if (isElement(vehicle)) then
+			if (exports.GTIutil:getElementSpeed(vehicle) > 5 and getVehicleOccupant(vehicle) == player) then
+				outputChatBox("* You cannot hide your vehicle while you are driving it.", player, 255, 128, 0)
+			return end
+			local vehID = getElementData(vehicle, "vehicleID")
+			destroyElement(vehicle)
+			activeVehicleIDs[vehID] = nil
+		end
+	end
+	vehicles[player] = nil
+	return true
+end
+
+function despawnVehicle(player)
+	if (not vehicles[player]) then vehicles[player] = {} end
+	if (#vehicles[player] >= MAX_ALLOWED_VEHICLES) then
+		if (isElement(vehicles[player][1])) then
+			destroyElement(vehicles[player][1])
+			table.remove(vehicles[player], 1)
+			return true
+		end
+	end
+	return false
+end
+
+-- Blip Vehicle
+---------------->>
+
+function togglePlayerVehicleBlip(player, slot)
+	local vehID = getVehicleIDFromSlot(player, slot)
+	if (not vehID) then return false end
+
+	if (not vehicles[player]) then return false end
+	local vehicle = getVehicleByID(vehID)
+	if (not isElement(vehicle)) then return false end
+	if (isElement(vehicleBlips[vehicle])) then
+		destroyElement(vehicleBlips[vehicle])
+		vehicleBlips[vehicle] = nil
+		return false
+	else
+		vehicleBlips[vehicle] = createBlipAttachedTo(vehicle, VEHICLE_BLIP_ID, 2, 255, 255, 255, 255, 0, 99999, player)
+		return true
+	end
+end
+
+function destroyPlayerVehicleBlip(player, seat)
+	if (seat ~= 0) then return end
+	if (isElement(vehicleBlips[source])) then
+		destroyElement(vehicleBlips[source])
+		vehicleBlips[source] = nil
+		return true
+	end
+	return false
+end
+addEventHandler("onVehicleEnter", resourceRoot, destroyPlayerVehicleBlip)
+
+-- Recover Vehicle
+------------------->>
+
+function recoverPlayerVehicle(player, slot)
+	local vehID = getVehicleIDFromSlot(player, slot)
+	if (not vehID) then return false end
+
+	if (not vehicles[player]) then return false end
+	local vehicle = getVehicleByID(vehID)
+
+	if (not isElement(vehicle)) then return false end
+	for seat,plr in pairs(getVehicleOccupants(vehicle)) do
+		if (isElement(plr)) then
+			removePedFromVehicle(plr)
+		end
+	end
+
+	local x,y,z,rot,name,distance = getNearestRecoveryPoint(vehicle)
+	local money = getPlayerMoney(player)
+	local recoveryCost = getRecoveryCostPerMeter()
+	local cost = math.ceil(distance*recoveryCost)
+	if (cost > MAX_RECOVERY) then cost = MAX_RECOVERY end
+	if (cost > money) then
+		exports.GTIhud:dm("* You cannot afford to recover your vehicle. You need $"..exports.GTIutil:tocomma(cost-money).." more.", player, 255, 125, 0)
+		return
+	end
+	if (getResourceFromName("GTImisc") and getResourceState(getResourceFromName("GTImisc")) == "running") then
+		if exports.GTImisc:getPlayersGluedToVehicle(vehicle) then
+			local players = exports.GTImisc:getPlayersGluedToVehicle(vehicle)
+			if #players ~= 0 then
+				for i, plr in ipairs (players) do
+					detachElements(plr[1], vehicle)
+					outputChatBox("You were unglued from this vehicle because it was recovered.", plr[1], 200, 0, 255)
+				end
+			end
+		end
+	end
+	
+	if isVehicleBlown(vehicle) then
+		fixVehicle(vehicle)
+		breakDownEngine(vehicle, player)
+	end
+
+	exports.GTIbank:TPM(player, cost, "VEHICLES: Vehicle Recovered")
+	setElementPosition(vehicle, x, y, z+2.5)
+	setElementRotation(vehicle, 0, 0, rot)
+	exports.GTIhud:dm("Your vehicle has been recovered to the "..name..". You have been charged $"..exports.GTIutil:tocomma(cost).." for the recovery.", player, 200, 0, 255)
+	despawnVehicle(player)
+end
+
+-- Save Vehicle Data
+--------------------->>
+
+function saveVehicleInfoOnDestroy()
+	if (getElementType(source) ~= "vehicle") then return false end
+
+	local vehID = getElementData(source, "vehicleID")
+	if (not vehID) then return false end
+		-- Save Position
+	local x,y,z = getElementPosition(source)
+	local _,_,rot = getElementRotation(source)
+	local int = getElementInterior(source)
+	local dim = getElementDimension(source)
+
+	local x,y,z,rot = string.format("%.3f", x), string.format("%.3f", y), string.format("%.3f", z), string.format("%.3f", rot)
+	setVehicleData(vehID, "position", x..","..y..","..z..","..rot..","..int..","..dim)
+		-- Save Health
+	local health = math.floor(getElementHealth(source))
+	if (health < 300) then health = 300 end
+	setVehicleData(vehID, "health", health)
+		-- Save Fuel
+	local fuel = getElementData((source), "fuel")
+	setVehicleData(vehID, "fuel", fuel)
+		-- Save Mileage
+	local mileage = getElementData(source, "mileage") or 0
+	setVehicleData(vehID, "mileage", mileage)
+		-- Save Lock State
+	local locked = getElementData(source, "locked")
+	if (locked) then locked = 1 else locked = 0 end
+	setVehicleData(vehID, "locked", locked)
+
+		-- Save Door State (Damage)
+	local door_state = ""
+	for door=0,5 do
+		local state = getVehicleDoorState(source, door)
+		door_state = door_state..door..","..state..";"
+	end
+	door_state = string.sub(door_state, 1, -2)
+	setVehicleData(vehID, "door_state", door_state)
+		-- Save Light State (Damage)
+	local light_state = ""
+	for light=0,3 do
+		local state = getVehicleLightState(source, light)
+		light_state = light_state..light..","..state..";"
+	end
+
+	if not exports.GTIturnsignals:isVehicleBlinking( source) then
+		light_state = string.sub(light_state, 1, -2)
+		setVehicleData(vehID, "light_state", light_state)
+	end
+		-- Save Panel State (Damage)
+	local panel_state = ""
+	for panel=0,6 do
+		local state = getVehiclePanelState(source, panel)
+		panel_state = panel_state..panel..","..state..";"
+	end
+	panel_state = string.sub(panel_state, 1, -2)
+	setVehicleData(vehID, "panel_state", panel_state)
+		-- Save Wheel States (Damage)
+	local wheel1,wheel2,wheel3,wheel4 = getVehicleWheelStates(source)
+	setVehicleData(vehID, "wheel_state", wheel1..","..wheel2..","..wheel3..","..wheel4)
+		-- Save Headlight Color
+	local r,g,b = getVehicleHeadLightColor(source)
+
+	if not exports.GTIturnsignals:isVehicleBlinking( source) then
+		setVehicleData(vehID, "light_color", r..","..g..","..b)
+	end
+
+		-- Unregister Vehicle
+	activeVehicleIDs[vehID] = nil
+
+		-- Destroy Vehicle Blip
+	if (isElement(vehicleBlips[source])) then
+		local owner = getElementData(source, "owner")
+		local owner = getAccountPlayer(getAccount(owner))
+		destroyElement(vehicleBlips[source])
+		vehicleBlips[source] = nil
+		if (not isElement(owner)) then return false end
+		triggerClientEvent(owner, "GTIvehiclesApp.returnVehicleThatIsBlipped", owner, false)
+	end
+end
+addEventHandler("onElementDestroy", resourceRoot, saveVehicleInfoOnDestroy)
+
+-- Destroy Vehicles on Quit
+---------------------------->>
+
+function destroyVehiclesOnQuit()
+	if (not vehicles[source]) then return false end
+		-- Destroy Vehicle Blip
+	if (vehicleBlips[source]) then
+		destoryElement(vehicleBlips[source])
+		vehicleBlips[source] = nil
+	end
+		-- Destroy Vehicle
+	for i=1,MAX_ALLOWED_VEHICLES do
+		if (isElement(vehicles[source][i])) then
+			local vehID = getElementData(vehicles[source][i], "vehicleID")
+			activeVehicleIDs[vehID] = nil
+			destroyElement(vehicles[source][i])
+		end
+	end
+		-- Unregister Vehicle
+	vehicles[source] = nil
+end
+addEventHandler("onPlayerQuit", root, destroyVehiclesOnQuit)

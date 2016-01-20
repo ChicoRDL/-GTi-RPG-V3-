@@ -1,0 +1,25 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(563, 272, 487, 346, "GTI Vehicle Rental", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.gridlist[1] = guiCreateGridList(18, 33, 248, 293, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "ID", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.5)
+GUIEditor.label[1] = guiCreateLabel(280, 33, 186, 110, "Select a vehicle that you would like to rent. Rented vehicles can be managed under the vehicles app on the GTIdroid.\n\nRenting a vehicle will replace any vehicle you currently have rented.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.label[2] = guiCreateLabel(273, 160, 201, 89, "This vehicle is restricted to the following groups:\nGroup A, Group B, Group C", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", true)
+GUIEditor.button[1] = guiCreateButton(275, 258, 196, 40, "Rent Vehicle", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(275, 304, 196, 22, "Close Panel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

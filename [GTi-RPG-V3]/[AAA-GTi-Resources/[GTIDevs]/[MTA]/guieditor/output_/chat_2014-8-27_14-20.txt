@@ -1,0 +1,32 @@
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        panel = guiCreateWindow(0.19, 0.09, 0.63, 0.75, "GTI Chats Interface", true)
+        guiWindowSetMovable(panel, false)
+        guiWindowSetSizable(panel, false)
+
+        chatsL = guiCreateGridList(0.01, 0.04, 0.16, 0.94, true, panel)
+        guiGridListAddColumn(chatsL, "Chats", 0.9)
+        guiGridListAddRow(chatsL)
+        guiGridListSetItemText(chatsL, 0, 1, "Main", false, false)
+        msgsL = guiCreateGridList(0.18, 0.04, 0.81, 0.87, true, panel)
+        guiGridListAddColumn(msgsL, "Time", 0.5)
+        guiGridListAddColumn(msgsL, "Player", 0.5)
+        guiGridListAddRow(msgsL)
+        guiGridListSetItemText(msgsL, 0, 1, "-", false, false)
+        guiGridListSetItemText(msgsL, 0, 2, "-", false, false)
+        chatE = guiCreateEdit(0.18, 0.92, 0.71, 0.06, "", true, panel)
+        sendB = guiCreateButton(0.90, 0.92, 0.09, 0.06, "Send", true, panel)
+        guiSetProperty(sendB, "NormalTextColour", "FFAAAAAA")    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawText("Close", 1046, 71, 1105, 88, tocolor(0, 0, 0, 255), 1.00, "default", "center", "center", false, false, true, false, false)
+        dxDrawText("Close", 1046, 69, 1105, 86, tocolor(0, 0, 0, 255), 1.00, "default", "center", "center", false, false, true, false, false)
+        dxDrawText("Close", 1044, 71, 1103, 88, tocolor(0, 0, 0, 255), 1.00, "default", "center", "center", false, false, true, false, false)
+        dxDrawText("Close", 1044, 69, 1103, 86, tocolor(0, 0, 0, 255), 1.00, "default", "center", "center", false, false, true, false, false)
+        dxDrawText("Close", 1045, 70, 1104, 87, tocolor(255, 255, 255, 255), 1.00, "default", "center", "center", false, false, true, false, false)
+    end
+)

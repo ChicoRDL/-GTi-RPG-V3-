@@ -1,0 +1,20 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(515, 300, 331, 188, "GTI Banking — Account Selection", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(298, 21, 23, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-small")
+GUIEditor.label[2] = guiCreateLabel(9, 25, 312, 32, "Welcome to the Bank of San Fierro\nSelect an Account to login to from the list below.", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", true)
+GUIEditor.gridlist[1] = guiCreateGridList(10, 60, 311, 87, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Account Number", 0.4)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Account Name", 0.4)
+GUIEditor.button[1] = guiCreateButton(135, 153, 61, 26, "Login", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")

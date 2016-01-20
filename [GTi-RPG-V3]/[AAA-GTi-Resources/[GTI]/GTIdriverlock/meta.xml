@@ -1,0 +1,7 @@
+<meta>
+    <info author="MrBrutus" version="1.1.0" name="Vehicle /lock and /dlock" description="Ability to lock the driver door" type="script" autostart="true" />
+    <script src="driver_lock.lua" type="server" />
+    <script src="driver_lockC.luac" type="client" />
+	<file src="unlock.mp3" />
+	<file src="lock.mp3" />
+</meta>

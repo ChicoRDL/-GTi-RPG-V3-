@@ -1,0 +1,4 @@
+<meta>
+    <info author="Nathan" description="Nathan Miscellaneous" name="Nathan Miscellaneous" />
+    <script src="server.lua" type="server" />
+</meta>

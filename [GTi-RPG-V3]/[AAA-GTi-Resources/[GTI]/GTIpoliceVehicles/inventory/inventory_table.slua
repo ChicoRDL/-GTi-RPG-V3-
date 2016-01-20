@@ -1,0 +1,148 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 07 Mar 2015
+-- Resource: GTIpoliceVehicles/inventory_table.slua
+-- Version: 1.0
+----------------------------------------->>
+
+inventoryT = {
+
+	-- Police Vehicles
+	------------------->>
+
+	[599] = {	-- Police Ranger
+		{id="health",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+	},
+	[596] = {	-- Police LS
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=25,		res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+	},
+	[597] = {	-- Police SF
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=25,		res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+	},
+	[598] = {	-- Police LV
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=25,		res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+	},
+	[426] = {	-- Premier
+		{id="health",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+	},
+	[523] = {	-- HPV1000
+		{id="health",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+	},
+	[560] = {	-- Sultan
+		{id="health",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+	},
+	[541] = {	-- Bullet
+		{id="health",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+	},
+	[427] = {	-- Enforcer
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=50,		res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+		{id=25,			amt=50,		res={"Police;8"}},	-- MP5
+		{id=25,			amt=50,		res={"Police;11"}},	-- M4
+	},
+	[601] = {	-- S.W.A.T.
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+		{id=25,			amt=50,		res={"Police;8"}},	-- MP5
+		{id=25,			amt=50,		res={"Police;11"}},	-- M4
+	},
+	[497] = {	-- Police Maverick
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=50,		res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=46,			amt=1,		res={"Police"}},	-- Parachute
+
+	},
+	[490] = {	-- FBI Rancher
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+		{id=25,			amt=50,		res={"Police;8"}},	-- MP5
+		{id=25,			amt=50,		res={"Police;11"}},	-- M4
+	},
+	[528] = {	-- FBI Truck
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=100,	res={"Police"}},
+		{id=3,			amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,			amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+		{id=25,			amt=50,		res={"Police;4"}},	-- Shotgun
+		{id=25,			amt=50,		res={"Police;8"}},	-- MP5
+		{id=25,			amt=50,		res={"Police;11"}},	-- M4
+	},
+	
+	[489] = {	-- SWAT Rancher
+		{id="health",	amt=100,	res={"SWAT Division"}},
+		{id="armor",	amt=50,	res={"SWAT Division"}},
+	},
+
+	[470] = {	-- Patriot
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=100,	res={"Police"}},
+		{id=3,		amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,		amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+	},
+
+	[559] = {	-- Jester
+		{id="health",	amt=100,	res={"Police"}},
+		{id="armor",	amt=75,	res={"Police"}},
+		{id=3,		amt=1,		res={"Police"}},	-- Nightstick
+		{id=23,		amt=150,	res={"Police"}},	-- Taser (Silenced Pistol)
+	},
+	
+	-- Paramedic Vehicles
+	---------------------->>
+	
+	[416] = {	-- Ambulance
+		{id="health",	amt=100,	res={"Paramedic"}},
+	},
+
+	
+	-- Firefighter Vehicles
+	------------------------>>
+	
+	[407] = {	-- Fire Truck 
+		{id=42,		amt=5000,	res={"Firefighter"}},
+	},
+
+	[544] = {	-- Fire Truck Ladder
+		{id=42,		amt=5000,	res={"Firefighter"}},
+	},
+
+	[563] = {	-- Raindance
+		{id=42,		amt=5000,	res={"Firefighter"}},
+	},
+	
+}

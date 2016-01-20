@@ -1,0 +1,30 @@
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        SpeakerPlayList = guiCreateWindow(492, 323, 230, 294, "Speaker PlayList", false)
+        guiWindowSetSizable(SpeakerPlayList, false)
+        guiSetProperty(SpeakerPlayList, "CaptionColour", "FF9425B1")
+
+        Close[II] = guiCreateLabel(186, 274, 34, 15, " Close", false, SpeakerPlayList)
+        guiSetFont(Close[II], "default-bold-small")
+        guiLabelSetColor(Close[II], 159, 0, 0)
+        URL[1] = guiCreateButton(10, 27, 103, 23, "URL HERE", false, SpeakerPlayList)
+        guiSetAlpha(URL[1], 0.70)
+        guiSetFont(URL[1], "default-bold-small")
+        URL[3] = guiCreateButton(10, 57, 103, 23, "URL HERE", false, SpeakerPlayList)
+        guiSetAlpha(URL[3], 0.70)
+        guiSetFont(URL[3], "default-bold-small")
+        URL[4] = guiCreateButton(117, 57, 103, 23, "URL HERE", false, SpeakerPlayList)
+        guiSetAlpha(URL[4], 0.70)
+        guiSetFont(URL[4], "default-bold-small")
+        URL[2] = guiCreateButton(117, 27, 103, 23, "URL HERE", false, SpeakerPlayList)
+        guiSetAlpha(URL[2], 0.70)
+        guiSetFont(URL[2], "default-bold-small")    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawLine(497, 595, 716, 595, tocolor(107, 24, 110, 255), 2, true)
+    end
+)

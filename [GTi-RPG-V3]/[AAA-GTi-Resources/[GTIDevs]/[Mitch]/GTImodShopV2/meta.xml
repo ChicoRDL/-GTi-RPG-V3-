@@ -1,0 +1,14 @@
+<meta>
+	<info author="ChicoGTI | Al3grab" version="420.69" type="script" name="Tuning Shop" description="GTA V Alike Garage" />
+	<script src="Server.lua" type="server" />
+	<script src="Client.lua" type="client" cache="false" />
+	<script src="ClientData.lua" type="client" />
+	<script src="ClientFunctions.lua" type="client" />
+
+	<file src="MUSIC.mp3" />
+	<file src="FONT.ttf" />
+	
+	<script src="colorpicker/colorpicker.lua" type="client" />	
+	<file src="colorpicker/palette.png" />
+	<file src="colorpicker/alpha.png" />
+</meta>

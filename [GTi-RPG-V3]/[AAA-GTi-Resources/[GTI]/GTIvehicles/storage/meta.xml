@@ -1,0 +1,6 @@
+<meta>
+<info author="Emile" name="car storage" autostart="true" />
+	<script src="c.luac" type="client" />
+	<script src="s.lua" type="server" />
+    <export function="isCarInventoryEmpty" type="server" />
+</meta>

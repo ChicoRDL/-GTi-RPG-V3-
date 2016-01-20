@@ -1,0 +1,77 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    label = {},
+    staticimage = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        Window = guiCreateWindow(224, 167, 897, 527, "", false)
+        guiWindowSetMovable(Window, false)
+        guiWindowSetSizable(Window, false)
+        guiSetAlpha(Window, 0.97)
+
+        SellButtom = guiCreateButton(346, 261, 95, 33, "Sell", false, Window)
+        local font_0 = guiCreateFont(":guieditor/fonts/PetitFormalScript.ttf")
+        guiSetFont(SellButtom, font_0)
+        guiSetProperty(SellButtom, "NormalTextColour", "FF68966A")
+        GUIEditor.staticimage[1] = guiCreateStaticImage(16, 44, 58, 65, ":GTImining/misc/element.png", false, Window)
+        GUIEditor.label[1] = guiCreateLabel(16, 116, 47, 16, "Amount:", false, Window)
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 126, 123, 78)
+        GUIEditor.label[2] = guiCreateLabel(17, 132, 47, 15, "$/Gram:", false, Window)
+        guiSetFont(GUIEditor.label[2], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[2], 126, 123, 78)
+        GUIEditor.label[3] = guiCreateLabel(157, 116, 47, 16, "Amount:", false, Window)
+        guiSetFont(GUIEditor.label[3], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[3], 126, 123, 78)
+        GUIEditor.label[4] = guiCreateLabel(157, 132, 47, 15, "$/Gram:", false, Window)
+        guiSetFont(GUIEditor.label[4], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[4], 126, 123, 78)
+        GUIEditor.staticimage[2] = guiCreateStaticImage(156, 44, 58, 65, ":GTImining/misc/element2.png", false, Window)
+        GUIEditor.label[5] = guiCreateLabel(303, 116, 47, 16, "Amount:", false, Window)
+        guiSetFont(GUIEditor.label[5], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[5], 126, 123, 78)
+        GUIEditor.label[6] = guiCreateLabel(459, 132, 47, 15, "$/Gram:", false, Window)
+        guiSetFont(GUIEditor.label[6], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[6], 126, 123, 78)
+        GUIEditor.staticimage[3] = guiCreateStaticImage(303, 45, 58, 65, ":GTImining/misc/element3.png", false, Window)
+        GUIEditor.label[7] = guiCreateLabel(459, 116, 47, 16, "Amount:", false, Window)
+        guiSetFont(GUIEditor.label[7], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[7], 126, 123, 78)    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawText("Copper", 235, 193, 304, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Copper", 235, 191, 304, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Copper", 233, 193, 302, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Copper", 233, 191, 302, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Copper", 234, 192, 303, 208, tocolor(254, 99, 30, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Silver", 378, 193, 440, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Silver", 378, 191, 440, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Silver", 376, 193, 438, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Silver", 376, 191, 438, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Silver", 377, 192, 439, 208, tocolor(126, 157, 127, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Silver", 377, 192, 439, 208, tocolor(126, 157, 127, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 524, 193, 596, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 524, 191, 596, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 522, 193, 594, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 522, 191, 594, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 523, 192, 595, 208, tocolor(203, 139, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 680, 193, 752, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 680, 191, 752, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 678, 193, 750, 209, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 678, 191, 750, 207, tocolor(0, 0, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+        dxDrawText("Bronze", 679, 192, 751, 208, tocolor(203, 139, 0, 255), 0.60, "bankgothic", "left", "top", false, false, true, true, false)
+    end
+)

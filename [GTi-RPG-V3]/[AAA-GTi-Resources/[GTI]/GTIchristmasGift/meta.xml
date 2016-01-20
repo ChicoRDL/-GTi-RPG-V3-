@@ -1,0 +1,11 @@
+<meta>
+	<info autostart="true"/>
+	
+	<script src="gift.slua"/>
+	<script src="mods.lua" type="client"/>
+	
+	<file src="files/santa1.dff"/>
+
+	<file src="files/santa.txd"/>
+
+</meta>

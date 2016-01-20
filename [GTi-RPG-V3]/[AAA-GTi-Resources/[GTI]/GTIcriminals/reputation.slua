@@ -1,0 +1,256 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 01 Mar 2014
+-- Resource: GTIcriminals/reputation.slua
+-- Version: 2.0
+----------------------------------------->>
+
+local math = math
+local type = type
+local pairs = pairs
+
+local MAX_EXPERIENCE = 15000000	-- Max Reputation Earned (L50)
+local MAX_EXP_HOURS = 1500		-- Max Reputation Time (L50)
+local MAX_LEVEL = 50			-- Max Level
+local HOURLY_EXP = 10000		-- Reputation per Hour
+local HOURLY_WAGE = 20000		-- Hourly Wage
+
+local expPoints = {}			-- Reputation Points Anti-cheat
+local money = {}				-- Money Anti-cheat
+local expTimer					-- Reputation Anti-cheat Timer
+
+local anticheat_exceptions = {
+	["Hijack"] = true,
+}
+
+addEvent("onPlayerTaskProgressModified", true)
+
+-- Task Data Reports
+--------------------->>
+
+function getTaskRanks(task)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not Ranks[task]) then return false end
+	return Ranks[task]
+end
+
+function getTaskRankFromLevel(task, level)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not Ranks[task] or not Ranks[task][level]) then return false end
+	return Ranks[task][level].name or false
+end
+
+function getTaskMaxLevel(task)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not Ranks[task]) then return end
+	local level = -1
+	for lvl,tbl in pairs(Ranks[task]) do
+		level = level + 1
+	end
+	return level
+end
+
+function getTaskLevelFromProgress(task, progress)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not Ranks[task] or type(progress) ~= "number") then return false end
+	local level = -1
+	for lvl,tbl in pairs(Ranks[task]) do
+		if (progress >= tbl.progress) then
+			level = level + 1
+		end
+	end
+	return level or false
+end
+
+function getTaskLevelRequirement(task, level)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not Ranks[task]) then return false end
+	if (not Ranks[task][level]) then level = getTaskMaxLevel(task) end
+	return Ranks[task][level].progress or false
+end
+
+function getTaskUnitName(task)
+	local RankBase = exports.GTIcrimTable:getRankBase()
+	if (not RankBase[task]) then return false end
+	return RankBase[task].uName or false
+end
+
+-- Player Data Reports
+----------------------->>
+
+function getPlayerTaskLevel(player, task)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not isElement(player) or not Ranks[task]) then return false end
+	
+	local progress = getPlayerTaskProgress(player, task) or 0
+	return getTaskLevelFromProgress(task, progress)
+end
+
+function getPlayerTaskPayment(player, task)
+	local RankBase = exports.GTIcrimTable:getRankBase()
+	if (not isElement(player) or not RankBase[task]) then return false end
+	local RankBase = exports.GTIcrimTable:getRankBase()
+	local levelPay = getPlayerHourlyPay(player)
+	
+	local hourlyPay = RankBase[task].basePay
+	local payOffset = levelPay/MINIMUM_WAGE
+	return hourlyPay*payOffset
+end
+
+function getPlayerTaskRank(player, task)
+	local level = getPlayerTaskLevel(player, task)
+	return getTaskRankFromLevel(task, level)
+end
+
+function getPlayerTaskProgress(player, task)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not isElement(player) or not Ranks[task]) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local progress = getCriminalData(account, "prog_"..string.lower(string.gsub(task," ",""))) or 0
+	return progress
+end
+
+function getPlayerTaskMoney(player, task)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not isElement(player) or not Ranks[task]) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local cash = getCriminalData(account, "money_"..string.lower(string.gsub(task," ",""))) or 0
+	return cash
+end
+
+function modifyPlayerTaskProgress(player, task, progress)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not isElement(player) or not Ranks[task] or type(progress) ~= "number") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local curProg = getCriminalData(account, "prog_"..string.lower(string.gsub(task," ",""))) or 0
+	setCriminalData(account, "prog_"..string.lower(string.gsub(task," ","")), curProg+progress)
+	local r,g,b = getTeamColor(getTeamFromName("Criminals"))
+	local unit = getTaskUnitName(task)
+	exports.GTIhud:drawNote("Prog"..math.random(1,1000), "+ "..exports.GTIutil:tocomma(progress).." "..unit, player, r, g, b, 7500)
+	triggerEvent("onPlayerTaskProgressModified", player, task, progress)
+	return true
+end
+
+function givePlayerTaskMoney(player, task, amount)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not isElement(player) or not Ranks[task] or type(amount) ~= "number") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local old_amount = amount
+		-- Group Bonus
+	local bonus
+	if (exports.GTIgroups:isPlayerInGroup(player)) then bonus = true end
+		-- Group Bonus
+	local groupID = exports.GTIgroups:getPlayerGroup(player)
+	if (bonus and groupID) then
+		exports.GTIbank:modifyGroupBankBalance(groupID, math.floor(amount*0.1), task..": Task Payment ("..getPlayerName(player)..")")
+	end
+	
+	local amount = not bonus and amount or math.floor(amount * 1.1)
+	
+		-- Premium Bonuses
+	if (exports.GTIpremium:isPremium(player, "5_more_pay")) then
+		amount = amount + math.floor(old_amount*0.05)
+	elseif (exports.GTIpremium:isPremium(player, "10_more_pay")) then
+		amount = amount + math.floor(old_amount*0.10)
+	elseif (exports.GTIpremium:isPremium(player, "15_more_pay")) then
+		amount = amount + math.floor(old_amount*0.15)
+	end
+	
+	local cash = getCriminalData(account, "money_"..string.lower(string.gsub(task," ",""))) or 0
+	setCriminalData(account, "money_"..string.lower(string.gsub(task," ","")), cash+amount)
+	
+	exports.GTIbank:GPM(player, amount, task..": Task Payment")
+	exports.GTIhud:drawNote("Money"..math.random(1,1000), "+ $"..exports.GTIutil:tocomma(amount), player, 25, 255, 25, 7500)
+	return true
+end
+
+-- Reputation System Reports
+----------------------------->>
+
+function getCriminalLevelFromRep(exper)
+	if (type(exper) ~= "number") then return false end
+	
+	for lvl=0,MAX_LEVEL do
+		local expPoints = -math.sqrt(MAX_LEVEL^2-lvl^2)*(MAX_EXP_HOURS/MAX_LEVEL) + MAX_EXP_HOURS
+		expPoints = expPoints/MAX_EXP_HOURS
+		expPoints = expPoints*MAX_EXPERIENCE
+		if (expPoints > exper) then
+			return lvl-1
+		end
+	end
+end
+
+function getCriminalLevelRequirement(level)
+	if (type(level) ~= "number") then return false end
+	if (level > 50) then level = 50 end
+	if (level == 0) then return 0 end
+	
+	local expPoints = -math.sqrt(MAX_LEVEL^2-level^2)*(MAX_EXP_HOURS/MAX_LEVEL) + MAX_EXP_HOURS
+	expPoints = expPoints/MAX_EXP_HOURS
+	expPoints = expPoints*MAX_EXPERIENCE
+	return math.floor(expPoints)
+end
+
+function getHourlyPay()
+	return HOURLY_WAGE
+end
+
+function getHourlyReputation()
+	return HOURLY_EXP
+end
+
+function getPlayerCriminalLevel(player)
+	if (not isElement(player)) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local reputation = getCriminalData(account, "reputation") or 0
+	return getCriminalLevelFromRep(reputation)
+end
+
+function getPlayerCriminalRep(player, task)
+	if (not isElement(player)) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (Ranks[task]) then
+		local crimRep = getCriminalData(account, "exp_"..string.lower(string.gsub(task," ",""))) or 0
+		return crimRep
+	end
+	local crimRep = getCriminalData(account, "reputation") or 0
+	return crimRep
+end
+
+function modifyPlayerCriminalRep(player, reputation, task)
+	local Ranks = exports.GTIcrimTable:getRanks()
+	if (not isElement(player) or type(reputation) ~= "number" or not Ranks[task]) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local crimRep = getCriminalData(account, "exp_"..string.lower(string.gsub(task," ",""))) or 0
+	setCriminalData(account, "exp_"..string.lower(string.gsub(task," ","")), crimRep+reputation)
+
+		-- Group Reputation
+	if (exports.GTIgroups:isPlayerInGroup(player)) then
+		local groupID = exports.GTIgroups:getPlayerGroup(player)
+		exports.GTIgroups:modifyGroupExperience(groupID, reputation)
+	end
+	
+	local crimRep = getCriminalData(account, "reputation") or 0
+	setCriminalData(account, "reputation", crimRep+reputation)
+	local r,g,b = getTeamColor(getTeamFromName("Criminals"))
+	exports.GTIhud:drawNote("EmRep"..math.random(1,1000), "+ "..exports.GTIutil:tocomma(reputation).." Respect", player, r, g, b, 7500)
+	
+	exports.GTIlogs:outputServerLog("CRIM EXP: "..getPlayerName(player).." +"..reputation.." "..task.." respect earned", "criminals", player)
+	return true
+end

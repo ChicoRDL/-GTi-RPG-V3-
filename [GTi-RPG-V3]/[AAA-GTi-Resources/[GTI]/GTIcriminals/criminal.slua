@@ -1,0 +1,76 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 24 Jul 2014
+-- Resource: GTIcriminals/criminal.slua
+-- Version: 1.0
+----------------------------------------->>
+
+--local MIN_CRIM_DISTANCE = 100
+
+--[[function goCriminal(player)
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return end
+
+	if (exports.GTIutil:isPlayerInTeam(player, "Law Enforcement", "National Guard", "Government")) then
+		exports.GTIhud:dm("You must resign from your job first in order to become a criminal.", player, 175, 25, 25)
+		return
+	end
+
+	if (exports.GTIprison:isPlayerInJail(player)) then
+		exports.GTIhud:dm("You cannot use this command while in jail.", player, 175, 25, 25)
+		return
+	end
+
+	if (exports.GTIutil:isPlayerInTeam(player, "Criminals") and not exports.GTIgangTerritories:isGangster(player)) then return end
+
+	if getNearbyPolice(player) then
+		exports.GTIhud:dm("You cannot go criminal while near a Police Officer.",player, 172,25,25)
+		return
+	end
+
+	if (exports.GTIpoliceWanted:getPlayerWantedLevel(player, true) < 10) then
+		exports.GTIpoliceWanted:chargePlayer(player, 27, true)
+	end
+	exports.GTIemployment:setPlayerJob(player, "Criminal", "Criminals", nil, exports.GTIaccounts:GAD(getPlayerAccount(player), "skin") or 0)
+end
+addCommandHandler("criminal", goCriminal)]]
+
+addCommandHandler("criminal", function (player) exports.GTIhud:dm("This command has been disabled, you must commit a crime to join in Criminals team", player, 255, 0, 0) end )
+
+function isCriminal(player)
+	if (not exports.GTIutil:isPlayerInTeam(player, "Criminals")) then return false end
+	if (exports.GTIemployment:getPlayerJob(player, true) ~= "Criminal") then return false end
+	return true
+end
+
+-- Cop Killing Exp
+------------------->>
+
+addEventHandler("onPlayerWasted", root, function(_, attacker)
+	if (not isElement(attacker) or getElementType(attacker) ~= "player") then return end
+	if (not isCriminal(attacker)) then return end
+	if (exports.GTIemployment:getPlayerJob(source) == "Police Officer") then
+		modifyPlayerCriminalRep(attacker, 50, "Police Killing")
+		modifyPlayerTaskProgress(attacker, "Police Killing", 1)
+	end
+end)
+
+--[[function getNearbyPolice(player)
+	if not player or not isElement(player) then return false end
+	
+	local nearestOfficer
+	local distance = 99999
+	
+	for k,v in ipairs(getPlayersInTeam(getTeamFromName("Law Enforcement"))) do
+		local x,y,z = getElementPosition(player)
+		local pX,pY,pZ = getElementPosition(v)
+		local _distance = getDistanceBetweenPoints3D(x,y,z,pX,pY,pZ)
+		
+		if _distance <= MIN_CRIM_DISTANCE and _distance < distance then
+			nearestOfficer = v
+			distance = _distance
+		end
+	end
+	
+	return nearestOfficer
+end]]

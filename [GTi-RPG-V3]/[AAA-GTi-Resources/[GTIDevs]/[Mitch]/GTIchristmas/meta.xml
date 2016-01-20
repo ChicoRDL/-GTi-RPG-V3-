@@ -1,0 +1,59 @@
+<meta>
+    <info author="Mitch" name="Christmas" autostart="false" />
+	
+	<file src="direction_image.png"/>
+	<file src="direction_pointer.png"/>
+	
+	<file src="flakes/cartoon_tile.png"/>
+	<file src="flakes/real_tile.png"/>
+
+	<script src="snow_gui.lua" type="client"/>
+	<script src="snow.lua" type="client"/>
+	<script src="snow_s.lua"/>
+	<script src="chr_client.lua" type="client" />
+	<script src="santaStaffSkin.lua" type="client" />
+	<file src="jeffers4_lae.txd" />
+	
+	<script src="moddedVeh.lua" type="client" />
+	<file src="quad.dff" />
+	<file src="quad.txd" />
+	
+	<script src="santaStaffSkin.lua" type="client" />
+	<file src="santa.dff" />
+	<file src="santa.txd" />
+	<file src="Ground.txd" />
+	<file src="Walls.txd" />
+	<file src="House.txd" />
+	<file src="Entrance.txd" />
+	<file src="Trees.txd" />
+	<file src="Walls2.txd" />
+	<file src="Plants.txd" />
+	<file src="Plants2.txd" />
+	<file src="Rocks.txd" />
+	
+	<export function="updateSnowType" type="client"/> <!-- <type> - can be "real" or "cartoon" (or your own specified type) -->
+	<export function="updateSnowDensity" type="client"/> <!-- <new density> <blend> -->
+	<export function="updateSnowWindDirection" type="client"/> <!-- <x> <y> - between 1 and 0 -->
+	<export function="updateSnowWindSpeed" type="client"/> <!-- <speed> -->
+	<export function="updateSnowflakeSize" type="client"/> <!-- <min size> <max size> -->
+	<export function="updateSnowJitter" type="client"/> <!-- <true/false> -->
+	<export function="startSnow" type="client"/>
+	<export function="stopSnow" type="client"/>
+	<export function="setGuiEnabled" type="client"/> <!-- <true/false> -->
+	<export function="setSnowToggle" type="client"/> <!-- <true/false> -->
+	
+	<settings>
+		<!-- set whether the snow gui will be available, if false players cannot change their snow settings -->
+		<setting name="gui_enabled" value="[false]"/>
+		
+		<!-- set whether the player can turn snow on/off by themselves -->
+		<setting name="snow_toggle" value="[true]"/>
+	</settings>
+	
+
+	<file src="smallnoise3d.dds" type="client" />
+	<file src="snow_ground.fx" type="client" />
+	<file src="snow_trees.fx" type="client" />
+	<file src="snow_naughty_trees.fx" type="client" />
+	<file src="mta-helper.fx" type="client" />
+</meta>

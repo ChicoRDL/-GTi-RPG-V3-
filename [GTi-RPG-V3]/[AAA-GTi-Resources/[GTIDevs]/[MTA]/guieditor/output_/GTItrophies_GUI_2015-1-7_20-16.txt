@@ -1,0 +1,40 @@
+
+GUIEditor = {
+    tab = {},
+    scrollpane = {},
+    tabpanel = {},
+    label = {},
+    window = {}
+}
+local screenW, screenH = guiGetScreenSize()
+GUIEditor.window[1] = guiCreateWindow((screenW - 517) / 2, (screenH - 364) / 2, 517, 364, "Grand Theft International Trophies", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.label[1] = guiCreateLabel(10, 22, 149, 15, "Trophy Points: ʛ0.10", false, GUIEditor.window[1])
+GUIEditor.tabpanel[1] = guiCreateTabPanel(10, 47, 497, 307, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Trophies", GUIEditor.tabpanel[1])
+
+GUIEditor.scrollpane[1] = guiCreateScrollPane(10, 10, 477, 263, false, GUIEditor.tab[1])
+
+GUIEditor.label[2] = guiCreateLabel(10, 10, 229, 15, "Grand Theft International", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+GUIEditor.label[3] = guiCreateLabel(20, 30, 307, 30, "Welcome to Grand Theft International", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "left", true)
+GUIEditor.label[4] = guiCreateLabel(404, 10, 63, 15, "Worth 2ʛ", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[4], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "right", false)
+GUIEditor.label[5] = guiCreateLabel(394, 45, 73, 15, "Retrieved", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[5], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "right", false)
+GUIEditor.label[6] = guiCreateLabel(404, 28, 63, 15, "Gold", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[6], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[6], "right", false)
+GUIEditor.label[7] = guiCreateLabel(10, 66, 457, 15, "____________________________________________________________", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[7], "clear-normal")
+GUIEditor.label[8] = guiCreateLabel(10, 88, 229, 15, "Grand Theft International", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[8], "clear-normal")
+
+
+GUIEditor.tab[2] = guiCreateTab("Spend Points", GUIEditor.tabpanel[1])

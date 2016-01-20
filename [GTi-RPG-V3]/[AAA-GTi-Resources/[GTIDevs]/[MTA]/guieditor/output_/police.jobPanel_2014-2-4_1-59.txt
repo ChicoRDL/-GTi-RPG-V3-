@@ -1,0 +1,72 @@
+
+GUIEditor = {
+    scrollpane = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(448, 161, 472, 408, "GTI Law Enforcement Jobs System", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(10, 28, 84, 15, "Police Division:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 30, 150, 255)
+GUIEditor.label[2] = guiCreateLabel(101, 28, 143, 15, "Select a Police Division", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+GUIEditor.label[3] = guiCreateLabel(255, 28, 49, 15, "Uniform:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 30, 150, 255)
+GUIEditor.label[4] = guiCreateLabel(307, 28, 155, 15, "Select a Uniform", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "clear-normal")
+GUIEditor.label[5] = guiCreateLabel(11, 41, 452, 15, "_______________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.gridlist[1] = guiCreateGridList(12, 62, 256, 213, false, GUIEditor.window[1])
+
+GUIEditor.scrollpane[1] = guiCreateScrollPane(0, 0, 255, 212, false, GUIEditor.gridlist[1])
+
+GUIEditor.label[6] = guiCreateLabel(4, 3, 226, 15, "", false, GUIEditor.scrollpane[1])
+
+
+GUIEditor.label[7] = guiCreateLabel(273, 63, 189, 15, "Select a Police Division", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 30, 150, 255)
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+GUIEditor.gridlist[2] = guiCreateGridList(274, 81, 186, 85, false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(273, 170, 189, 15, "Select a Uniform", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[8], 30, 150, 255)
+guiLabelSetHorizontalAlign(GUIEditor.label[8], "center", false)
+GUIEditor.gridlist[3] = guiCreateGridList(274, 189, 186, 85, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[3], "Skin ID", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[3], "Uniform Name", 0.5)
+GUIEditor.label[9] = guiCreateLabel(11, 269, 452, 15, "_______________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[10] = guiCreateLabel(10, 292, 116, 15, "Police Bank Account:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 30, 150, 255)
+GUIEditor.label[11] = guiCreateLabel(10, 323, 70, 15, "Police Rank:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[11], 30, 150, 255)
+GUIEditor.label[12] = guiCreateLabel(133, 292, 95, 15, "$...", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[12], "clear-normal")
+guiLabelSetColor(GUIEditor.label[12], 25, 255, 25)
+GUIEditor.label[13] = guiCreateLabel(87, 323, 143, 15, "Loading Police Rank...", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[13], "clear-normal")
+GUIEditor.label[14] = guiCreateLabel(236, 292, 78, 15, "Arrest Points:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[14], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[14], 30, 150, 255)
+GUIEditor.label[15] = guiCreateLabel(236, 323, 78, 15, "Police Level:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[15], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[15], 30, 150, 255)
+guiLabelSetHorizontalAlign(GUIEditor.label[15], "right", false)
+GUIEditor.label[16] = guiCreateLabel(323, 292, 140, 15, "Loading AP...", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[16], "clear-normal")
+GUIEditor.label[17] = guiCreateLabel(323, 323, 140, 15, "Loading Police Level...", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[17], "clear-normal")
+GUIEditor.label[18] = guiCreateLabel(11, 336, 452, 15, "_______________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(167, 357, 133, 27, "Apply for Job", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[19] = guiCreateLabel(164, 387, 144, 15, "Right-Click on Window to Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[19], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[19], "center", false)

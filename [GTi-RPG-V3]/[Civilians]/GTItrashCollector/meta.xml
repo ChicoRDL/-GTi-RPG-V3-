@@ -1,0 +1,5 @@
+<meta>
+<info author="Emile" name="Trash Collector Job" autostart="true" />
+	<script src="TrashCollectorClient.lua" type="client" />
+	<script src="TrashCollectorServer.lua" type="server" />
+</meta>

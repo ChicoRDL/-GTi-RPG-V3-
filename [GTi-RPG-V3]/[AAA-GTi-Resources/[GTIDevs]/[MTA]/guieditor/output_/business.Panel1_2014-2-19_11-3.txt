@@ -1,0 +1,43 @@
+
+GUIEditor = {
+    tab = {},
+    scrollpane = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {}
+}
+GUIEditor.window[1] = guiCreateWindow(453, 236, 685, 452, "J.T. Penn & Co. — Business Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 24, 667, 418, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Home", GUIEditor.tabpanel[1])
+
+GUIEditor.label[1] = guiCreateLabel(13, 10, 88, 15, "Business Name:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 200, 0)
+GUIEditor.label[2] = guiCreateLabel(19, 34, 82, 15, "Creation Date:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 255, 200, 0)
+GUIEditor.label[3] = guiCreateLabel(13, 10, 88, 15, "Business Name:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 255, 200, 0)
+GUIEditor.label[4] = guiCreateLabel(334, 10, 79, 15, "Classification:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 255, 200, 0)
+GUIEditor.label[5] = guiCreateLabel(108, 10, 216, 15, "J.T. Penn & Company", false, GUIEditor.tab[1])
+GUIEditor.label[6] = guiCreateLabel(108, 34, 216, 15, "31 May 2014 (1 yr, 2 mo, 13 days)", false, GUIEditor.tab[1])
+GUIEditor.label[7] = guiCreateLabel(419, 10, 216, 15, "Small Business", false, GUIEditor.tab[1])
+GUIEditor.label[8] = guiCreateLabel(7, 47, 652, 15, "____________________________________________________________________________________________________________", false, GUIEditor.tab[1])
+GUIEditor.scrollpane[1] = guiCreateScrollPane(7, 66, 652, 295, false, GUIEditor.tab[1])
+
+GUIEditor.label[9] = guiCreateLabel(3, 3, 629, 15, "QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm ", false, GUIEditor.scrollpane[1])
+
+GUIEditor.button[1] = guiCreateButton(278, 366, 124, 19, "Modify", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[10] = guiCreateLabel(334, 34, 92, 15, "Business Status:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 255, 200, 0)
+GUIEditor.label[11] = guiCreateLabel(433, 34, 216, 15, "In Good Standing", false, GUIEditor.tab[1])

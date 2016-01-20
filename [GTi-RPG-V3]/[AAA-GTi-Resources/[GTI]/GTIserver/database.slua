@@ -1,0 +1,73 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 01 Aug 2014
+-- Resource: GTIserverstats/database.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local SERVER_PORT = 22003	-- Only Save Data on Main Server
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `server_stats`(`id` INT NOT NULL AUTO_INCREMENT, `key` TEXT, `value` TEXT, PRIMARY KEY(id))")
+
+local database_online	-- Is server_stats Database Online?
+local server = {}		-- 'server_stats' Database Cache
+
+addEvent("onDatabaseLoad", true)	-- Triggers when database is ready
+
+-- Database Cache
+------------------>>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cacheDatabase, db, "SELECT * FROM `server_stats`")
+end)
+
+function cacheDatabase(qh)
+	local result = dbPoll(qh, 0)
+	for i,row in ipairs(result) do
+		server[row.key] = row.value
+	end
+	database_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "server_stats")
+end
+
+-- Database Exports
+-------------------->>
+
+function setServerStat(key, value)
+	if (not database_online) then return false end
+	if (not key or type(key) ~= "string") then return false end
+	
+	if (server[key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `server_stats`(`key`,`value`) VALUES(?,?)", key, tostring(value))
+		end
+	else
+		if (getServerPort() == SERVER_PORT) then
+			if (value ~= nil) then
+				dbExec(db, "UPDATE `server_stats` SET `value`=? WHERE `key`=?", tostring(value), key)
+			else
+				dbExec(db, "UPDATE `server_stats` SET `value`=NULL WHERE `key`=?", key)
+			end
+		end
+	end
+	server[key] = value
+	return true
+end
+
+function getServerStat(key)
+	if (not database_online) then return end
+	if (not key or type(key) ~= "string") then return end
+	return tonumber(server[key]) or server[key]
+end
+
+function modifyServerStat(key, value)
+	local stat = getServerStat(key) or 0
+	if (type(stat) ~= "number") then return false end
+	return setServerStat(key, stat + value)
+end

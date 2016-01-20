@@ -1,0 +1,6 @@
+<meta>
+	<info author="Jack" name="Language Translator" description="Returns player's language for specific GUI" autostart="true"/>
+	<script src="languages.lua" type="shared"/>
+	
+	<export function="getLanguages" type="shared"/>
+</meta>

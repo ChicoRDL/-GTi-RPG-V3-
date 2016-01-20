@@ -1,0 +1,17 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 19 May 2014
+-- Resource: GTIgroupTables/respawn/respawn.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local respawn_points = {
+	[2] =	{1398.166, 708.09900,	0.130,	0, 0, 0,		"GHoST"},
+	[7] =	{1613.554, 1063.636, 	11, 	0, 0, 0,		"Rude Prawns"},
+	[14] = 	{1958.255, -1299.238, 	21, 	0, 0, 0,		"CIA"},
+	[82] = 	{1102.955, -307.1740, 	74, 	0, 0, 0,		"TriForce"},
+	[618] = {2612.512, 663.23400, 	15, 	0, 0, 0,		"Quality 7"},
+}
+
+function getRespawnPoints() return respawn_points or {} end

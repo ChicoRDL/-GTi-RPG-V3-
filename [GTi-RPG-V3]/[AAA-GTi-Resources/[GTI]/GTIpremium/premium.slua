@@ -1,0 +1,222 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: JT Pennington (JTPenn)
+-- Date: 09 Jan 2015
+-- Resource: GTIpremium/premium.slua
+-- Type: Server Side
+----------------------------------------->>
+
+-- Fancy T: Ŧ
+
+local premium_items = {
+	--{"name", "description", cost, active(true|false), {cancels?,...}},
+	--[[{"Group Benefits"},
+	{"base_20", "Get a base for your group, max 20 objects. (1 month)", 300, true},
+	{"base_20", "Get a base for your group, max 35 objects. (1 month)", 375, true},
+	{"base_20", "Get a base for your group, max 50 objects. (1 month)", 450, true},
+	{"veh_spawn", "Get a vehicle spawner for your group. (1 month)", 75, true}, 
+	{"extends_base", "Extend the existance of your base and/or spawner for 1 month.", 75 , true},]]
+	{"Exclusive Content"},
+	{"car_shaders",		"Access to exclusive car shaders", 						15, false},
+	{"prem_houses",		"Access to buy exclusive mapped houses", 					30, false},
+	{"prem_skins",		"Access to buy exclusive skins", 						15, false},
+	{"prem_cars",		"Access to buy exclusive modded cars", 						15, false},
+	{"weap_shaders",	"Access to buy exclusive weapon shaders & colors", 				15, false},
+	{"Limit Increases"},
+	{"max_houses",		"Increase max houses allowed to own from 3 to 5", 				25, true},
+	{"25_more_ammo",	"25% increase in max ammo limit", 						25, true},
+	{"Additional Vehicles"},
+	{"veh_recover",		"Enable vehicle recovery at rental kiosks", 					10, true},
+	{"Respawn Modifications"},
+	{"inst_respawn",	"Instant respawn after death", 							15, true},
+	{"house_respawn",	"Spawn at house after death", 							20, false},
+	{"Payment Increases"},
+	{"5_more_pay",		"5% increase in job/task payment", 						15, true, {"10_more_pay", "15_more_pay"}},
+	{"10_more_pay",		"10% increase in job/task payment", 						30, true, {"5_more_pay", "15_more_pay"}},
+	{"15_more_pay",		"15% increase in job/task payment", 						45, true, {"5_more_pay", "10_more_pay"}},
+	{"Cost Decreases"},
+	{"5_less_cost",		"5% reduction in service costs", 						15, true, {"10_less_cost", "15_less_cost"}},
+	{"10_less_cost",	"10% reduction in service costs", 						30, true, {"5_less_cost", "15_less_cost"}},
+	{"15_less_cost",	"15% reduction in service costs", 						45, true, {"5_less_cost", "10_less_cost"}},
+	{"Jail Time Decreases"},
+	{"5_less_jail",		"5% reduction in jail time", 							10, true, {"10_less_jail", "15_less_jail"}},
+	{"10_less_jail",	"10% reduction in jail time", 							20, true, {"5_less_jail", "15_less_jail"}},
+	{"15_less_jail",	"15% reduction in jail time", 							30, true, {"5_less_jail", "10_less_jail"}},
+	{"Player Benefits"},
+	--{"hourly_benefit",	"Receive $40,000 of benefits per hour",						50, true},
+	{"25_armor_spawn",	"Receive 25 armor points when spawning (except when turfing)",					30, true},
+	{"50_armor_spawn",	"Receive 50 armor points when spawning (except when turfing)",					40, true},
+	{"100_armor_spawn",	"Receive 100 armor points when spawning (except when turfing)",					50, true},
+}
+
+local TOKEN_COST = 50000		-- Cost of a Ŧoken (Cash$)
+local SEC_PREMIUM = 86400*30	-- Time each feature lasts (seconds)
+
+local token_acl = {
+	["JTPenn814"] = true,
+	["jackj"] = true,
+	["TomasitoCaram"] = true,
+	["RedBand"] = true,
+	["Mitch"] = true,
+}
+
+-- Premium Access
+------------------>>
+
+function isPremium(player, feature, perm)
+	if (not exports.GTIutil:isPlayerLoggedIn(player) or type(feature) ~= "string") then return false end
+	local account = getPlayerAccount(player)
+	local timeLeft = getPremiumData(account, feature) or 0
+	if (timeLeft == -1) then return true end
+	if (not perm and timeLeft >= getRealTime().timestamp) then return true end
+	return false
+end
+
+function isAccountPremium(account, feature, perm)
+	if (not account or isGuestAccount(account) or type(feature) ~= "string") then return false end
+	local timeLeft = getPremiumData(account, feature) or 0
+	if (timeLeft == -1) then return true end
+	if (not perm and timeLeft >= getRealTime().timestamp) then return true end
+	return false
+end
+
+-- Get Premium...
+------------------>>
+
+function isItemValid(item)
+	for i,v in ipairs(premium_items) do
+		if (v[1] == item and v[2]) then return true end
+	end
+	return false
+end
+
+function getPremiumItemConflicts(item)
+	for i,v in ipairs(premium_items) do
+		if (v[1] == item and v[2]) then return v[5] or false end
+	end
+	return false
+end
+
+function getPremiumItemCost(item)
+	for i,v in ipairs(premium_items) do
+		if (v[1] == item and v[2]) then return v[3] end
+	end
+	return false
+end
+
+function getPremiumItemDesc(item)
+	for i,v in ipairs(premium_items) do
+		if (v[1] == item and v[2]) then return v[2] end
+	end
+	return false
+end
+
+function getPremiumItemFromDesc(desc)
+	for i,v in ipairs(premium_items) do
+		if (v[2] == desc) then return v[1] end
+	end
+	return false
+end
+
+-- Premium Ŧokens
+------------------>>
+
+function getPlayerTokens(player, perm)
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return false end
+	local account = getPlayerAccount(player)
+	if (not perm) then
+		return getPremiumData(account, "tokens") or 0
+	else
+		return getPremiumData(account, "permenant_tokens") or 0
+	end
+end
+
+function addTokens(account, amount, perm)
+	if (not account or isGuestAccount(account) or type(amount) ~= "number") then return end
+	if (not perm) then
+		local tokens = getPremiumData(account, "tokens") or 0
+		return setPremiumData(account, "tokens", tokens+amount)
+	else
+		local tokens = getPremiumData(account, "permenant_tokens") or 0
+		return setPremiumData(account, "permenant_tokens", tokens+amount)
+	end
+end
+
+function removeTokens(account, amount, perm)
+	if (not account or isGuestAccount(account) or type(amount) ~= "number") then return end
+	if (not perm) then
+		local tokens = getPremiumData(account, "tokens") or 0
+		local newamt = tokens-amount
+		return setPremiumData(account, "tokens", (newamt > 0) and newamt or 0)
+	else
+		local tokens = getPremiumData(account, "permenant_tokens") or 0
+		local newamt = tokens-amount
+		return setPremiumData(account, "permenant_tokens", (newamt > 0) and newamt or 0)
+	end
+end
+
+addCommandHandler("tokens-add", function(player, cmd, acc_name, amount, perm)
+	if (not token_acl[getAccountName(getPlayerAccount(player))]) then return end
+	local amount = tonumber(amount)
+	if (not acc_name or not amount) then return end
+	local account = getAccount(acc_name)
+	if (not account or isGuestAccount(account)) then return end
+	
+	addTokens(account, amount, tonumber(perm) == 1)
+	
+	exports.GTIhud:dm("PREMIUM: You have given account '"..acc_name.."' "..exports.GTIutil:tocomma(amount).." "..(perm and "Permenant " or "").."Premium Ŧokens.", player, 0, 178, 255)
+	exports.GTIlogs:outputLog("PREMIUM: Account "..acc_name.." has been given "..amount.." "..(perm and "Permenant " or "").."Premium Ŧokens by "..getPlayerName(player), "premium", acc_name)
+	local player = getAccountPlayer(account)
+	if (isElement(player)) then
+		exports.GTIhud:dm("PREMIUM: You have been given "..exports.GTIutil:tocomma(amount).." "..(perm and "Permenant " or "").."Premium Ŧokens by "..getPlayerName(player)..".", player, 0, 178, 255)
+	end
+end)
+
+-- Premium Items
+----------------->>
+
+function addPremiumItem(player, item, perm)
+	if (not exports.GTIutil:isPlayerLoggedIn(player) or type(item) ~= "string") then return false end
+	if (not isItemValid(item)) then return end
+	
+	local account = getPlayerAccount(player)
+	setPremiumData(account, item, perm and -1 or getRealTime().timestamp+SEC_PREMIUM)
+	
+	-- Take care of conflicts
+	local conflicts = getPremiumItemConflicts(item)
+	if (conflicts) then
+		for i,item in ipairs(conflicts) do
+			setPremiumData(account, item, nil)
+		end
+	end
+	return true
+end
+
+function getPlayerPremiumItems(player)
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return false end
+	local items = {}
+	for i,item in ipairs(premium_items) do
+		if (item[2] and isPremium(player, item[1])) then
+			items[item[1]] = 1
+		end
+		if (item[2] and isPremium(player, item[1], true)) then
+			items[item[1]] = 2
+		end
+	end
+	return items
+end
+
+-- Utilities
+------------->>
+
+function getPremiumItems()
+	return premium_items
+end
+
+function getPremiumTime()
+	return SEC_PREMIUM
+end
+
+function getTokenCost()
+	return TOKEN_COST
+end

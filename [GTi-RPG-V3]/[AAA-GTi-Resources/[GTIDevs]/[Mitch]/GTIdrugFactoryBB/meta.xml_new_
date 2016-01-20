@@ -1,0 +1,5 @@
+<meta>
+    <info author="Mitch" name="Drug Factory Blueberry" autostart="false" />
+    <script src="drugFactory_c.luac" type="client" />
+    <script src="drugFactory_s.lua" type="server" />
+</meta>

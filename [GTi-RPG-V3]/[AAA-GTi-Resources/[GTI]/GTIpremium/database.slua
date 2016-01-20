@@ -1,0 +1,98 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: JT Pennington (JTPenn)
+-- Date: 09 Jan 2015
+-- Resource: GTIpremium/database.slua
+-- Type: Server Side
+----------------------------------------->>
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local SERVER_PORT = 22003	-- Only Save Data on Dev Server
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `premium`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+
+local database_online	-- Is premium Database Online?
+local premium = {}		-- 'premium' Database Cache
+
+addEvent("onDatabaseLoad", true)	-- Triggers when gti database is ready
+
+-- Database Cache
+------------------>>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cacheDatabase, db, "SELECT * FROM `premium`")
+end)
+
+function cacheDatabase(qh)
+	local result = dbPoll(qh, 0)
+	premium["Console"] = {}
+	for i,row in ipairs(result) do
+		premium[row.name] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id" or column ~= "name") then
+				premium["Console"][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				premium[row.name][column] = value
+			end
+		end
+	end
+	database_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "premium")
+end
+
+-- Premium Data Exports
+------------------------>>
+
+function setPremiumData(account, key, value)
+	if (not database_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	local account = getAccountName(account)
+	
+	if (type(premium[account]) ~= "table") then
+		premium[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `premium`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (premium["Console"][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `premium` ADD `??` text", key)
+		end
+		premium["Console"][key] = true
+	end
+	
+	premium[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `premium` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `premium` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function getPremiumData(account, key)
+	if (not database_online) then return end
+	if (not account or not key) then return end
+	if (isGuestAccount(account) or type(key) ~= "string") then return end
+	
+	local account = getAccountName(account)
+	if (premium[account] == nil) then return end
+	if (premium[account][key] == nil or premium[account][key] == "nil") then return end
+	
+	return tonumber(premium[account][key]) or premium[account][key]
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(db, "DELETE FROM `premium` WHERE name=?", account)
+	premium[account] = nil
+end)

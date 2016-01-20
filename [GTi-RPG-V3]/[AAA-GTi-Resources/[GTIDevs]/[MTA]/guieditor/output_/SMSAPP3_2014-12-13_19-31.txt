@@ -1,0 +1,53 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    scrollbar = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(599, 260, 270, 389, ":GTIMessagingApp/images/bckgrnd2.png", false)
+
+        GUIEditor.scrollbar[1] = guiCreateScrollBar(251, -4, 22, 397, false, false, GUIEditor.staticimage[1])
+        GUIEditor.staticimage[2] = guiCreateStaticImage(0, 0, 253, 61, ":GTIMessagingApp/images/bckgrnd3.png", false, GUIEditor.staticimage[1])
+
+        GUIEditor.staticimage[3] = guiCreateStaticImage(10, 13, 32, 32, ":GTIMessagingApp/images/notif1.png", false, GUIEditor.staticimage[2])
+        GUIEditor.label[3] = guiCreateLabel(52, 7, 37, 16, "Emile", false, GUIEditor.staticimage[2])
+        local font_0 = guiCreateFont(":GTIMessagingApp/images/font5.ttf")
+        guiSetFont(GUIEditor.label[3], font_0)
+        guiLabelSetColor(GUIEditor.label[3], 0, 183, 172)
+        GUIEditor.label[4] = guiCreateLabel(52, 26, 67, 15, "Last Seen:", false, GUIEditor.staticimage[2])
+        guiSetFont(GUIEditor.label[4], font_0)
+        guiLabelSetColor(GUIEditor.label[4], 147, 24, 24)
+        GUIEditor.label[5] = guiCreateLabel(232, 1, 15, 16, "X", false, GUIEditor.staticimage[2])
+        guiSetFont(GUIEditor.label[5], font_0)
+        guiLabelSetColor(GUIEditor.label[5], 211, 47, 47)
+        guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", false)
+
+
+        GUIEditor.staticimage[4] = guiCreateStaticImage(599, 224, 270, 36, ":GTIMessagingApp/images/bckgrnd.png", false)
+
+        GUIEditor.staticimage[5] = guiCreateStaticImage(231, 6, 25, 25, ":GTIMessagingApp/images/friend.png", false, GUIEditor.staticimage[4])
+        GUIEditor.staticimage[6] = guiCreateStaticImage(7, 5, 33, 26, ":GTIMessagingApp/images/msg.png", false, GUIEditor.staticimage[4])
+        GUIEditor.label[6] = guiCreateLabel(50, 10, 158, 16, "GTIdroid SMS Application", false, GUIEditor.staticimage[4])
+        local font_1 = guiCreateFont(":GTIMessagingApp/images/font4.ttf")
+        guiSetFont(GUIEditor.label[6], font_1)
+        guiLabelSetColor(GUIEditor.label[6], 195, 248, 255)    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawLine(818, 228, 818, 255, tocolor(254, 182, 123, 255), 1, true)
+        dxDrawLine(818, 228, 818, 255, tocolor(254, 182, 123, 255), 1, true)
+    end
+)

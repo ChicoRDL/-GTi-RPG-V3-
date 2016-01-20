@@ -1,0 +1,4 @@
+<meta>
+<info author="Mitch" name="Mystery Bag" autostart="true" />
+<script src="mystery_s.lua" type="server" />
+</meta>

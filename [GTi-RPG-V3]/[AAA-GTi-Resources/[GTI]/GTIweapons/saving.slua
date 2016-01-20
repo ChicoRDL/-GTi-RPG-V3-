@@ -1,0 +1,108 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 01 Jun 2014
+-- Resource: GTIweapons/save_weapons.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local firstTimeSpawn = {}
+local recentlySaved = {}	-- Table of Recently Updated Data (to avoid conflicts)
+
+-- Load/Save Weapons
+--------------------->>
+
+function saveWeapons(player)
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	if (recentlySaved[player]) then return end
+	recentlySaved[player] = true
+	setTimer(function(player) recentlySaved[player] = nil end, 50, 1, player)
+	
+	local weapons = {}
+	for i=0,11 do
+		local weapon = getPedWeapon(player, i)
+		local ammo = getPedTotalAmmo(player, i)
+		local max_ammo = getWeaponMaxAmmo(player, weapon)
+		if (type(max_ammo) ~= "number") then max_ammo = 1 end
+		if (ammo > max_ammo) then ammo = max_ammo end
+		weapons[i+1] = {weapon, ammo}
+	end
+	
+	local weap = ""
+	for i,weapTbl in ipairs(weapons) do
+		weap = weap..table.concat(weapTbl, ",") .. ";"
+	end
+	weap = string.sub(weap, 1, -2)
+	
+	exports.GTIaccounts:SAD(account, "weapons", weap)
+	takeAllWeapons(player)
+	return true
+end
+
+function loadWeapons(player)
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+
+	local weap = exports.GTIaccounts:GAD(account, "weapons")
+	if (not weap) then return false end
+	weap = split(weap, ";")
+	
+	local weapons = {}
+	for i,v in ipairs(weap) do
+		weapons[i] = split(v, ",")
+	end
+	
+	for i,v in ipairs(weapons) do
+		v[1], v[2] = tonumber(v[1]), tonumber(v[2])
+		local max_ammo = getWeaponMaxAmmo(player, v[1])
+		if (type(max_ammo) ~= "number") then max_ammo = 1 end
+		if (v[2] > max_ammo) then v[2] = max_ammo end
+		if (v[1] == 39 and v[2] == 0 ) then return end
+		if (v[1] ~= 40) then
+			giveWeapon(player, v[1], v[2])
+		end
+	end
+	return true	
+end
+
+-- Load/Save Weapons on Quit/Join
+---------------------------------->>
+
+function saveOnQuit(quit)
+	if (type(quit) == "string" and not firstTimeSpawn[source]) then return end
+	local jail_time = exports.GTIaccounts:GAD(getPlayerAccount(source), "jail_time") or 0
+	if (jail_time > 0) then return end
+	if (exports.GTIprison:isPlayerInJail(source)) then return end
+	if (type(quit) == "string" and isPedDead(source)) then return end
+	saveWeapons(source)
+	if (type(quit) == "string") then
+		firstTimeSpawn[source] = nil
+	end
+end
+addEventHandler("onPlayerQuit", root, saveOnQuit)
+addEventHandler("onPlayerWasted", root, saveOnQuit)
+
+function loadOnSpawn()
+	local jail_time = exports.GTIaccounts:GAD(getPlayerAccount(source), "jail_time") or 0
+	if (jail_time > 0) then return end
+	if (exports.GTIprison:isPlayerInJail(source)) then return end
+	loadWeapons(source)
+end
+addEventHandler("onPlayerSpawn", root, loadOnSpawn)
+
+-- Did Player Log in Handler
+----------------------------->>
+
+addEvent("onPlayerFirstTimeSpawn", true)
+addEventHandler("onPlayerFirstTimeSpawn", root, function()
+	firstTimeSpawn[source] = true
+end)
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		if (exports.GTIutil:isPlayerLoggedIn(player)) then
+			firstTimeSpawn[player] = true
+		end
+	end
+end)

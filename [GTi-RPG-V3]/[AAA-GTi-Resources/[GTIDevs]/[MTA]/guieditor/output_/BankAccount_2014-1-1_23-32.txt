@@ -1,0 +1,71 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(496, 238, 382, 204, "GTI Banking — Account", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(79, 26, 230, 15, "Bank of San Fierro — Your Account", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(142, 48, 97, 15, "Account Balance:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 200, 0, 255)
+GUIEditor.label[3] = guiCreateLabel(86, 65, 205, 15, "$999,999,999", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+guiLabelSetColor(GUIEditor.label[3], 25, 200, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+GUIEditor.label[4] = guiCreateLabel(351, 22, 24, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-small")
+GUIEditor.tabpanel[1] = guiCreateTabPanel(13, 88, 360, 107, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Deposit", GUIEditor.tabpanel[1])
+
+GUIEditor.label[5] = guiCreateLabel(105, 7, 73, 15, "Your Pocket:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 200, 0, 255)
+GUIEditor.label[6] = guiCreateLabel(183, 6, 101, 15, "$99,999,999", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[6], "clear-normal")
+guiLabelSetColor(GUIEditor.label[6], 25, 200, 25)
+GUIEditor.label[7] = guiCreateLabel(32, 36, 48, 15, "Deposit:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 200, 0, 255)
+GUIEditor.edit[1] = guiCreateEdit(86, 32, 165, 23, "", false, GUIEditor.tab[1])
+GUIEditor.button[1] = guiCreateButton(255, 34, 70, 22, "Deposit", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.tab[2] = guiCreateTab("Withdraw", GUIEditor.tabpanel[1])
+
+GUIEditor.edit[2] = guiCreateEdit(74, 25, 209, 24, "", false, GUIEditor.tab[2])
+GUIEditor.button[2] = guiCreateButton(288, 25, 64, 24, "Withdraw", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[8] = guiCreateLabel(11, 30, 58, 15, "Withdraw:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[8], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[8], 200, 0, 255)
+
+GUIEditor.tab[3] = guiCreateTab("Transfer", GUIEditor.tabpanel[1])
+
+GUIEditor.label[9] = guiCreateLabel(7, 13, 100, 15, "Account Name/#:", false, GUIEditor.tab[3])
+guiSetFont(GUIEditor.label[9], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[9], 200, 0, 255)
+GUIEditor.edit[3] = guiCreateEdit(112, 10, 164, 21, "", false, GUIEditor.tab[3])
+GUIEditor.label[10] = guiCreateLabel(7, 46, 100, 15, "Transfer Amount:", false, GUIEditor.tab[3])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 200, 0, 255)
+guiLabelSetHorizontalAlign(GUIEditor.label[10], "right", false)
+GUIEditor.edit[4] = guiCreateEdit(112, 43, 164, 21, "", false, GUIEditor.tab[3])
+GUIEditor.button[3] = guiCreateButton(282, 27, 67, 26, "Transfer", false, GUIEditor.tab[3])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.tab[4] = guiCreateTab("Account", GUIEditor.tabpanel[1])
+
+GUIEditor.button[4] = guiCreateButton(122, 7, 110, 30, "Account Settings", false, GUIEditor.tab[4])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[5] = guiCreateButton(122, 42, 110, 30, "Account Log", false, GUIEditor.tab[4])
+guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")

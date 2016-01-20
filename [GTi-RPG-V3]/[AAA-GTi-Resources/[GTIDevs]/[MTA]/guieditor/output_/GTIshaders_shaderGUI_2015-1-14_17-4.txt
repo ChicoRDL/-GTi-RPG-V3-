@@ -1,0 +1,38 @@
+
+GUIEditor = {
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {},
+    combobox = {}
+}
+local screenW, screenH = guiGetScreenSize()
+GUIEditor.window[1] = guiCreateWindow((screenW - 505) / 2, (screenH - 346) / 2, 505, 346, "GTi - Ammunation Weapon Skinning", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.combobox[1] = guiCreateComboBox(10, 50, 202, 187, "", false, GUIEditor.window[1])
+GUIEditor.label[1] = guiCreateLabel(277, 25, 216, 68, "Due to the start of Ammunation's new Weapon Skinning Program, not all weapons are available for skinning.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "left", true)
+GUIEditor.label[2] = guiCreateLabel(10, 25, 216, 15, "1. Select a weapon.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "left", true)
+GUIEditor.label[3] = guiCreateLabel(10, 93, 216, 15, "2. Select a skin.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "left", true)
+GUIEditor.gridlist[1] = guiCreateGridList(10, 118, 216, 115, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Skins", 0.9)
+GUIEditor.label[4] = guiCreateLabel(10, 247, 216, 15, "3. Purchase Skin", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+GUIEditor.label[5] = guiCreateLabel(10, 272, 216, 15, "Skin Cost: $X", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "left", true)
+GUIEditor.button[1] = guiCreateButton(20, 297, 123, 35, "Purchase", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "clear-normal")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(153, 303, 45, 25, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[2], "clear-normal")
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.gridlist[2] = guiCreateGridList(277, 103, 216, 233, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[2], "Owned Skins", 0.9)

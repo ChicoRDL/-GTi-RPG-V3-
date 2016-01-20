@@ -1,0 +1,12 @@
+<meta>
+    <info author="JTPenn" name="[EXP] Vehicle and Weapon Spawns System" autostart="true" />
+    <script src="ghostmode.lua" type="client" cache="false"/>
+    <script src="rent_vehicle.slua" />
+    <script src="rent_weapon.slua" />
+
+    <export function="destroyRental" type="server" />
+    <export function="isVehicleRental" type="server" />
+    <export function="getPlayerRentalVehicle" type="server" />
+    <export function="exchangeWeapon" type="server" />
+    <export function="getRentedWeapons" type="server"/>
+</meta>

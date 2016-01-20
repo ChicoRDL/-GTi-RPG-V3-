@@ -1,0 +1,13 @@
+<meta>
+	<info author="Emile" name="GTIdroid Contacts App" autostart="true" />
+	<script src="contactclient.lua" type="client" cache="false" />
+	<script src="save.lua" type="server" />
+	<script src="contactserver.lua" type="server" />
+	<file src="images/font1.ttf" />
+	<file src="images/bckgrnd3.png" />
+	<file src="images/white.png" />
+    <export function="isPlayerInContactList" type="server" />
+    <export function="getContactStatus" type="server" />
+    <export function="arePlayersFriend" type="server" />
+	<export function="isPlayerBlocked" type="server" />
+</meta>

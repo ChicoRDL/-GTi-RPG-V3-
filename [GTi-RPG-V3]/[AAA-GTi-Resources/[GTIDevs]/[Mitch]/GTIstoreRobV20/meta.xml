@@ -1,0 +1,5 @@
+<meta>
+<info author="Mitch" name="Store Robbery (24/7 Stores)" autostart="true" />
+<script src="storeRob_c.luac" type="client" />
+<script src="storeRob_s.lua" type="server" />
+</meta>

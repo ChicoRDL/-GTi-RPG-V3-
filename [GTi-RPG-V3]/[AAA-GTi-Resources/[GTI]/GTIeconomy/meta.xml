@@ -1,0 +1,4 @@
+<meta>
+	<info author="JTPenn"	name="Dynamic Economic System Core"	autostart="true" />
+	<script src="minimum_income.slua" />
+</meta>

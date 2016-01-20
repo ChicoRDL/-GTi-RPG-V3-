@@ -1,0 +1,114 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 07 Jan 2014
+-- Resource: GTIweapons/weapons.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local MG_DAMAGE = 7.5	-- Minigun Damage Value
+local SAWN_DAMAGE = 5  -- Sawn-Off Damage Value
+local UZI_DAMAGE = 10 -- Uzi Damage Value
+local TEC9_DAMAGE = 10 -- Tec-9 Damage Value
+local SHOTHUN_DAMAGE = 15 -- Shotgun Damage value
+local SHOTGUN_RANGE = 120 -- Shotgun Range value
+local RIFLE_DAMAGE = 125 -- Rifle Damage value
+local COLT45_DAMAGE = 50 -- ColT 45 Damage Value
+local AK47_DAMAGE = 20 -- AK-47 Damage Value
+local AK47_AMMO = 50 -- AK-47 Ammo Value
+-- Set Headshots Enabled
+------------------------->>
+--[[
+local headshotWeaps = {[33] = true, [34] = true}
+function setHeadshotsEnabled(attacker, weapon, bodypart)
+	if (not headshotWeaps[weapon]) then return end
+
+	local x1,y1 = getElementPosition(source)
+	local x2,y2 = getElementPosition(attacker)
+	local distance = getDistanceBetweenPoints2D(x1,y1, x2,y2)
+	if (distance < 15) then return end
+
+	if (bodypart == 9) then
+		killPed(source, attacker, weapon, bodypart)
+		setPedHeadless(source, true)
+	end
+end
+addEventHandler("onPlayerDamage", root, setHeadshotsEnabled)
+
+function returnHeadOnSpawn()
+	setPedHeadless(source, false)
+end
+addEventHandler("onPlayerSpawn", root, returnHeadOnSpawn)
+--]]
+-- Minigun Damage Reduction
+---------------------------->>
+
+setWeaponProperty("minigun", "poor", "damage", MG_DAMAGE)
+setWeaponProperty("minigun", "std", "damage", MG_DAMAGE)
+setWeaponProperty("minigun", "pro", "damage", MG_DAMAGE)
+
+setWeaponProperty("sawed-off", "poor", "damage", SAWN_DAMAGE)
+setWeaponProperty("sawed-off", "std", "damage", SAWN_DAMAGE)
+setWeaponProperty("sawed-off", "pro", "damage", SAWN_DAMAGE)
+
+setWeaponProperty("uzi", "poor", "damage", UZI_DAMAGE)
+setWeaponProperty("uzi", "std", "damage", UZI_DAMAGE)
+setWeaponProperty("uzi", "pro", "damage", UZI_DAMAGE)
+
+setWeaponProperty("tec-9", "poor", "damage", TEC9_DAMAGE)
+setWeaponProperty("tec-9", "std", "damage", TEC9_DAMAGE)
+setWeaponProperty("tec-9", "pro", "damage", TEC9_DAMAGE)
+
+setWeaponProperty("shotgun", "poor", "damage", SHOTHUN_DAMAGE)
+setWeaponProperty("shotgun", "std", "damage", SHOTHUN_DAMAGE)
+setWeaponProperty("shotgun", "pro", "damage", SHOTHUN_DAMAGE)
+
+setWeaponProperty("shotgun", "poor", "weapon_range", SHOTGUN_RANGE)
+setWeaponProperty("shotgun", "std", "weapon_range", SHOTGUN_RANGE)
+setWeaponProperty("shotgun", "pro", "weapon_range", SHOTGUN_RANGE)
+
+setWeaponProperty("rifle", "poor", "damage", RIFLE_DAMAGE)
+setWeaponProperty("rifle", "std", "damage", RIFLE_DAMAGE)
+setWeaponProperty("rifle", "pro", "damage", RIFLE_DAMAGE)
+
+setWeaponProperty("colt 45", "poor", "damage", COLT45_DAMAGE)
+setWeaponProperty("colt 45", "std", "damage", COLT45_DAMAGE)
+setWeaponProperty("colt 45", "pro", "damage", COLT45_DAMAGE)
+
+setWeaponProperty("ak-47", "poor", "damage", AK47_DAMAGE)
+setWeaponProperty("ak-47", "std", "damage", AK47_DAMAGE)
+setWeaponProperty("ak-47", "pro", "damage", AK47_DAMAGE)
+
+setWeaponProperty("ak-47", "poor", "maximum_clip_ammo", AK47_AMMO)
+setWeaponProperty("ak-47", "std", "maximum_clip_ammo", AK47_AMMO)
+setWeaponProperty("ak-47", "pro", "maximum_clip_ammo", AK47_AMMO)
+
+-- Weapon Value
+---------------->>
+
+function getPlayerWeaponNetWorth(player)
+	if (not isElement(player)) then return end
+	local value = 0
+	for i=3,8 do
+		local weapon = getPedWeapon(player, i)
+		value = value + exports.GTIammu:getWeaponCost(weapon)
+		local ammo = getPedTotalAmmo(player, i)
+		if (ammo > 0) then
+			value = value + exports.GTIammu:getWeaponAmmoCost(weapon) * ammo
+		end
+	end
+	return math.floor(value)
+end		
+
+-- Weapons Function
+-------------------->>
+
+giveWeapon_ = giveWeapon
+function giveWeapon(player, weapon, ammo, setAsCurrent)
+	-- Fix MTA flamethrower ammo bug
+	if (weapon == 37) then
+		return giveWeapon_(player, weapon, math.floor(ammo/10), setAsCurrent or false)
+	else
+		return giveWeapon_(player, weapon, ammo, setAsCurrent or false)
+	end
+end

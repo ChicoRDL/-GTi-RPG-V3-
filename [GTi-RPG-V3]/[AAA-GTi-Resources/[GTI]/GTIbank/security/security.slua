@@ -1,0 +1,39 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 26 Sept 2014
+-- Resource: GTIbank/security.lua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Get Advanced Options
+------------------------>>
+
+addEvent("GTIbank.updateAdvancedOptions", true)
+addEventHandler("GTIbank.updateAdvancedOptions", root, function()
+	local account = getPlayerAccount(client)
+	local secure = getBankData(account, "secure") == 1
+	local pin
+	if (secure) then
+		pin = getBankData(account, "pin")
+	end
+	triggerClientEvent(client, "GTIbank.updateAdvancedOptions", resourceRoot, pin)
+end)
+
+-- Update Security Preference
+------------------------------>>
+
+addEvent("GTIbank.updateAccountSecurity", true)
+addEventHandler("GTIbank.updateAccountSecurity", root, function(secure, pin)
+	local account = getPlayerAccount(client)
+	if (secure) then
+		setBankData(account, "secure", 1)
+		setBankData(account, "pin", pin)
+		exports.GTIhud:dm("Your bank account is now secure! You can now access your money on the go.", client, 25, 255, 25)
+	else
+		setBankData(account, "secure", nil)
+		setBankData(account, "pin", nil)
+		exports.GTIhud:dm("Your bank account advanced security has been removed. You can no longer access your money on the go.", client, 255, 25, 25)
+	end
+	triggerClientEvent(client, "GTIbank.closeAdvancedOptions", resourceRoot)
+end)

@@ -1,0 +1,30 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(580, 259, 443, 335, "Invite Player to Group", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.85)
+
+GUIEditor.label[1] = guiCreateLabel(17, 30, 77, 15, "Search:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 100, 100)
+GUIEditor.edit[1] = guiCreateEdit(15, 48, 193, 23, "", false, GUIEditor.window[1])
+GUIEditor.gridlist[1] = guiCreateGridList(14, 79, 194, 239, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Player List", 0.9)
+GUIEditor.label[2] = guiCreateLabel(266, 90, 102, 15, "Selected Player:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.label[3] = guiCreateLabel(229, 113, 177, 15, "[ABC]Player>123", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+GUIEditor.button[1] = guiCreateButton(230, 159, 178, 57, "Invite Player to Group", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(288, 221, 66, 20, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

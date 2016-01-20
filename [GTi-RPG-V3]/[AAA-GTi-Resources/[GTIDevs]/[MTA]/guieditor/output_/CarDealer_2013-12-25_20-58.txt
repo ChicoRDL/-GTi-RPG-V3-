@@ -1,0 +1,36 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(11, 333, 302, 427, "GTI Car Dealership", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 22, 284, 396, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Buy Vehicles", GUIEditor.tabpanel[1])
+
+GUIEditor.gridlist[1] = guiCreateGridList(7, 8, 270, 327, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.4)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Cost", 0.4)
+GUIEditor.button[1] = guiCreateButton(71, 339, 68, 25, "Purchase", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(145, 339, 68, 25, "Cancel", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.tab[2] = guiCreateTab("Sell Vehicles", GUIEditor.tabpanel[1])
+
+GUIEditor.label[1] = guiCreateLabel(7, 6, 269, 30, "Select a Vehicle that you wish to sell to the Dealership", false, GUIEditor.tab[2])
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.button[3] = guiCreateButton(71, 339, 68, 25, "Sell", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.gridlist[2] = guiCreateGridList(8, 40, 269, 293, false, GUIEditor.tab[2])
+guiGridListAddColumn(GUIEditor.gridlist[2], "Vehicle Name", 0.4)
+guiGridListAddColumn(GUIEditor.gridlist[2], "Value", 0.4)
+GUIEditor.button[4] = guiCreateButton(145, 339, 68, 25, "Close", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")

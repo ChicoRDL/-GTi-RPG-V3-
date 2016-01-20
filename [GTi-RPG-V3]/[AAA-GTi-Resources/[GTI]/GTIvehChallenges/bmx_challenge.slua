@@ -1,0 +1,40 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 12 Mar 2015
+-- Resource: GTIvehChallenges/bmx_challenge.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local BMX_PAY = 1500	-- BMX Challenge Payment
+local FIRST_PL = 25000	-- BMX First Place Record Pay
+local SECOND_PL = 10000	-- BMX 2nd Place Record Pay
+local THIRD_PL = 5000	-- BMX 3rd Place Record Pay
+
+-- Complete BMX Challenge
+-------------------------->>
+
+addEvent("GTIvehChallenges.bmxChallengeComplete", true)
+addEventHandler("GTIvehChallenges.bmxChallengeComplete", root, function(bmxTime)
+	local mins = math.floor(bmxTime/60000)
+	local sec = string.format("%02d", (bmxTime%60000)/1000)	
+	
+	local pay = BMX_PAY
+	local new_record
+	
+	local place = addNewRecordIfBeaten(client, bmxTime)
+	if (place) then new_record = true end
+	if (place == 1) then
+		pay = FIRST_PL
+	elseif (place == 2) then
+		pay = SECOND_PL
+	elseif (place == 3) then
+		pay = THIRD_PL
+	end
+		
+	exports.GTIbank:GPM(client, pay, "BMX Challenge: Mission Passed")
+	exports.GTIhud:drawMissionEvent(client, true, "$"..exports.GTIutil:tocomma(pay), 2)
+	exports.GTIhud:dm("MISSION PASSED: You completed the BMX Challenge in "..mins..":"..sec..(new_record and ", a new record!" or ""), client, 0, 150, 200)
+	
+	triggerClientEvent(client, "GTIvehChallenges.showRecords", resourceRoot, getTopRecords(true))
+end)

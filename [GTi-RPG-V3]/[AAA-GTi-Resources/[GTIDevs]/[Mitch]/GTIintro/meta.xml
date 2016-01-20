@@ -1,0 +1,3 @@
+﻿<meta>	<info author="Mitch" name="Server Intro" autostart="true" />
+	<script src="client.lua" type="client" />
+</meta>

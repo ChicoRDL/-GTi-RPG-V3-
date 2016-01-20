@@ -1,0 +1,270 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JTPenn, LilDolla
+-- Date: 18 Aug 2014
+-- Resource: GTImisc/glue.slua
+-- Version: 1.0
+----------------------------------------->>
+--- Last modified 12/2/2015 by Nerox
+
+local glued = {}
+local vg = {}
+local slot = {}
+
+function gluePlayer(player)
+	if (glued[player]) then
+		ungluePlayer(player, glued[player])
+	end
+
+	if (isPedInVehicle(player)) then return end
+	local vehicle = getPedContactElement(player)
+	if (not vehicle or getElementType(vehicle) ~= "vehicle") then return end
+
+	if (exports.GTIgangTerritories:canPlayerTurf(player)) then
+		exports.GTIhud:dm("You cannot use this command while you are able to turf.", player, 255, 125, 0)
+		return
+	end
+	
+	if (exports.GTIprison:isPlayerInJail(player)) then
+		exports.GTIhud:dm("You can't glue while you're in jail. We aint letting you go that easy!", player, 255, 125, 0)
+		return
+	end
+	
+	if (exports.GTIpoliceArrest:isPlayerInPoliceCustody(player)) then
+        exports.GTIhud:dm("You can't glue while in police custody.", player, 255, 25, 25)
+        return
+    end
+	
+	local px, py, pz = getElementPosition(player)
+	local vx, vy, vz = getElementPosition(vehicle)
+	local sx = px - vx
+	local sy = py - vy
+	local sz = pz - vz
+
+	local rotpX = 0
+	local rotpY = 0
+	local rotpZ = getPedRotation(player)
+
+	local rotvX,rotvY,rotvZ = getElementRotation(vehicle)
+
+	local t = math.rad(rotvX)
+	local p = math.rad(rotvY)
+	local f = math.rad(rotvZ)
+
+	local ct = math.cos(t)
+	local st = math.sin(t)
+	local cp = math.cos(p)
+	local sp = math.sin(p)
+	local cf = math.cos(f)
+	local sf = math.sin(f)
+
+	local z = ct*cp*sz + (sf*st*cp + cf*sp)*sx + (-cf*st*cp + sf*sp)*sy
+	local x = -ct*sp*sz + (-sf*st*sp + cf*cp)*sx + (cf*st*sp + sf*cp)*sy
+	local y = st*sz - sf*ct*sx + cf*ct*sy
+
+	local rotX = rotpX - rotvX
+	local rotY = rotpY - rotvY
+	local rotZ = rotpZ - rotvZ
+
+	slot[player] = getPedWeaponSlot(player)
+	attachElements(player, vehicle, x, y, z, rotX, rotY, rotZ)
+	setPedWeaponSlot(player, slot[player])
+
+	bindKey(player, "jump", "down", ungluePlayer)
+	glued[player] = vehicle
+	table.insert( vg, { player, vehicle})
+		return true
+end
+addCommandHandler("glue", gluePlayer)
+
+function isPlayerGlued( player)
+	if glued[player] then
+		return true
+	else
+		return false
+	end
+end
+
+function getPlayersGluedToVehicle( vehicle)
+	local tempVeh = {}
+	if isElement( vehicle) and getElementType( vehicle) == "vehicle" then
+		for i, gp in ipairs ( vg) do
+			if gp[2] == vehicle then
+				table.insert( tempVeh, { gp[1]})
+			end
+		end
+		return tempVeh
+	else
+		return false
+	end
+	tempVeh = {}
+end
+
+function gluedPlayers( player)
+	if getPedOccupiedVehicle( player) then
+		local got = true
+		local vehicle = getPedOccupiedVehicle( player)
+
+		if getPlayersGluedToVehicle( vehicle) and not table.empty( getPlayersGluedToVehicle( vehicle)) then
+			outputChatBox( "Glued Players: ", player, 255, 255, 0)
+			for i, plr in ipairs ( getPlayersGluedToVehicle( vehicle)) do
+				outputChatBox( "		"..getPlayerName( plr[1]), player, 255, 255, 0)
+			end
+		else
+			outputChatBox( "Nobody is glued on.", player, 255, 0, 0)
+		end
+		--[[
+		for i, gp in ipairs ( vg) do
+			local g_p = gp[1]
+			local g_v = gp[2]
+			if g_v == vehicle then
+				if got then
+					outputChatBox( "Glued Players: ", player, 255, 255, 0)
+					got = false
+				end
+				outputChatBox( "		"..getPlayerName( g_p), player, 255, 255, 0)
+			else
+				outputChatBox( "Nobody is glued on.", player, 255, 0, 0)
+			end
+			got = true
+		end
+		--]]
+	else
+		exports.GTIhud:dm( "You cannot check who's glued on because you are not in a vehicle.", player, 255, 0, 0)
+	end
+end
+addCommandHandler( "glued", gluedPlayers)
+
+function glueEject(player, command, quest)
+	if getPedOccupiedVehicle( player) then
+		local vehicle =  getPedOccupiedVehicle( player)
+		if getVehicleController( vehicle) == player then
+			if getPlayersGluedToVehicle( vehicle) and not table.empty( getPlayersGluedToVehicle( vehicle)) then
+				for i, pl in ipairs ( getPlayersGluedToVehicle( vehicle)) do
+					local plr = pl[1]
+					local name = getPlayerName(plr)
+					if quest then
+						if quest == "*" then
+							if ungluePlayer( plr) then
+								local x, y, z = getElementPosition( plr)
+								setElementPosition( plr, x, y, z+3)
+							end
+						elseif exports.GTIutil:findPlayer( quest) then
+							local srch_plr = exports.GTIutil:findPlayer( quest)
+							if srch_plr == plr then
+								if ungluePlayer( plr) then
+									local x, y, z = getElementPosition( plr)
+									setElementPosition( plr, x, y, z+3)
+								end
+							end
+						end
+					else
+						if ungluePlayer( plr) then
+							local x, y, z = getElementPosition( plr)
+							setElementPosition( plr, x, y, z+3)
+						end
+					end
+				end
+			else
+				outputChatBox( "Nobody is glued on.", player, 255, 0, 0)
+			end
+		else
+			outputChatBox( "Only the driver can use this command.", player, 255, 0, 0)
+		end
+	else
+		outputChatBox( "You are not in a vehicle", player, 255, 0, 0)
+	end
+end
+addCommandHandler( "unglue", glueEject)
+
+function ungluePlayer(player)
+	if (isElement(glued[player])) then
+		for i, gp in ipairs ( vg) do
+			if gp[2] == glued[player] then
+				table.remove( vg, i)
+			end
+		end
+		detachElements(player, glued[player])
+			return true
+	else
+		glued[player] = nil
+			return false
+	end
+
+	if (getElementType(player) ~= "player") then return end --stop here.
+	unbindKey(player, "jump", "down", ungluePlayer)
+end
+
+addEventHandler("onPlayerQuit", root, function()
+	glued[source] = nil
+end)
+
+addEventHandler("onResourceStop", resourceRoot, function()
+	for player,vehicle in pairs(glued) do
+		detachElements(player, vehicle)
+	end
+end)
+
+addEventHandler( "onVehicleEnter", root,
+	function( player)
+		ungluePlayer(player)
+	end
+)
+
+addEvent("onPlayerGetJob")
+addEventHandler("onPlayerGetJob",root,
+function(jobName)
+	--outputDebugString("Checking job...")
+	if (jobName == "Gangster") then
+		--outputDebugString("Player is gangster, unglueing...")
+		ungluePlayer(source)
+	end
+end)
+
+function table.empty( a )
+    if type( a ) ~= "table" then
+        return false
+    end
+
+    return not next( a )
+end
+------ added function "adjustSlots" and function "changeWeapons" 2/8/2015 --- (Nerox)
+function adjustSlots(player)
+    if (slot[player]) > 12 then
+	    slot[player] = 0
+	elseif (slot[player]) < 0 then
+	    slot[player] = 12
+	end
+end
+function changeWeapons(player, key, keyState, upOrDown)
+    if isPlayerGlued(player) then
+	    if getControlState ( player, "aim_weapon" ) then return false end
+        if upOrDown == 1 then
+			repeat
+			slot[player] = slot[player] + 1
+			adjustSlots(player)
+			until getPedWeapon ( player, slot[player] ) ~= 0 or slot[player] == 0
+	        setPlayerWeaponSlot ( player, slot[player] )
+		else
+		    repeat
+			slot[player] = slot[player] - 1
+			adjustSlots(player)
+			until getPedWeapon ( player, slot[player] ) ~= 0 or slot[player] == 0
+	        setPlayerWeaponSlot ( player, slot[player] )
+		end
+	end
+end
+addEventHandler("onPlayerLogin", root, function(_, theCurrentAccount)
+    local player = getAccountPlayer(theCurrentAccount)
+	if not player then return false end
+	bindKey (player, "next_weapon", "down", changeWeapons, 1)
+	bindKey (player, "previous_weapon", "down", changeWeapons, 0)
+end)
+addEventHandler("onResourceStart", resourceRoot, function()
+    for k, player in ipairs(getElementsByType("player")) do
+	    if not isGuestAccount (getPlayerAccount(player)) then
+	        bindKey (player, "next_weapon", "down", changeWeapons, 1)
+	        bindKey (player, "previous_weapon", "down", changeWeapons, 0)
+		end
+	end
+end)

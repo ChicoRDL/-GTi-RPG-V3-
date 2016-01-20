@@ -1,0 +1,11 @@
+<meta>
+    <script src="cnr_c.luac" type="client" />
+    <script src="cnr.lua" type="server" />
+	<file src="alarm.mp3"/>
+	
+	<export function="isPlayerInCnREvent" type="server" />
+	<export function="isPlayerInCnRArea" type="server" />
+	<export function="endEvent" type="server" />
+	<export function="irc_cnr" type="server" />
+	<info author="LilDolla" name="CnR Event System" autostart="true" />
+</meta>

@@ -1,0 +1,19 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        courseWindow = guiCreateWindow(645, 305, 375, 344, "Flight School ~ Course numberhere", false)
+        guiWindowSetSizable(courseWindow, false)
+
+        courseIMG = guiCreateStaticImage(10, 25, 355, 180, ":GTIflightschool/images/course1.png", false, courseWindow)
+        infoLBL = guiCreateLabel(8, 219, 357, 87, "Text info here...", false, courseWindow)
+        cancelBTN = guiCreateButton(281, 316, 84, 18, "Cancel", false, courseWindow)
+        startBTN = guiCreateButton(187, 317, 84, 17, "Start", false, courseWindow)    
+    end
+)

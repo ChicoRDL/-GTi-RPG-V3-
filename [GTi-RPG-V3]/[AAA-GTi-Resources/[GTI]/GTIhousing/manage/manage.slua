@@ -1,0 +1,62 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: JT Pennington (JTPenn)
+-- Date: 24 Dec 2014
+-- Resource: GTIhousing/manage.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Toggle Lock State
+--------------------->>
+
+addEvent("GTIhousing.toggleLockState", true)
+addEventHandler("GTIhousing.toggleLockState", root, function(house)
+	local locked = not isHouseLocked(house)
+	setHouseLocked(house, locked)
+	exports.GTIhud:dm("You have "..(locked and "locked" or "unlocked").." your house.", client, 25, 255, 25)
+	triggerClientEvent(client, "GTIhousing.updateLockState", resourceRoot, locked)
+end)
+
+-- Transfer House
+------------------>>
+
+addEvent("GTIhousing.transferHouse", true)
+addEventHandler("GTIhousing.transferHouse", root, function(house, account, password)
+	local toAccount = getAccount(account)
+	if (not toAccount or isGuestAccount(toAccount)) then
+		exports.GTIhud:dm("This account does not exist. Please enter a valid account name.", client, 255, 125, 0)
+		return
+	end
+	
+	local fromAccount = getPlayerAccount(client)
+	if (toAccount == fromAccount) then
+		exports.GTIhud:dm("You cannot transfer a house to yourself. That wouldn't make any sense.", client, 255, 125, 0)
+		return
+	end
+	
+	local fromAccName = getAccountName(fromAccount)
+	if (not getAccount(fromAccName, password)) then
+		exports.GTIhud:dm("Invalid password provided. Please enter your correct account password.", client, 255, 125, 0)
+		return
+	end
+	
+	local houses = #getAccountTotalHouses(toAccount)
+	local houseLimit = getAccountMaxHouses(toAccount)
+	if (houses >= houseLimit) then
+		exports.GTIhud:dm("You cannot transfer this house. The recipient has reached the "..(houseLimit > HOUSE_LIMIT and "premium " or "").."max house limit of "..houseLimit.." per player", client, 255, 125, 0)
+		return
+	end
+	
+	setHouseOwner(house, account)
+	local address = getHouseAddress(house)
+	exports.GTIhud:dm("You have successfully transfered "..address.." to '"..account.."'.", client, 30, 160, 115)
+	local player = getAccountPlayer(toAccount)
+	if (player) then
+		exports.GTIhud:dm("HOUSING: "..getPlayerName(client).." has given "..address.." to you! Go check it out!", player, 30, 160, 115)
+	end
+	
+	addOwnerCache(getAccountName(toAccount), house)
+	removeOwnerCache(getAccountName(fromAccount), house)
+	
+	triggerClientEvent(client, "GTIhousing.closePanel", resourceRoot)
+end)

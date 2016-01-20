@@ -1,0 +1,53 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    label = {},
+    gridlist = {},
+    window = {},
+    button = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(906, 191, 428, 461, "GTI Apartments Editor", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(236, 80, 182, 303, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Item", 0.9)
+        GUIEditor.label[1] = guiCreateLabel(247, 41, 161, 15, "Recipe", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 7, 250, 253)
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.label[2] = guiCreateLabel(34, 41, 161, 15, "Preview", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[2], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[2], 7, 250, 253)
+        guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[2], "center")
+        GUIEditor.staticimage[1] = guiCreateStaticImage(24, 128, 191, 184, ":guieditor/images/examples/mtalogo.png", false, GUIEditor.window[1])
+        GUIEditor.label[3] = guiCreateLabel(19, 365, 91, 15, "Textures", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[3], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[3], 255, 37, 37)
+        GUIEditor.label[4] = guiCreateLabel(124, 345, 86, 15, "$1,000", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[4], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[4], 255, 37, 37)
+        GUIEditor.label[5] = guiCreateLabel(19, 345, 91, 15, "Price", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[5], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[5], 255, 37, 37)
+        GUIEditor.label[6] = guiCreateLabel(124, 365, 86, 15, "0", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[6], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[6], 255, 37, 37)
+        GUIEditor.button[1] = guiCreateButton(17, 415, 161, 28, "Buy", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[1], "default-bold-small")
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FF000BF3")
+        GUIEditor.button[2] = guiCreateButton(392, 418, 26, 29, "X", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[2], "default-bold-small")
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFFF0000")    
+    end
+)

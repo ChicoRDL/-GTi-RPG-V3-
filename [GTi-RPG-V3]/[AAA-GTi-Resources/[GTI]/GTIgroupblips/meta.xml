@@ -1,0 +1,5 @@
+<meta>
+	<info author="Jack" name="Group Blips" autostart="true" />
+	
+	<script src="blips.lua" type="client" cache="false"/>
+</meta>

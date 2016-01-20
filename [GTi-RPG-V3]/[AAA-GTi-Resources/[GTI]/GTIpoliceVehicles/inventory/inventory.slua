@@ -1,0 +1,169 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 09 Mar 2015
+-- Resource: GTIpoliceVehicles/inventory.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local healthTimer = {}	-- Table of Health Timers by Player
+
+local HEAL_TIME = 5000	-- Time to Apply Health
+
+-- Show Notice
+--------------->>
+
+addEventHandler("onVehicleEnter", root, function(player)
+	if (getElementType(player) ~= "player") then return end
+	if (not exports.GTIrentals:isVehicleRental(source)) then return end
+	if (not inventoryT[getElementModel(source)]) then return end
+	if (not isPlayerAbleToUseTheInventory(player, source)) then return end
+	exports.GTIhud:drawNote("veh_inv", "Use /inv to access this vehicle's inventory", player, 215, 0, 0, 7500)
+end)
+
+
+-- Show Veh Inventory
+---------------------->>
+
+addCommandHandler("inv", function(player)
+	if (not isPedInVehicle(player)) then return end
+	local vehicle = getPedOccupiedVehicle(player)
+	if (not exports.GTIrentals:isVehicleRental(vehicle)) then return end
+	if (not inventoryT[getElementModel(vehicle)]) then return end
+	
+	if (getElementHealth(vehicle) <= 300) then
+		exports.GTIhud:dm("This vehicle's inventory is destroyed.", player, 255, 25, 25)
+		return
+	end
+	
+	local invTable = {}	-- Accessible Table
+	for i,v2 in ipairs(inventoryT[getElementModel(vehicle)]) do
+		for i,v in ipairs(v2.res) do
+					-- Police Officer Check
+			if (v == "Police") then
+				if (exports.GTIpoliceArrest:canPlayerArrest(player)) then
+					table.insert(invTable, v2)
+				end
+			end
+				-- Occupation Check
+			if (v == exports.GTIemployment:getPlayerJob(player, true)) then
+				table.insert(invTable, v2)
+			end
+			if (string.find(v, ";")) then
+				v = split(v, ";")
+				-- Level Check
+					-- Police Level Check
+				if (v[1] == "Police") then
+					if (exports.GTIpoliceArrest:canPlayerArrest(player)	and exports.GTIemployment:getPlayerJobLevel(player, "Police Officer") >= tonumber(v[2])) then
+						table.insert(invTable, v2)
+					end
+					-- Job Level Check
+				elseif (tonumber(v[2])) then
+					if (v[1] == exports.GTIemployment:getPlayerJob(player, true) and exports.GTIemployment:getPlayerJobLevel(player, v[1]) >= tonumber(v[2])) then
+						table.insert(invTable, v2)
+					end
+					-- Job Division Check
+				elseif (not tonumber(v[2])) then
+					if (v[1] == exports.GTIemployment:getPlayerJob(player, true) and v[2] == exports.GTIemployment:getPlayerJobDivision(player)) then
+						table.insert(invTable, v2)
+					end
+				end
+			end
+		end
+	end
+	
+	if (#invTable == 0) then
+		exports.GTIhud:dm("You cannot access this vehicle's inventory.", player, 255, 125, 0)
+		return
+	end
+	
+	triggerClientEvent(player, "GTIpoliceVehicles.showVehicleInventory", resourceRoot, invTable)
+end)
+
+-- Take Out Weapon
+------------------->>
+
+addEvent("GTIpoliceVehicles.takeOutWeapon", true)
+addEventHandler("GTIpoliceVehicles.takeOutWeapon", root, function(row)
+	local vehicle = getPedOccupiedVehicle(client)
+	local data = inventoryT[getElementModel(vehicle)][row]
+	if (data.id == "health") then
+		if (getElementHealth(client) >= data.amt) then
+			exports.GTIhud:dm("You do not need to use a First Aid Kit", client, 255, 125, 25)
+			return
+		end
+		
+		if (healthTimer[client]) then return end
+		
+		toggleAllControls(client, false)
+		exports.GTIhud:drawProgressBar("GTIpoliceVehicles.health", "Applying First Aid Kit", client, 30, 255, 125, HEAL_TIME)
+		healthTimer[client] = setTimer(function(player, amt)
+			setElementHealth(player, amt)
+			toggleAllControls(player, true)
+			healthTimer[player] = nil
+			exports.GTIhud:dm("First Aid Kit successfully applied, you have been healed.", player, 30, 255, 125)
+		end, HEAL_TIME, 1, client, data.amt)
+	elseif (data.id == "armor") then
+		if (getPedArmor(client) >= data.amt) then
+			exports.GTIhud:dm("You do not need to reapply any armor.", client, 255, 125, 25)
+			return
+		end
+		
+		if (healthTimer[client]) then return end
+		
+		toggleAllControls(client, false)
+		exports.GTIhud:drawProgressBar("GTIpoliceVehicles.health", "Applying Armor", client, 30, 125, 255, HEAL_TIME)
+		healthTimer[client] = setTimer(function(player, amt)
+			setPedArmor(player, amt)
+			toggleAllControls(player, true)
+			healthTimer[player] = nil
+			exports.GTIhud:dm("Armor successfully applied.", player, 30, 125, 255)
+		end, HEAL_TIME, 1, client, data.amt)
+	else
+		exports.GTIrentals:exchangeWeapon(client, data.id, data.amt)
+	end
+end)
+
+function stopHealing()
+	if (isElement(source) and getElementType(source) == "player") then
+		if (isTimer(healthTimer[source])) then	
+			killTimer(healthTimer[source])
+			exports.GTIhud:drawProgressBar("GTIpoliceVehicles.health", "", source, 30, 255, 125, 0)
+			toggleAllControls(source, true)
+			exports.GTIhud:dm("You have recieved some damage, which stopped you from healing / getting armor.", source, 255, 125, 25)
+		end
+	end
+end
+addEventHandler ( "onPlayerDamage", root, stopHealing )
+
+function isPlayerAbleToUseTheInventory (player, vehicle)
+	for i,v2 in ipairs(inventoryT[getElementModel(vehicle)]) do
+			for i,v in ipairs(v2.res) do
+				if (v == "Police") then
+					if (exports.GTIpoliceArrest:canPlayerArrest(player)) then
+						return true
+					end
+				end
+				if (v == exports.GTIemployment:getPlayerJob(player, true)) then
+					return true
+				end
+				if (string.find(v, ";")) then
+					v = split(v, ";")
+					if (v[1] == "Police") then
+						if (exports.GTIpoliceArrest:canPlayerArrest(player) and exports.GTIemployment:getPlayerJobLevel(player, "Police Officer") >= tonumber(v[2])) then
+							return true
+						end
+					elseif (tonumber(v[2])) then
+						if (v[1] == exports.GTIemployment:getPlayerJob(player, true) and exports.GTIemployment:getPlayerJobLevel(player, v[1]) >= tonumber(v[2])) then
+							return true
+						end
+					elseif (not tonumber(v[2])) then
+						if (v[1] == exports.GTIemployment:getPlayerJob(player, true) and v[2] == exports.GTIemployment:getPlayerJobDivision(player)) then
+							return true
+						end
+					end
+				end
+			end
+	end
+		return false
+end

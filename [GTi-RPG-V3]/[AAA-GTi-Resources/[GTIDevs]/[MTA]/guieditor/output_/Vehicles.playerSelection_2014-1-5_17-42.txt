@@ -1,0 +1,28 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(549, 218, 250, 350, "Player Selection Menu", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 1.00)
+
+        GUIEditor.edit[1] = guiCreateEdit(9, 26, 197, 22, "", false, GUIEditor.window[1])
+        GUIEditor.button[1] = guiCreateButton(31, 319, 138, 22, "Select Player", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(172, 319, 41, 22, "Close", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.label[1] = guiCreateLabel(9, 297, 49, 15, "Seleted:", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 200, 0, 255)
+        GUIEditor.label[2] = guiCreateLabel(64, 296, 174, 15, "<Selected Player>", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[2], "clear-normal")
+        GUIEditor.gridlist[1] = guiCreateGridList(9, 54, 232, 237, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Player Name", 0.9)    
+    end
+)

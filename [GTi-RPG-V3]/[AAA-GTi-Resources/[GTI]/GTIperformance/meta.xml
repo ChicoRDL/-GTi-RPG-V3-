@@ -1,0 +1,4 @@
+<meta>
+	<info author="Jack" version="1.0" name="Performance Monitor (Client)" autostart="false" />
+	<script src="performance.lua" type="client" cache="false"/>
+</meta>

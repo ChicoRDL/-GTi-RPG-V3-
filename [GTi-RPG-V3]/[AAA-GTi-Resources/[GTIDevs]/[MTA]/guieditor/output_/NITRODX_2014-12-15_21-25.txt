@@ -1,0 +1,13 @@
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawRectangle(1226, 713, 72, 16, tocolor(9, 9, 9, 255), true)
+        dxDrawRectangle(1229, 716, 66, 10, tocolor(120, 127, 1, 255), true)
+        dxDrawRectangle(1229, 716, 66, 10, tocolor(239, 253, 7, 255), true)
+    end
+)

@@ -1,0 +1,111 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 04 Jun 2013
+-- Resource: GTIvehicles/vehicle_repair.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local MIN_ENGINE_COST = 1000	-- Minimum Max Repair Cost
+local MAX_ENGINE_COST = 2500	-- Maximum Max Repair Cost
+local MIN_BODY_COST = 400		-- Minimum Max Body Cost
+local MAX_BODY_COST = 1000		-- Maximum Max Body Cost
+
+local LIGHT_PCT = 0.2	-- Percent of Body cost is Lights
+local DOORS_PCT = 0.4	-- Percent of Body cost is Doors
+local PANEL_PCT = 0.4	-- Percent of Body cost is Panels
+
+-- Engine Repair Cost
+---------------------->>
+
+function getVehicleEngineDamage(vehicle)
+	if (not vehicle or not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return false end
+	local engine = getElementHealth(vehicle)
+	if (engine > 1000) then engine = 1000 
+	elseif (engine < 300) then engine = 300 end
+	
+	return math.floor(1000-(engine-300)/0.7)/10
+end
+
+function getVehicleEngineRepairCost(vehicle)
+	if (not vehicle or not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return false end
+	local engine = getElementHealth(vehicle)
+	if (engine > 1000) then engine = 1000 
+	elseif (engine < 300) then engine = 300 end
+	
+	local value = exports.GTIvehicles:getVehicleCost(getElementModel(vehicle)) or 20000
+	local engine_cost = value/100
+	if (engine_cost < MIN_ENGINE_COST) then
+		engine_cost = MIN_ENGINE_COST
+	elseif (engine_cost > MAX_ENGINE_COST) then
+		engine_cost = MAX_ENGINE_COST
+	end
+	return math.floor((1-((engine-300)/700)) * engine_cost)
+end
+
+-- Body Repair Cost
+-------------------->>
+
+function getVehicleBodyDamage(vehicle)
+	if (not vehicle or not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return false end
+	local light_dmg = 0
+	local light_tot = 0
+	for i=0,3 do
+		local state = getVehicleLightState(vehicle, i)
+		light_dmg = light_dmg + state
+		light_tot = light_tot + 1
+	end
+	local panel_dmg = 0
+	local panel_tot = 0
+	for i=0,6 do
+		local state = getVehiclePanelState(vehicle, i)
+		panel_dmg = panel_dmg + state
+		panel_tot = panel_tot + 3
+	end
+	local doors_dmg = 0
+	local doors_tot = 0
+	for i=0,6 do
+		local state = getVehicleDoorState(vehicle, i)
+		if (state) then
+			doors_dmg = doors_dmg + state
+			doors_tot = doors_tot + 4
+		end
+	end
+	return math.floor( ( (((light_dmg/light_tot)*LIGHT_PCT) + ((panel_dmg/panel_tot)*PANEL_PCT) + ((doors_dmg/doors_tot)*DOORS_PCT)) / (LIGHT_PCT + PANEL_PCT + DOORS_PCT) ) * 1000 ) / 10
+end
+
+function getVehicleBodyRepairCost(vehicle)
+	if (not vehicle or not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return false end
+	local value = exports.GTIvehicles:getVehicleCost(getElementModel(vehicle)) or 20000
+	local body_cost = value/100*0.4
+	if (body_cost < MIN_BODY_COST) then
+		body_cost = MIN_BODY_COST
+	elseif (body_cost > MAX_BODY_COST) then
+		body_cost = MAX_BODY_COST
+	end
+	local body_damage = getVehicleBodyDamage(vehicle)
+	return math.floor((body_damage/100) * body_cost)
+end
+
+-- Total Repair Cost
+--------------------->>
+
+function getVehicleRepairCost(vehicle)
+	if (not vehicle or not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return false end
+	local engine = getVehicleEngineRepairCost(vehicle)
+	local body = getVehicleBodyRepairCost(vehicle)
+	return engine + body
+end
+
+-- Repair Vehicle
+------------------>>
+
+function repairVehicle(vehicle)
+	fixVehicle(vehicle)
+	local rx,ry,rz = getElementRotation(vehicle)
+	setElementRotation(vehicle, 0, 0, rz)
+	setVehicleDamageProof(vehicle, false)
+	setVehicleEngineState(vehicle, true)
+	setElementData(vehicle, "engine", "on", false)
+	return true
+end

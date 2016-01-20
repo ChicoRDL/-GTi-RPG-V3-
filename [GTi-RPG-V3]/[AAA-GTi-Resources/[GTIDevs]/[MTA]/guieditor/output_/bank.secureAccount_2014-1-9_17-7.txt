@@ -1,0 +1,23 @@
+
+GUIEditor = {
+    checkbox = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(493, 275, 375, 192, "GTI Bank Account Settings", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.checkbox[1] = guiCreateCheckBox(70, 113, 237, 15, "Secure Account with a Pin Number", false, false, GUIEditor.window[1])
+guiSetFont(GUIEditor.checkbox[1], "clear-normal")
+GUIEditor.label[1] = guiCreateLabel(10, 25, 356, 74, "In order to withdraw cash from your bank account on the go, you have to secure your account with a pin number. In the future, you will be asked for a pin number along with or instead of your account password. Check the box and type a 4-10 digit pin number in the box below", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.label[2] = guiCreateLabel(7, 92, 362, 16, "____________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[3] = guiCreateLabel(84, 138, 67, 15, "Pin Number:", false, GUIEditor.window[1])
+GUIEditor.edit[1] = guiCreateEdit(154, 134, 133, 21, "", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(59, 161, 127, 22, "Secure", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(194, 161, 127, 22, "Close", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

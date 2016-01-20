@@ -1,0 +1,53 @@
+<meta>
+    <info author="JTPenn" version="3" name="GTIdroid Smartphone" type="script" description="The central UI for GTi, like the pause menu in any other game" autostart="true" />
+    <file src="apps/Calculator.png" />
+    <file src="apps/Camera.png" />
+    <file src="apps/Clock.png" />
+    <file src="apps/Gallery.png" />
+    <file src="apps/Mail.png" />
+    <file src="apps/Maps.png" />
+    <file src="apps/Messages.png" />
+    <file src="apps/Music.png" />
+    <file src="apps/Notes.png" />
+    <file src="apps/People.png" />
+    <file src="apps/Phone.png" />
+    <file src="apps/Settings.png" />
+    <file src="apps/Vehicles.png" />
+    <file src="apps/Wallet.png" />
+    <file src="apps/Translator.jpeg" />
+    <file src="apps/Webbrowser.png" />
+    
+    <file src="audio/Effect_Tick.ogg" />
+    <file src="audio/Lock.ogg" />
+    <file src="audio/Tejat.ogg" />
+    <file src="audio/Unlock.ogg" />
+    
+    <file src="fonts/Roboto.ttf" />
+    <file src="fonts/Roboto-Bold.ttf" />
+    
+    <file src="mods/cellphone.dff" />
+    <file src="mods/cellphone.txd" />
+    
+    <file src="phone/Nexus.png" />
+    <file src="phone/search_bar.png" />
+    <file src="phone/status_fluid.png" />
+    <file src="phone/status_solid.png" />
+    <file src="phone/menu_fluid.png" />
+    <file src="phone/menu_solid.png" />
+    
+    <file src="wallpapers/Wallpaper.png" />
+    <file src="wallpapers/bkgr_black.png" />
+    <file src="wallpapers/bkgr_white.png" />
+    
+    <script src="phoneGUI.lua" type="client" />
+    <script src="phoneMain.lua" type="client" cache="false" />
+    <script src="animations.lua" />
+    
+    <export function="getGTIDroid" type="client" />
+    <export function="getGTIDroidMainMenu" type="client" />
+    <export function="getGTIDroidAppButton" type="client" />
+    <export function="playNotice" type="client" />
+    <export function="playTick" type="client" />
+    <export function="showMainMenu" type="client" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+</meta>

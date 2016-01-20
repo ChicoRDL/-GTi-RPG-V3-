@@ -1,0 +1,310 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 29 Aug 2014
+-- Resource: GTIbank/accounts.slua
+-- Version: 1.0
+----------------------------------------->>
+
+addEvent("onPlayerGiveMoney", true)
+addEvent("onPlayerTakeMoney", true)
+
+START_CASH = 10000				-- Starting Cash for new accounts
+START_BANK_BALANCE = 40000		-- Starting bank balance
+
+-- Get Bank Accounts
+--------------------->>
+
+function getBankAccounts(player)
+	if (not isElement(player)) then return false end
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return false end
+
+	local bank_acc = {}
+		-- Main Account
+	local account = getPlayerAccount(player)
+	local acc_name = getAccountName(account).."'s Main Account"
+
+	local balance = getPlayerBankBalance(player)
+
+	local acc_number = getBankData(account, "acc_number")
+	if (not acc_number) then
+		acc_number = getRealTime().timestamp
+		acc_number = string.format("%012d", acc_number)
+		setBankData(account, "acc_number", acc_number)
+	end
+
+	local last_trans = getPlayerLastBankTransaction(player)
+	if (last_trans) then
+		local day,mo,yr = exports.GTIutil:todate(last_trans)
+		local day,mo = string.format("%02d", day), string.format("%02d", mo)
+		local hr,min,sec = exports.GTIutil:totime(last_trans)
+		local hr,min,sec = string.format("%02d", hr), string.format("%02d", min), string.format("%02d", sec)
+		last_trans = yr.."-"..mo.."-"..day.." at "..hr..":"..min..":"..sec
+	end
+
+	table.insert(bank_acc, {acc_name, acc_number, last_trans, balance})
+
+		-- Group Account
+	local groupID = exports.GTIgroups:getPlayerGroup(player)
+	if (groupID and exports.GTIgroups:getGroupName(groupID)) then
+		local acc_name = exports.GTIgroups:getGroupName(groupID).."'s Group Account"
+
+		local balance = getGroupBankBalance(groupID)
+
+		local acc_number = exports.GTIgroups:getGroupData(account, "bank.acc_number")
+		if (not acc_number) then
+			acc_number = getRealTime().timestamp
+			acc_number = string.format("%012d", acc_number)
+			exports.GTIgroups:setGroupData(account, "bank.acc_number", acc_number)
+		end
+
+		local last_trans = getGroupLastBankTransaction(groupID)
+		if (last_trans) then
+			local day,mo,yr = exports.GTIutil:todate(last_trans)
+			local day,mo = string.format("%02d", day), string.format("%02d", mo)
+			local hr,min,sec = exports.GTIutil:totime(last_trans)
+			local hr,min,sec = string.format("%02d", hr), string.format("%02d", min), string.format("%02d", sec)
+			last_trans = yr.."-"..mo.."-"..day.." at "..hr..":"..min..":"..sec
+		end
+
+		table.insert(bank_acc, {acc_name, acc_number, last_trans, balance})
+	end
+	return bank_acc
+end
+
+-- Get Bank Logs
+----------------->>
+
+function getBankLogs(player)
+	if (not isElement(player)) then return false end
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return false end
+
+	local account = getAccountName(getPlayerAccount(player))
+	getAccountLogs(player, account, "cash")
+	getAccountLogs(player, account, "bank")
+
+	local groupID = exports.GTIgroups:getPlayerGroup(player)
+	if (groupID) then
+		getAccountLogs(player, groupID, "groupbank")
+	end
+	return true
+end
+
+-- Give/Take Money
+------------------->>
+
+function GPM(player, amount, log, bonus)
+	if (not isElement(player) or type(amount) ~= "number" or amount < 0 or not log) then return false end
+	amount = math.floor(amount)
+	if (amount == 0) then return false end
+	
+	local old_amount = amount
+	
+		-- Group Bonus
+	local groupID = exports.GTIgroups:getPlayerGroup(player)
+	if (bonus and groupID) then
+		modifyGroupBankBalance(groupID, math.floor(amount*0.1), log.." ("..getPlayerName(player)..")")
+		amount = math.floor(amount * 1.1)
+	end
+	
+		-- Premium Bonuses
+	if (bonus and exports.GTIpremium:isPremium(player, "5_more_pay")) then
+		amount = amount + math.floor(old_amount*0.05)
+	elseif (bonus and exports.GTIpremium:isPremium(player, "10_more_pay")) then
+		amount = amount + math.floor(old_amount*0.10)
+	elseif (bonus and exports.GTIpremium:isPremium(player, "15_more_pay")) then
+		amount = amount + math.floor(old_amount*0.15)
+	end
+	
+	givePlayerMoney(player, amount)
+	exports.GTIlogs:outputServerLog("GPM: "..getPlayerName(player).." +$"..amount.." ("..log..")", "money", player)
+	addLogToDatabase("cash", getRealTime().timestamp, log, amount, getPlayerMoney(player), player, getAccountName(getPlayerAccount(player)))
+
+	local cash = getPlayerMoney(player)
+	setBankData(getPlayerAccount(player), "cash", cash)
+
+	local earned = getBankData(getPlayerAccount(player), "cash_earned" ) or 0
+	setBankData(getPlayerAccount(player), "cash_earned", amount + earned )
+
+	triggerEvent("onPlayerGiveMoney", player, amount)
+	triggerClientEvent(player, "onClientPlayerGiveMoney", player, amount)
+
+	-- Global Money Given Log
+	local mGiven = exports.GTIserver:getServerStat("money_given") or 0
+	if not mGiven == 0 then
+		exports.GTIserver:setServerStat("money_given", amount)
+	else
+		exports.GTIserver:modifyServerStat("money_given", amount)
+	end
+	
+	return true
+end
+
+function TPM(player, amount, log, premium)
+	if (not isElement(player) or type(amount) ~= "number" or amount < 0 or not log) then return false end
+	amount = math.floor(amount)
+	if (amount == 0) then return false end
+	
+		-- Premium Cost Reduction
+	if (premium and exports.GTIpremium:isPremium(player, "5_less_cost")) then
+		amount = amount - math.floor(amount*0.05)
+	elseif (premium and exports.GTIpremium:isPremium(player, "10_less_cost")) then
+		amount = amount - math.floor(amount*0.10)
+	elseif (premium and exports.GTIpremium:isPremium(player, "15_less_cost")) then
+		amount = amount - math.floor(amount*0.15)
+	end
+	
+	takePlayerMoney(player, amount)
+	exports.GTIlogs:outputServerLog("TPM: "..getPlayerName(player).." +$"..amount.." ("..log..")", "money", player)
+	addLogToDatabase("cash", getRealTime().timestamp, log, -amount, getPlayerMoney(player), player, getAccountName(getPlayerAccount(player)))
+
+	local cash = getPlayerMoney(player)
+	setBankData(getPlayerAccount(player), "cash", cash)
+
+	local spent = getBankData(getPlayerAccount(player), "cash_spent" ) or 0
+	setBankData(getPlayerAccount(player), "cash_spent", amount + spent )
+
+	triggerEvent("onPlayerTakeMoney", player, amount)
+	triggerClientEvent(player, "onClientPlayerTakeMoney", player, amount)
+
+	-- Global Money Taken Log
+	local mTaken = exports.GTIserver:getServerStat("money_taken") or 0
+	if mTaken == 0 then
+		exports.GTIserver:setServerStat("money_taken", amount)
+	else
+		exports.GTIserver:modifyServerStat("money_taken", amount)
+	end
+	return true
+end
+
+-- Player Bank Balance
+----------------------->>
+
+function getPlayerBankBalance(player)
+	if (not isElement(player)) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+
+	local balance = getBankData(account, "balance") or 0
+	return balance
+end
+
+function modifyPlayerBankBalance(player, amount, log, bonus)
+	if (not isElement(player) or type(amount) ~= "number" or not log) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	amount = math.floor(amount)
+	if (amount == 0) then return false end
+	
+	local old_amount = amount
+	
+		-- Group Bonus
+	local groupID = exports.GTIgroups:getPlayerGroup(player)
+	if (amount > 0 and bonus and groupID) then
+		modifyGroupBankBalance(groupID, math.floor(amount*0.1), log.." ("..getPlayerName(player)..")")
+		amount = math.floor(amount * 1.1)
+	end
+	
+		-- Premium Bonuses
+	if (amount > 0 and bonus and exports.GTIpremium:isPremium(player, "5_more_pay")) then
+		amount = amount + math.floor(old_amount*0.05)
+	elseif (amount > 0 and bonus and exports.GTIpremium:isPremium(player, "10_more_pay")) then
+		amount = amount + math.floor(old_amount*0.10)
+	elseif (amount > 0 and bonus and exports.GTIpremium:isPremium(player, "15_more_pay")) then
+		amount = amount + math.floor(old_amount*0.15)
+	end
+	
+	-- Premium Cost Reduction
+	if (amount < 0 and bonus and exports.GTIpremium:isPremium(player, "5_less_cost")) then
+		amount = amount + math.floor(old_amount*0.05)
+	elseif (amount < 0 and bonus and exports.GTIpremium:isPremium(player, "10_less_cost")) then
+		amount = amount + math.floor(old_amount*0.10)
+	elseif (amount < 0 and bonus and exports.GTIpremium:isPremium(player, "15_less_cost")) then
+		amount = amount + math.floor(old_amount*0.15)
+	end
+	
+	local balance = getBankData(account, "balance") or 0
+	setBankData(account, "balance", balance+amount)
+	setBankData(account, "last_transaction", getRealTime().timestamp)
+
+	addLogToDatabase("bank", getRealTime().timestamp, log, amount, balance+amount, player, getAccountName(getPlayerAccount(player)))
+	amount = math.abs(amount)
+	exports.GTIlogs:outputServerLog("BANK: "..getPlayerName(player).." balance changed by "..(amount >= 0 and "$"..amount or "-$"..amount).." ("..log..")", "bank", player)
+	return true
+end
+
+function modifyAccountBankBalance(account, amount, log)
+	if (not account or isGuestAccount(account) or type(amount) ~= "number" or not log) then return false end
+	amount = math.floor(amount)
+	if (amount == 0) then return false end
+	
+	local balance = getBankData(account, "balance") or 0
+	setBankData(account, "balance", balance+amount)
+	setBankData(account, "last_transaction", getRealTime().timestamp)
+
+	addLogToDatabase("bank", getRealTime().timestamp, log, amount, balance+amount, player, getAccountName(account))
+	amount = math.abs(amount)
+	exports.GTIlogs:outputServerLog("BANK: "..getAccountName(account).." balance changed by "..(amount >= 0 and "$"..amount or "-$"..amount).." ("..log..")", "bank")
+	return true
+end
+
+function getPlayerLastBankTransaction(player)
+	if (not isElement(player)) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+
+	return getBankData(account, "last_transaction") or false
+end
+
+-- Group Bank Balance
+---------------------->>
+
+function getGroupBankBalance(groupID)
+	if (type(groupID) ~= "number") then return false end
+	local groupName = exports.GTIgroups:getGroupName(groupID)
+	if (not groupName) then return false end
+
+	local balance = exports.GTIgroups:getGroupData(groupID, "bank.balance") or 0
+	return balance
+end
+
+function modifyGroupBankBalance(groupID, amount, log)
+	if (type(groupID) ~= "number" or type(amount) ~= "number" or not log) then return false end
+	local groupName = exports.GTIgroups:getGroupName(groupID)
+	if (not groupName) then return false end
+	amount = math.floor(amount)
+	if (amount == 0) then return false end
+
+	local balance = getGroupBankBalance(groupID)
+	exports.GTIgroups:setGroupData(groupID, "bank.balance", balance+amount)
+	exports.GTIgroups:setGroupData(groupID, "bank.last_transaction", getRealTime().timestamp)
+
+	addLogToDatabase("groupbank", getRealTime().timestamp, log, amount, balance+amount, nil, groupID)
+	amount = math.abs(amount)
+	exports.GTIlogs:outputServerLog("GROUP: "..groupName.." balance changed by "..(amount >= 0 and "$"..amount or "-$"..amount).." ("..log..")", "group")
+	return true
+end
+
+function getGroupLastBankTransaction(groupID)
+	if (type(groupID) ~= "number") then return false end
+	local groupName = exports.GTIgroups:getGroupName(groupID)
+	if (not groupName) then return false end
+
+	return exports.GTIgroups:getGroupData(groupID, "bank.last_transaction") or false
+end
+
+-- Load Cash
+------------->>
+
+addEventHandler("onPlayerLogin", root, function(_, account)
+	if (isGuestAccount(account)) then return end
+	local cash = getBankData(account, "cash") or START_CASH
+	if (cash == 0) then return end
+
+	setPlayerMoney(source, cash)
+
+	local balance = getBankData(account, "balance")
+	if (not balance) then
+		setBankData(account, "balance", START_BANK_BALANCE)
+	end
+end)

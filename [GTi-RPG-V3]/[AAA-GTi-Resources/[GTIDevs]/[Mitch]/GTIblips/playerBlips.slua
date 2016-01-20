@@ -1,0 +1,66 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 14 Feb 2014
+-- Resource: GTIblips/playerBlips.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local BLIP_VISIBLE_DISTANCE = 500
+local BLIP_SIZE = 2
+local blips = {}
+
+function setPlayerNameColor(player, r, g, b, noBlip)
+	setPlayerNametagColor(player, r, g, b)
+
+	if (noBlip) then
+		destroyBlip(player)
+		return true 
+	end
+		
+	if (not blips[player] or not isElement(blips[player])) then
+		blips[player] = createBlipAttachedTo(player, 0, BLIP_SIZE, r, g, b, 255, 0, BLIP_VISIBLE_DISTANCE)
+	else
+		setBlipColor(blips[player], r, g, b, 255)
+	end
+	return true
+end
+
+function changeBlipDistance ( bd )
+	for i, v in pairs(blips) do
+		setBlipVisibleDistance ( blips[v], tonumber(bd) )
+		exports.GTIaccounts:SAD ( getPlayerAccount ( client ), "BlipDistance", tonumber ( bd ) )
+	end
+end
+addEvent ("GTIuserPanel_changeBlipDistance", true )
+addEventHandler ("GTIuserPanel_changeBlipDistance", root, changeBlipDistance )
+
+--[[function setBlipDistance ( )
+	Distance = exports.GTIaccounts:GAD ( getPlayerAccount ( source ), "BlipDistance" )
+	setBlipVisibleDistance ( blips[source], tonumber(Distance) )
+end
+addEventHandler ("onPlayerLogin", root, setBlipDistance )]]
+
+function destroyBlip(player)
+	if (source) then player = source end
+	if (blips[player] and isElement(blips[player])) then
+		destroyElement(blips[player])
+		blips[player] = nil
+	end
+end
+addEventHandler("onPlayerQuit", root, destroyBlip)
+
+for i,player in ipairs(getElementsByType("player")) do
+	if (exports.GTIutil:isPlayerLoggedIn(player)) then
+		local r,g,b = getPlayerNametagColor(player)
+		setPlayerNameColor(player, r, g, b)
+	end
+end
+
+-- Custom Blip Util
+-------------------->>
+
+addCommandHandler("showhud", function(player)
+	outputDebugString("GTIblips: Updating HUD...")
+	triggerClientEvent(player, "GTIblips.showhud", resourceRoot)
+end)

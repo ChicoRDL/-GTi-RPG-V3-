@@ -1,0 +1,7 @@
+<meta>
+    <info author="NicKeLz" version="" type="script" name="GTIdroid Music App" autostart="true" />
+	<script src="Client.lua" type="client" />
+	<script src="Server.lua" type="server" />
+	
+	<export function="addSongToAccount" type="server" />
+</meta>

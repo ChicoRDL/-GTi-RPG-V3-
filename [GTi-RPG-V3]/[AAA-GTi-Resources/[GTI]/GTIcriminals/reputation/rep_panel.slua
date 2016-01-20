@@ -1,0 +1,44 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 01 Mar 2014
+-- Resource: GTIcriminals/reputation.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+-- Call Panel Info
+------------------->>
+
+function callPanelInfo()
+	local ranks = {}
+	ranks["level"] 		= getPlayerCriminalLevel(client) or 0
+	ranks["rep"] 		= getPlayerCriminalRep(client) or 0
+	ranks["repReqCur"] 	= getCriminalLevelRequirement(ranks["level"]) or 0
+	ranks["repReq"] 	= getCriminalLevelRequirement(ranks["level"]+1) or 0
+	ranks["ranks"] = {}
+	local tasks = exports.GTIcrimTable:getRanks()
+	for task in pairs(tasks) do
+		table.insert(ranks["ranks"], task)
+	end
+	triggerClientEvent(client, "GTIcriminals.showPanel", client, ranks)
+end
+addEvent("GTIcriminals.callPanelInfo", true)
+addEventHandler("GTIcriminals.callPanelInfo", root, callPanelInfo)
+
+-- View Task Stats
+------------------->>
+
+function viewTaskInfo(task)
+	local taskTbl = {}
+	taskTbl["name"] = task
+	taskTbl["level"] = getPlayerTaskLevel(client, task)
+	taskTbl["rank"] = getPlayerTaskRank(client, task)
+	taskTbl["prog"] = getPlayerTaskProgress(client, task)
+	taskTbl["promo"] = getTaskLevelRequirement(task, taskTbl["level"]+1)
+	taskTbl["unit"] = getTaskUnitName(task)
+	taskTbl["money"] = getPlayerTaskMoney(client, task)
+	taskTbl["exp"] = getPlayerCriminalRep(client, task)
+	triggerClientEvent(client, "GTIcriminals.viewTaskInfo", resourceRoot, taskTbl)
+end
+addEvent("GTIcriminals.viewTaskInfo", true)
+addEventHandler("GTIcriminals.viewTaskInfo", root, viewTaskInfo)

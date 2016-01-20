@@ -1,0 +1,17 @@
+<meta>
+<info author="Emile" name="GTIdroid messaging app" autostart="true" />
+	<script src="messagingAppServer.lua" type="server" />
+	<script src="messagingAppClient.lua" type="client" cache="false"/>
+    <export function="newSMS" type="client" />
+	<file src="images/friend.png" />
+	<file src="images/msg.png" />
+	<file src="images/bckgrnd.png" />
+	<file src="images/bckgrnd1.jpg" />
+	<file src="images/bckgrnd3.png" />
+	<file src="images/bckgrnd4.jpg" />
+	<file src="images/white.png" />
+	<file src="images/notif1.png" />
+	<file src="images/notif2.png" />
+	<file src="images/font1.ttf" />
+	<file src="images/x.png" />
+</meta>

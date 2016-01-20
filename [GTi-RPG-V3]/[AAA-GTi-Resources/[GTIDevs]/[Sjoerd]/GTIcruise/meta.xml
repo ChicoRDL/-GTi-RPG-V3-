@@ -1,0 +1,4 @@
+<meta>
+	<info author="Sjoerd" version="1.0" name="Cruise Control" autostart="true" />
+	<script src="cruiseClient.luac" type="client"/>
+</meta>

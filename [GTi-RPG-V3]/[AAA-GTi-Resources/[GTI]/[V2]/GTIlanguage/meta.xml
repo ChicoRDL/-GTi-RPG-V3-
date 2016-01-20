@@ -1,0 +1,10 @@
+<meta>
+    <info author="Jack" name="GTI Languages" description="Automatically gets translated text based on the player&apos;s language." autostart="true" />
+    
+    <script src="language.lua" type="shared" cache="false" />
+    
+    <export function="getPlayerLanguage" type="shared" />
+    <export function="getTranslation" type="shared" />
+    
+    <oop>true</oop>
+</meta>

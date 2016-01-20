@@ -1,0 +1,56 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Various Useful Functions" autostart="true" />
+    
+	<script src="Util_C.lua" 	type="client"	/>
+    <script src="Util_S.lua" 					/>
+    <script src="object_lod.lua" 				/>
+    <script src="ip_country/ip2c.lua"			/>
+    
+    <export function="findPlayer" type="client" />
+    <export function="findRotation" type="client" />
+    <export function="generatePassword" type="client" />
+    <export function="getDistanceBetweenElements2D" type="client" />
+    <export function="getDistanceBetweenElements3D" type="client" />
+    <export function="getElementSpeed" type="client" />
+    <export function="getGenericName" type="client" />
+    <export function="getMonthName" type="client" />
+    <export function="getPedWeapons" type="client" />
+    <export function="isPlayerInTeam" type="client" />
+    <export function="isPlayerLoggedIn" type="client" />
+    <export function="getPlayersInDimension" type="client" />
+    <export function="RGBToHex" type="client" />
+    <export function="tocomma" type="client" />
+    <export function="todate" type="client" />
+    <export function="totime" type="client" />
+    <export function="aToR" type="client" />
+    <export function="setPlayerGhost" type="client" />
+	<export function="isPlayerLoggedIn" type="client" />
+	
+    <export function="findPlayer" type="server" />
+    <export function="findRotation" type="server" />
+    <export function="generatePassword" type="server" />
+    <export function="getDistanceBetweenElements2D" type="server" />
+    <export function="getDistanceBetweenElements3D" type="server" />
+    <export function="getElementSpeed" type="server" />
+    <export function="getMonthName" type="server" />
+    <export function="getPedWeapons" type="server" />
+	<export function="getPercentOfTimeAFK"	type="server" />
+    <export function="isPlayerInACLGroup" type="server" />
+    <export function="isPlayerInTeam" type="server" />
+    <export function="isPlayerLoggedIn" type="server" />
+    <export function="getPlayersInDimension" type="server" />
+    <export function="RGBToHex" type="server" />
+    <export function="tocomma" type="server" />
+    <export function="todate" type="server" />
+    <export function="totime" type="server" />
+    <export function="setPlayerGhost" type="server" />
+    
+    <export function="getObjectLOD" type="server" />
+    <export function="getPlayerCountry" type="server" />
+    <export function="getIpCountry" type="server" />
+
+    <export function="urlEncode" type="server" />
+    <export function="getPedMaxHealth" type="shared" />
+	<export function="getPlayerTask" type="shared" />
+
+</meta>

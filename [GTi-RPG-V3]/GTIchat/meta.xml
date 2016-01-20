@@ -1,0 +1,13 @@
+<meta>
+    <info author="LilDolla" description="Chat System." type="script" version="1.0" name="Chat and Chatzone System" autostart="true" />
+    
+    <script src="chat_c.lua" type="client" />
+    <script src="chat_s.lua" />
+    <script src="zone_s.lua" />
+    <script src="zone_c.lua" type="client" />
+    <script src="join_quit.lua" />
+    <script src="panel_c.lua" type="client" cache="false"/>
+    
+    <export function="getPlayerCity" type="shared" />
+    <export function="outputGridlist" type="shared" />
+</meta>

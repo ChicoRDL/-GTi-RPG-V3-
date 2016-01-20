@@ -1,0 +1,256 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 04 Mar 2014
+-- Resource: GTIgroups/groups.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+DEFAULT_GROUP_INFO = "This group has no group information! The group leader should click the \"Group Information\" button in the Admin tab to edit the group info."
+DEFAULT_GROUP_COLOR = "255,100,100"
+DEFAULT_BLIP = 20	-- Default Group Blip ID
+
+addEvent("onGroupDelete", true)			-- Triggered when a group is deleted
+addEvent("onGroupColorChange", true)	-- Triggered when a group changes their group color
+
+-- Group Creation
+------------------>>
+
+function createGroup(name, password, creator)
+	if (not name or not password or not creator) then return false end
+	if (type(name) ~= "string" or type(password) ~= "string") then return false end
+	if (not isElement(creator) or getElementType(creator) ~= "player") then return false end
+
+	-- Create Group Account
+	local gAccount = createGroupAccount(name, password)
+	if (not gAccount) then return false end
+
+	-- Create Group -->>
+		-- Set Account Name
+	local groupID = getNextGroupSlot()
+	local accountName = getGroupAccountName(name)
+	setGroupData(groupID, "account_name", accountName)
+		-- Set Display Name
+	setGroupData(groupID, "display_name", name)
+		-- Store Creation Date
+	setGroupData(groupID, "creation_date", getRealTime().timestamp)
+	
+	-- Create Group Ranks
+	addGroupRank(groupID, "Leader", "*", "leader")
+	local permNew = getDefaultPermissionSet("New Member")
+	addGroupRank(groupID, "New Member", permNew, "default")
+	
+	-- Add Creator as Leader
+	local rankID = getGroupRankIDByName(groupID, "Leader")
+	addMember(groupID, creator, rankID)
+	
+	addLogToDatabase(name.." was created by "..getPlayerName(creator), creator, groupID)
+	return true
+end
+
+function getGroupAccountName(name)
+	local friendly_name = string.gsub(name, "%s", "_")
+	return friendly_name
+end
+
+function createGroupAccount(name, password)
+	local friendly_name = getGroupAccountName(name)
+	local account = getAccount(friendly_name)
+	if (account) then return false end
+	
+	return addAccount(friendly_name, password)
+end
+
+function scheduleGroupForDeletion(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	
+end
+
+function deleteGroup(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	triggerEvent("onGroupDelete", resourceRoot, groupID)
+	return dropGroupData(groupID)
+end
+
+-- Utilities & Exports
+----------------------->>
+
+function getGroupAccount(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	local account = getGroupData(groupID, "account_name")
+	return getAccount(account) or false
+end
+
+function getGroupColor(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	local groupColor = getGroupData(groupID, "color") or DEFAULT_GROUP_COLOR
+	local groupColor = split(groupColor, ",")
+	return tonumber(groupColor[1]), tonumber(groupColor[2]), tonumber(groupColor[3])
+end
+
+function getGroupCreationDate(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	local groupCreation = getGroupData(groupID, "creation_date")
+	return groupCreation
+end
+
+function getGroupFriendlyFire(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	local friendly_fire = getGroupData(groupID, "friendly_fire")
+	if (friendly_fire == nil) then friendly_fire = 1 end
+	return friendly_fire == 1 and true or false
+end
+
+function getGroupBlipsEnabled(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	local blip_state = getGroupData(groupID, "group_blips")
+	if (blip_state == nil or blip_state == 1) then blip_state = DEFAULT_BLIP end
+	if (blip_state == 0) then return false end
+	return blip_state or false
+end
+
+function getGroupInformation(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	local groupInfo = getGroupData(groupID, "info")
+	return groupInfo or DEFAULT_GROUP_INFO
+end
+
+function getGroupName(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	local groupName = getGroupData(groupID, "display_name")
+	return groupName
+end
+
+function getGroupNews(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	if (not getGroupName(groupID)) then return false end
+	local group_news = getGroupData(groupID, "news")
+	if (group_news) then
+		group_news = split(group_news, "~")
+		for i,v in ipairs(group_news) do
+			group_news[i] = split(v, ";")
+			group_news[i][2] = tonumber(group_news[i][2])
+		end
+	end
+	return group_news or {{getGroupName(groupID).." was just founded!", 0}}
+end
+
+function getGroupLastActiveTime(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	local last_active = 0 
+	for i,member in ipairs(getGroupMembers(groupID)) do
+		local account = getAccount(member)
+		if (account) then
+			local active = exports.GTIaccounts:GAD(account, "lastLogin") or 0
+			if (active > last_active) then
+				last_active = active
+			end
+		end
+	end
+	return last_active
+end
+
+function setGroupColor(groupID, r, g, b)
+	if (not groupID or not r or not g or not b) then return false end
+	if (type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	if (type(r) ~= "number" or type(g) ~= "number" or type(b) ~= "number") then return false end
+	
+	triggerEvent("onGroupColorChange", resourceRoot, groupID, r, g, b)
+	setGroupData(groupID, "color", r..","..g..","..b)
+	return true
+end
+
+function setGroupName(groupID, newName)
+	if (not groupID or not newName) then return false end
+	if (type(groupID) ~= "number" or type(newName) ~= "string" or groupID > getNextGroupSlot()-1) then return false end
+	
+	for ID=1,getNextGroupSlot()-1 do
+		local name = getGroupName(ID)
+		if (name and name == newName) then
+			return false
+		end
+	end
+	
+	newName = string.sub(newName, 1, 32)
+	setGroupData(groupID, "display_name", newName)
+	
+	local members = getGroupMembers(groupID)
+	for i,player in ipairs(members) do
+		local player = getAccountPlayer(getAccount(player))
+		if (isElement(player)) then
+			setElementData(player, "group", newName)
+		end
+	end
+	return true
+end
+
+function setGroupInformation(groupID, info)
+	if (not groupID or not info) then return false end
+	if (type(groupID) ~= "number" or type(info) ~= "string" or groupID > getNextGroupSlot()-1) then return false end
+	setGroupData(groupID, "info", info)
+	return true
+end
+
+function setGroupFriendlyFire(groupID, state)
+	if (not groupID) then return false end
+	if (type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	setGroupData(groupID, "friendly_fire", state and 1 or 0)
+	
+	local fire_state = getElementData(root, "group_friendlyFire") or {}
+	fire_state[groupID] = state or nil
+	setElementData(root, "group_friendlyFire", fire_state)
+	return true
+end
+
+function setGroupBlipsEnabled(groupID, blipID)
+	if (not groupID) then return false end
+	if (type(groupID) ~= "number" or groupID > getNextGroupSlot()-1) then return false end
+	setGroupData(groupID, "group_blips", blipID or 0)
+	
+	local blip_state = getElementData(root, "group_blips") or {}
+	blip_state[groupID] = blipID or nil
+	setElementData(root, "group_blips", blip_state)
+	return true
+end
+
+function setGroupNews(groupID, news)
+	if (not groupID or not news) then return false end
+	if (type(groupID) ~= "number" or type(news) ~= "table" or groupID > getNextGroupSlot()-1) then return false end
+	
+	for i,v in ipairs(news) do
+		news[i] = table.concat(news[i], ";")
+	end
+	local news = table.concat(news, "~")
+	setGroupData(groupID, "news", news)
+	return true
+end
+
+-- Other Functions
+------------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	local fire_state = {}
+	local blip_state = {}
+	
+	for groupID in pairs(Group) do
+		local fire = getGroupFriendlyFire(groupID)
+		local blipState = getGroupBlipsEnabled(groupID)
+		fire_state[groupID] = fire or nil
+		blip_state[groupID] = blipState or nil
+	end
+	
+	setElementData(root, "group_friendlyFire", fire_state)
+	setElementData(root, "group_blips", blip_state)
+end)
+
+addEventHandler("onPlayerLogin", root, function()
+	local groupID = getPlayerGroup(source)
+	if (not groupID) then return end
+	local news = getGroupNews(groupID) or {}
+	local r,g,b = getGroupColor(groupID)
+	for i,item in ipairs(news) do
+		if (item[2] == 1) then
+			outputChatBox("* (GROUP NEWS) "..string.sub(item[1], 1, 108), source, r, g, b)
+		end
+	end
+end)

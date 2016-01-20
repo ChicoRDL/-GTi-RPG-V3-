@@ -1,0 +1,245 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 18 Aug 2014
+-- Resource: GTImisc/afk.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local AFK_DIMENSION = 60000	-- AFK Dimension ID
+local AFK_REPEAT = 30000	-- Time Allowed between AFKs
+local RECENT_DAMAGE = 5000	-- Time required for damage to be 'recent'
+local AUTO_AFK = 10000		-- Time inactive to be auto-set AFK
+
+local old_nicks = {}		-- Table of Cached Nicks by Player
+local lastAFK = {}			-- Last time the player went AFK
+local recentlyDamaged = {}	-- Table of Recently Damaged Players
+local controlTimers = {}	-- Auto-AFK Timer
+
+local blockedActions = {	-- Blocked Ped Tasks
+	["TASK_SIMPLE_IN_AIR"] = "jumping in air",
+	["TASK_SIMPLE_CLIMB"] = "climbing"
+}
+
+-- Set AFK
+----------->>
+
+function setPlayerAFK(player, state)
+	if (not isElement(player) or getElementType(player) ~= "player") then return end
+	if (state) then
+		exports.GTIhud:dm("You have gone AFK. Type /afk or move around to return to the main dimension.", player, 25, 255, 25)
+		setElementData(player, "afk", getElementDimension(player))
+		setElementDimension(player, AFK_DIMENSION)
+		setElementFrozen(player, true)
+		
+		local name = getPlayerName(player)
+		old_nicks[player] = name
+		name = string.sub(name, 1, 16)
+		setPlayerName(player, name.."|AFK")
+		toggleAllControls(player, false, true, false)
+		for i,key in ipairs({"forwards", "backwards", "left", "right", "jump", "crouch", "fire"}) do
+			bindKey(player, key, "down", returnFromAFKOnMove)
+		end
+	else
+		exports.GTIhud:dm("You have returned from being AFK. Welcome back.", player, 255, 25, 255)
+		local dim = getElementData(player, "afk")
+		setElementDimension(player, dim)
+		removeElementData(player, "afk")
+		setTimer(setElementFrozen, 500, 1, player, false)
+		setTimer(toggleAllControls, 500, 1, player, true)
+		setPlayerName(player, old_nicks[player])
+		old_nicks[player] = nil
+		
+		for i,key in ipairs({"forwards", "backwards", "left", "right", "jump", "crouch", "fire"}) do
+			unbindKey(player, key, "down", returnFromAFKOnMove)
+		end
+	end
+end
+
+-- Set AFK Command
+------------------->>
+
+function goAFKCommand(player)
+	local isAFK = getElementData(player, "afk")
+	if (not isAFK) then
+		if (isPedInVehicle(player)) then
+			exports.GTIhud:dm("You cannot go AFK while in a vehicle.", player, 255, 125, 0)
+			return
+		end
+		if (getElementInterior(player) ~= 0) then
+			exports.GTIhud:dm("You cannot go AFK while in an interior.", player, 255, 125, 0)
+			return
+		end
+		if (exports.GTIpoliceArrest:isPlayerInPoliceCustody(player)) then
+			exports.GTIhud:dm("You cannot go AFK while in police custody.", player, 255, 125, 0)
+			return
+		end
+		if (exports.GTIpoliceWanted:isPlayerWanted(player)) then
+			exports.GTIhud:dm("You cannot go AFK while wanted.", player, 255, 125, 0)
+			return
+		end
+		if (isPedDead(player)) then
+			exports.GTIhud:dm("You cannot go AFK while dead.", player, 255, 125, 0)
+			return
+		end
+		if (not isElementInWater(player) and not isPedOnGround(player) or (getPedContactElement(player) and getElementType(getPedContactElement(player)) ~= "object")) then
+			exports.GTIhud:dm("You cannot go AFK while not on the ground.", player, 255, 125, 0)
+			return
+		end
+		if (exports.GTIgangTerritories:canPlayerTurf(player)) then
+			exports.GTIhud:dm("You cannot go AFK while turfing.", player, 255, 125, 0)
+			return
+		end
+		if (#exports.GTIpoliceArrest:getPlayerArrests(player) > 0) then
+			exports.GTIhud:dm("You cannot go AFK while you have players in police custody.", player, 255, 125, 0)
+			return
+		end
+		if (lastAFK[player]) then
+			exports.GTIhud:dm("You recently went AFK. Wait a few more seconds before trying again.", player, 255, 125, 0)
+			return
+		end
+		if (recentlyDamaged[player]) then
+			exports.GTIhud:dm("You were recently damaged. Wait a few more seconds before trying again.",player,255,125,0)
+			return
+		end
+		if (getElementData(player, "suiciding")) then
+			return
+		end
+		
+		if (exports.GTIemployment:getPlayerJob(player) == "Police Officer") then
+			for i, v in ipairs(getElementsByType("player")) do
+				if (exports.GTIemployment:getPlayerJob(v) == "Criminal") then
+					local distance = exports.GTIutil:getDistanceBetweenElements2D(player, v)
+					if (distance < 150) then
+						exports.GTIhud:dm("You cannot go AFK while being close to a criminal.", player, 255, 125, 0)
+					return end
+				end
+			end		
+		end
+		
+		if (exports.GTIemployment:getPlayerJob(player) == "Criminal") then
+			for i, v in ipairs(getElementsByType("player")) do
+				if (exports.GTIemployment:getPlayerJob(v) == "Police Officer") then
+					local distance = exports.GTIutil:getDistanceBetweenElements2D(player, v)
+					if (distance < 150) then
+						exports.GTIhud:dm("You cannot go AFK while being close to a cop.", player, 255, 125, 0)
+					return end
+				end
+			end		
+		end
+
+		-- Check through blockedActions and make sure he's not doing anything unacceptable.
+		--[[ 
+			--getPedSimplestTask is a client side function
+		for i,v in pairs(blockedActions) do
+			if (getPedSimplestTask(player) == k) then
+				exports.GTIhud:dm("You can't go AFK while "..v.."!", player, 255, 125, 0)
+				return
+			end
+		end
+		--]]
+		
+		lastAFK[player] = true
+		setTimer(function(player) lastAFK[player] = nil end, AFK_REPEAT, 1, player)
+		setPlayerAFK(player, true)
+	else
+		setPlayerAFK(player, false)
+	end
+end
+addCommandHandler("afk", goAFKCommand)
+
+-- Return from AFK On
+---------------------->>
+
+function returnFromAFKOnMove(player)
+	local isAFK = getElementData(player, "afk")
+	if (isAFK) then
+		setPlayerAFK(player, false)
+	end
+end
+
+function returnFromAFKOnQuitJob()
+	local isAFK = getElementData(source, "afk")
+	if (isAFK) then
+		setPlayerAFK(source, false)
+	end
+end
+addEventHandler("onPlayerQuitJob", root, returnFromAFKOnQuitJob)
+
+function returnFromAFKOnQuit()
+	local isAFK = getElementData(source, "afk")
+	if (isAFK) then
+		setElementDimension(source, isAFK)
+		--setPlayerName(source, old_nicks[source])
+		old_nicks[source] = nil
+	
+		for i,key in ipairs({"forwards", "backwards", "left", "right", "jump", "crouch", "fire"}) do
+			unbindKey(source, key, "down", returnFromAFKOnMove)
+		end
+	end
+end
+addEventHandler("onPlayerQuit", root, returnFromAFKOnQuit)
+
+addEventHandler("onResourceStop", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		local isAFK = getElementData(player, "afk")
+		if (isAFK) then
+			setPlayerAFK(player, false)
+		end
+	end
+end )
+
+-- Auto-AFK on Death
+--------------------->>
+
+function goAFKonDeath(player)
+	local plr = player or source
+	if not isElement(plr) then return end
+	if (exports.GTIpoliceArrest:isPlayerInPoliceCustody(plr)) then return end
+	if (exports.GTIpoliceWanted:isPlayerWanted(plr)) then return end
+	if (exports.GTIgangTerritories:canPlayerTurf(plr)) then return end
+	
+	controlTimers[plr] = setTimer(function(plr)
+		if not isElement(plr) or isPedDead(plr) then return end
+		if getElementData(plr,"afk") then controlTimers[plr] = nil return end
+		setPlayerAFK(plr, true)
+		controlTimers[plr] = nil
+	end, AUTO_AFK, 1, plr)
+	triggerClientEvent(plr, "GTImisc.autoAFKRecordMovement", resourceRoot, AUTO_AFK)
+end
+addEvent("onPlayerReleased", true)
+addEventHandler("onPlayerReleased", root, goAFKonDeath)
+
+addEventHandler("onPlayerWasted", root, function(_, attacker)
+	if exports.GTIgangTerritories:canPlayerTurf(source) then 
+		return 
+	end
+	if exports.GTIpremium:isPremium(source, "inst_respawn") then
+		setTimer(goAFKonDeath, 3000, 1, source)
+		return
+	end
+	if (attacker) then 
+		setTimer(goAFKonDeath, 15000, 1, source)
+	else
+		setTimer(goAFKonDeath, 5000, 1, source)
+	end
+end)
+
+addEvent("GTImisc.onAFKMovementDetected", true)
+addEventHandler("GTImisc.onAFKMovementDetected", root, function()
+	if (controlTimers[client]) then
+		killTimer(controlTimers[client])
+		controlTimers[client] = nil
+	end
+end)
+
+-- Utilities
+------------->>
+
+	-- Recently Damaged
+addEventHandler("onPlayerDamage", root, function(attacker)
+	if (attacker) then
+		recentlyDamaged[source] = true
+		setTimer(function(plr) recentlyDamaged[plr] = nil end, RECENT_DAMAGE, 1, source)
+	end
+end)

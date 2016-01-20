@@ -1,0 +1,8 @@
+<meta>
+	<include resource="ajax" />
+    <info author="Ares" showInResourceBrowser="true" name="Live map" description="Live map"/>
+	<script src="script.lua" type="server"/>
+	<html src="index.html" />
+	<html src="script.js" />
+	<html src="style.css" />
+</meta>

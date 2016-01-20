@@ -1,0 +1,156 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 01 Dec 2013
+-- Resource: GTIaccounts/spawn.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local DEFAULT_TEAM = "General Population"
+
+local spawnPoints = {
+	{1682.810, -2286.421, 13.508, 0},
+	{-1424.501, -290.881, 14.148, 140},
+	{1681.704, 1447.704, 10.773, 270},
+}
+
+addEvent("onPlayerFirstTimeSpawn", true)
+
+local firstTimeSpawn = {}
+
+-- On Player Login
+------------------->>
+
+function spawn(player)
+	local account = getPlayerAccount(player)
+	if (not account or isGuestAccount(account)) then return end
+		-- Position
+	local pos = GAD(account, "position")
+	if (not pos) then
+		triggerClientEvent(player, "GTIaccounts.firstTimeSpawn", resourceRoot, spawnPoints)
+		return
+	end
+	
+		-- Skin ID
+	local skin = GAD(account, "skin")
+	if (not skin) then
+		exports.GTIclothes:selectSkinFromStore(player)
+		return
+	end
+	
+	pos = split(pos, ",")
+	x,y,z,rot,int,dim = tonumber(pos[1]), tonumber(pos[2]), tonumber(pos[3]), tonumber(pos[4]), tonumber(pos[5]), tonumber(pos[6])
+		-- Spawn Player
+	spawnPlayer(player, x, y, z, rot, skin, int, dim)
+	exports.GTIhud:showHud(player)
+	showChat(player, true)
+	setCameraTarget(player, player)
+	setTimer(setElementFrozen, 1500, 1, player, false)
+		-- Health/Armor
+	local health = GAD(account, "health") or "0,100"
+	health = split(health, ",")
+	setPedArmor(player, tonumber(health[1]))
+	setElementHealth(player, tonumber(health[2]))
+		-- Team
+	local team = GAD(account, "team") or DEFAULT_TEAM
+	exports.GTIteams:assignTeam(player, team)
+		-- Name Color
+	local name_color = GAD(account, "name_color")
+	if (name_color) then
+		r,g,b = unpack( split(name_color, ",") )
+		r,g,b = tonumber(r), tonumber(g), tonumber(b)
+		exports.GTIblips:setPlayerNameColor(player, r, g, b)
+	end
+		-- Account Creation
+	local accCreate = GAD(account, "accountCreation")
+	if (not accCreate) then
+		local timestamp = getRealTime().timestamp
+		SAD(account, "accountCreation", timestamp)
+	end
+		-- Last Login
+	local timestamp = getRealTime().timestamp
+	SAD(account, "lastLogin", timestamp)
+	
+	triggerEvent("onPlayerFirstTimeSpawn", player)
+end
+
+-- On Player Quit
+------------------>>
+
+function saveData()
+	local account = getPlayerAccount(source)
+	if (not account or isGuestAccount(account)) then return end
+	if (not firstTimeSpawn[source]) then return end
+		-- See if player selected a skin yet
+	local skin = GAD(account, "skin")
+	local pos = GAD(account, "position")
+	if (not skin or not pos) then return end
+		-- Position
+	local x,y,z = getElementPosition(source)
+	local _,_,rot = getElementRotation(source)
+	local int = getElementInterior(source)
+	local dim = getElementDimension(source)
+	local isAFK = getElementData(source, "afk")
+	if (isAFK) then
+		dim = isAFK
+	end
+	SAD(account, "position", string.format("%.3f",x)..","..string.format("%.3f",y)..","..string.format("%.3f",z)..","..string.format("%.3f",rot)..","..int..","..dim)
+		-- Team
+	local team = getPlayerTeam(source)
+	if (team) then
+		team = getTeamName(team)
+		SAD(account, "team", team)
+	end
+		-- Health/Armor
+	local health = getElementHealth(source)
+	if (isPedDead(source)) then health = 0 end
+	health = getPedArmor(source)..","..health
+	SAD(account, "health", health)
+		-- Name Color
+	local r,g,b = getPlayerNametagColor(source)
+	SAD(account, "name_color", table.concat({r,g,b}, ","))
+		-- Last IP
+	local lastip = getPlayerIP(source)
+	SAD(account, "lastip", lastip)
+		-- Last Serial
+	local lastserial = getPlayerSerial(source)
+	SAD(account, "lastserial", lastserial)
+		-- Last Name
+	local lastname = getPlayerName(source)
+	SAD(account, "lastname", lastname)
+	
+	firstTimeSpawn[source] = nil
+end
+addEventHandler("onPlayerQuit", root, saveData)
+
+addEventHandler("onPlayerFirstTimeSpawn", root, function()
+	firstTimeSpawn[source] = true
+end)
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		if (exports.GTIutil:isPlayerLoggedIn(player)) then
+			firstTimeSpawn[player] = true
+		end
+	end
+end)
+
+-- Select a Skin
+----------------->>
+
+addEvent("onPlayerBuySkin", true)
+addEventHandler("onPlayerBuySkin", root, function(store)
+	if (not store) then
+		spawn(source)
+	end
+end)
+
+-- First Time Spawn Pos
+------------------------>>
+
+addEvent("GTIaccounts.spawnPlayerAtLocation", true)
+addEventHandler("GTIaccounts.spawnPlayerAtLocation", root, function(i)
+	local account = getPlayerAccount(client)
+	SAD(account, "position", spawnPoints[i][1]..","..spawnPoints[i][2]..","..spawnPoints[i][3]..","..spawnPoints[i][4]..",0,0")
+	spawn(client)
+end)

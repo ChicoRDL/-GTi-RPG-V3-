@@ -1,0 +1,112 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    tab = {},
+    scrollpane = {},
+    edit = {},
+    window = {},
+    tabpanel = {},
+    button = {},
+    label = {},
+    staticimage = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(604, 277, 401, 376, "GTI Housing — 1234 Street Road", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.staticimage[1] = guiCreateStaticImage(9, 25, 384, 96, ":GTIhousing/files/housing.png", false, GUIEditor.window[1])
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 126, 383, 238, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Home", GUIEditor.tabpanel[1])
+
+GUIEditor.label[1] = guiCreateLabel(8, 17, 63, 15, "Address:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "right", false)
+GUIEditor.label[2] = guiCreateLabel(283, 7, 92, 15, "Interior 99 | ID 9999", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[2], "default-small")
+guiLabelSetColor(GUIEditor.label[2], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "right", false)
+GUIEditor.label[3] = guiCreateLabel(77, 9, 298, 29, "House Name\n1234 Street Road", false, GUIEditor.tab[1])
+guiLabelSetVerticalAlign(GUIEditor.label[3], "center")
+GUIEditor.label[4] = guiCreateLabel(8, 45, 63, 15, "Owner:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "right", false)
+GUIEditor.label[5] = guiCreateLabel(77, 44, 294, 15, "[ABC]Player>123 (player123)", false, GUIEditor.tab[1])
+GUIEditor.label[6] = guiCreateLabel(8, 68, 63, 15, "Valued at:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[6], "right", false)
+GUIEditor.label[7] = guiCreateLabel(77, 68, 108, 15, "$999,999,999", false, GUIEditor.tab[1])
+GUIEditor.label[8] = guiCreateLabel(8, 91, 368, 15, "This house is not for sale", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[8], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[8], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[8], "center", false)
+GUIEditor.label[9] = guiCreateLabel(6, 106, 372, 15, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", false, GUIEditor.tab[1])
+GUIEditor.label[10] = guiCreateLabel(8, 124, 63, 15, "Rented to:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[10], "right", false)
+GUIEditor.label[11] = guiCreateLabel(8, 147, 63, 15, "Rent Amt:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[11], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[11], "right", false)
+GUIEditor.label[12] = guiCreateLabel(77, 124, 294, 15, "{DEF}Player*456", false, GUIEditor.tab[1])
+GUIEditor.label[13] = guiCreateLabel(77, 147, 294, 15, "$999,999,999 per week", false, GUIEditor.tab[1])
+GUIEditor.button[1] = guiCreateButton(33, 180, 97, 22, "Enter House", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(139, 180, 97, 22, "Buy House", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(245, 180, 97, 22, "Rent House", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[14] = guiCreateLabel(192, 68, 63, 15, "Sale Price:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[14], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[14], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[14], "right", false)
+GUIEditor.label[15] = guiCreateLabel(261, 68, 108, 15, "$999,999,999", false, GUIEditor.tab[1])
+
+GUIEditor.tab[2] = guiCreateTab("Storage", GUIEditor.tabpanel[1])
+
+GUIEditor.label[16] = guiCreateLabel(22, 5, 117, 15, "My Inventory", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[16], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[16], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[16], "center", false)
+GUIEditor.label[17] = guiCreateLabel(12, 192, 362, 15, "Select an item and use the arrow buttons to transfer items to/from your house storage", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[17], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[17], "center", false)
+GUIEditor.gridlist[1] = guiCreateGridList(9, 24, 153, 165, false, GUIEditor.tab[2])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Items", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Amt", 0.5)
+GUIEditor.gridlist[2] = guiCreateGridList(223, 24, 153, 165, false, GUIEditor.tab[2])
+guiGridListAddColumn(GUIEditor.gridlist[2], "Items", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[2], "Amt", 0.5)
+GUIEditor.label[18] = guiCreateLabel(243, 5, 117, 15, "House Storage", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[18], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[18], 30, 160, 115)
+guiLabelSetHorizontalAlign(GUIEditor.label[18], "center", false)
+GUIEditor.button[4] = guiCreateButton(167, 66, 51, 20, "<<<", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[5] = guiCreateButton(167, 111, 51, 20, ">>>", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+GUIEditor.edit[1] = guiCreateEdit(167, 89, 50, 18, "", false, GUIEditor.tab[2])
+
+GUIEditor.tab[3] = guiCreateTab("Manage", GUIEditor.tabpanel[1])
+
+GUIEditor.scrollpane[1] = guiCreateScrollPane(7, 5, 369, 201, false, GUIEditor.tab[3])
+
+GUIEditor.button[6] = guiCreateButton(3, 10, 115, 22, "Issue Keys", false, GUIEditor.scrollpane[1])
+guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[19] = guiCreateLabel(124, 4, 222, 32, "Issue keys to players so that they can always enter your house", false, GUIEditor.scrollpane[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[19], "left", true)
+
+
+
+GUIEditor.label[20] = guiCreateLabel(356, 22, 37, 15, "[Close]", false, GUIEditor.window[1])

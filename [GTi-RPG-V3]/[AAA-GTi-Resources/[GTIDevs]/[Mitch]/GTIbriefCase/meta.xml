@@ -1,0 +1,5 @@
+<meta>
+    <info author="Mitch" name="Brief Case Run ( Turfers )" autostart="true" />
+    <script src="briefCase_s.lua" type="server" />
+	<script src="briefCase_c.lua" type="client" />
+</meta>

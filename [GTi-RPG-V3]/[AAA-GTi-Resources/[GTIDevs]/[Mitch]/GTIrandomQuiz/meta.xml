@@ -1,0 +1,4 @@
+<meta>
+    <info author="Mitch" name="Random Math quiz" autostart="true" />
+	<script src="mathQuiz_s.lua" type="server" />
+</meta>

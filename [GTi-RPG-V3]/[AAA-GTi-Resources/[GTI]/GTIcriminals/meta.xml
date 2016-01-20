@@ -1,0 +1,41 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Criminal Respect System" autostart="true" />
+    
+    <script src="reputation/reputation_gui.luac" type="client" />
+    <script src="reputation/rep_panel.luac" type="client" />
+    <script src="reputation/rep_panel.slua" />
+    
+    <script src="database.slua" />
+    <script src="reputation.slua" />
+    <script src="criminal.slua" />
+    
+    <export function="isCriminal" type="server" />
+    
+	<export function="getCriminalData"	type="server" />
+	<export function="setCriminalData"	type="server" />
+    <!--Task Progress Reports-->
+    <export function="getTaskRanks" type="server" />
+    <export function="getTaskRankFromLevel" type="server" />
+    <export function="getTaskMaxLevel" type="server" />
+    <export function="getTaskLevelFromProgress" type="server" />
+    <export function="getTaskLevelRequirement" type="server" />
+    <export function="getTaskUnitName" type="server" />
+    <!--Player Progress Reports-->
+    <export function="getPaymentMethod" type="server" />
+    <export function="getPlayerTaskLevel" type="server" />
+    <export function="getPlayerTaskRank" type="server" />
+    <export function="getPlayerTaskProgress" type="server" />
+    <export function="getPlayerTaskMoney" type="server" />
+    <export function="modifyPlayerTaskProgress" type="server" />
+    <export function="givePlayerTaskMoney" type="server" />
+    <!--Reputation Reports-->
+    <export function="getCriminalLevelFromRep" type="server" />
+    <export function="getCriminalLevelRequirement" type="server" />
+    <export function="getHourlyPay" type="server" />
+    <export function="getHourlyReputation" type="server" />
+    <export function="getPlayerTaskPayment" type="server" />
+    <export function="getPlayerCriminalLevel" type="server" />
+    <export function="getPlayerCriminalRep" type="server" />
+    <export function="modifyPlayerCriminalRep" type="server" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+</meta>

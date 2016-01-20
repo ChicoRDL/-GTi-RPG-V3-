@@ -1,0 +1,28 @@
+<meta>
+    <info author="JTPenn" version="2.0" name="Player and Vehicle Damage Handler" autostart="true" />
+    <script src="damage/player_damage.luac" 	type="client" />
+    <script src="damage/vehicle_damage.luac" 	type="client"/>
+    
+	<script src="dm_detection.slua" 	type="server" />
+	<script src="last_attacker.slua" 	type="server" />
+	<script src="recent_dmg.slua" 		type="server" />
+    <script src="vehicle_damage.slua" 	type="server" />
+	
+	<script src="combat.slua" 			type="server" />
+    
+	<export function="isPlayerAllowedToKill"		type="server" />
+	<export function="isPlayerNearAllowedTarget"	type="server" />
+
+	<export function="getLastAttacker" 				type="server" />
+    <export function="getLastAttackedPlayer" 		type="server" />
+    <export function="getLastAttackerWeapon" 		type="server" />
+    <export function="getLastAttackerDamage" 		type="server" />
+	
+	<export function="getLastVehicleAttacker"		type="server" />
+	
+	<export function="getPlayerTimeSinceDamaged"	type="server" />
+	<export function="isPlayerDefendingSelf"		type="server" />
+	
+	<export function="isPlayerInCombat" 			type="server" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

@@ -1,0 +1,7 @@
+<meta>
+    <info author="Sjoerd" type="script" name="Illegal Trucker" autostart="true" />
+    <script src="illTr_s.lua" type="server" />
+    <script src="illtr_c.lua" type="client" cache="false" />
+    
+    <export function="spawnTrailer" type="server" />
+</meta>

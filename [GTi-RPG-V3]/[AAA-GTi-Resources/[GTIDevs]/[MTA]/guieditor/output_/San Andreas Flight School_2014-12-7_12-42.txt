@@ -1,0 +1,19 @@
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        SAFSWindow = guiCreateWindow(691, 323, 344, 164, "San Andreas Flight School", false)
+        guiWindowSetSizable(SAFSWindow, false)
+
+        infoLBL = guiCreateLabel(10, 26, 324, 60, "Welcome to SAFS! For a price we can help you find skills you thought you never had. After you complete the course you'll receive a pilot license which opens up many opportunities to you.", false, SAFSWindow)
+        guiLabelSetColor(infoLBL, 254, 254, 254)
+        guiLabelSetHorizontalAlign(infoLBL, "left", true)
+        PriceLBL = guiCreateLabel(10, 105, 134, 19, "Price: $1000 per lesson", false, SAFSWindow)
+        guiLabelSetColor(PriceLBL, 177, 177, 177)
+        ApplyBTN = guiCreateButton(10, 134, 134, 21, "Apply", false, SAFSWindow)
+        guiSetProperty(ApplyBTN, "NormalTextColour", "FFFEFEFE")
+        CancelBTN = guiCreateButton(200, 134, 134, 21, "Cancel Application", false, SAFSWindow)
+        guiSetProperty(CancelBTN, "NormalTextColour", "FFFEFEFE")
+        InstructorLBL = guiCreateLabel(10, 90, 144, 15, "Instructor: David Johnson", false, SAFSWindow)
+        guiLabelSetColor(InstructorLBL, 177, 177, 177)    
+    end
+)

@@ -1,0 +1,409 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Ares
+-- Date: 27 Dec 2015
+-- Resource: GTIbusinesses/businesses.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local businesses = {}		-- Table of business Icons
+local addresses = {}	-- Table of IDs by Address
+
+--SERVER_SALE = 0.9	-- Deflation from Original Value for server sales
+BUSINESS_LIMIT = 3		-- Limit on number of businesses a player can own
+BUSINESS_LIMIT_DONOR = 5	-- Business Limit (Premium Feature)
+
+-- Load Houses
+--------------->>
+
+function loadBusinesses(businessData)
+	for id in pairs(businessData) do
+		if (id ~= 0) then
+				-- Create Business Icon
+			local loc = getBusinessData(id, "location")
+			local loc = split(loc, ",")
+			local x,y,z,int,dim = tonumber(loc[1]), tonumber(loc[2]), tonumber(loc[3]), tonumber(loc[4]), tonumber(loc[5])
+			local for_sale = isBusinessForSale(id)
+			local business = createPickup(x, y, z, 3, (for_sale and 1273 or 1272), 0)
+			setElementInterior(business, int)
+			setElementDimension(business, dim)
+			businesses[id] = business
+				-- Set Element Data
+			setElementData(business, "id", id)
+			local value = getBusinessData(id, "sale_cost") or getBusinessData(id, "value")
+			if (not isBusinessForSale(id)) then
+				value = getBusinessData(id, "bought_for") or getBusinessData(id, "sale_cost")
+			end
+			setElementData(business, "value", value)
+			local address = getBusinessData(id, "address")
+			setElementData(business, "address", address)
+				-- Associate Address
+			addresses[address] = id
+			
+			createHouseInterior(id, getHouseInterior(id))
+		end
+	end
+end
+
+-- Create/Delete business
+----------------------->>
+
+function createHouse(player, address, location, garage, int_id, value)
+		-- Get Next ID
+	local id = getNextAvailibleID()
+	
+	if (addresses[address]) then
+		exports.GTIhud:dm("ERROR: A business with this address already exists. Please enter a different address.", player, 255, 25, 25)
+		return
+	end
+	
+		-- Create business
+	local x,y,z,int,dim = unpack(location)
+	local business = createPickup(x, y, z, 3, 1273, 0)
+	setElementInterior(business, int)
+	setElementDimension(business, dim)
+	
+	setElementData(business, "id", id)
+	setElementData(business, "value", value)
+	setElementData(business, "address", address)
+	businesses[id] = business
+	
+	createHouseInterior(id, int_id)
+	
+		-- Add to Database
+	setBusinessData(id, "name", nil)
+	setBusinessData(id, "address", address)
+	setBusinessData(id, "location", table.concat(location, ","))
+	--setBusinessData(id, "garage", table.concat(garage, ","))
+	--setBusinessData(id, "interior", int_id)
+	setBusinessData(id, "value", value)
+	setBusinessData(id, "for_sale", 1)
+	setBusinessData(id, "bought_for", nil)
+	setBusinessData(id, "sale_cost", value)
+	--setBusinessData(id, "for_rent", 0)
+	--setBusinessData(id, "renter", nil)
+	--setBusinessData(id, "rent_cost", nil)
+	addresses[address] = id
+	
+	exports.GTIlogs:outputServerLog("HOUSING: "..getPlayerName(player).." mapped "..address.." at "..x..", "..y..", "..z.." for $"..value, "housing")
+	exports.GTIhud:dm("HOUSING: "..address.." has been successfully created.", player, 25, 255, 25)
+	return true
+end
+
+function deleteBusiness(player, business)
+	if (not isElement(player) or not business or type(business) ~= "number") then return end
+	if (not businesses[business]) then
+		exports.GTIhud:dm("Invalid business ID Provided", player, 255, 125, 0)
+		return
+	end
+	
+	local owner = getHouseOwner(business)
+	if (owner) then
+		exports.GTIbank:modifyAccountBankBalance(owner, getBusinessData(business, "bought_for"), "Housing: "..getBusinessAddress(business).." deleted by "..getPlayerName(player).." (Refund)")
+	end
+	
+	local x,y,z = getHousePosition(business)
+	exports.GTIlogs:outputServerLog("HOUSING: "..getPlayerName(player).." deleted "..getBusinessAddress(business).." at "..x..", "..y..", "..z, "housing")
+	exports.GTIhud:dm("HOUSING: "..getBusinessAddress(business).." has been successfully deleted.", player, 25, 255, 25)
+	
+	addresses[getElementData(businesses[business], "address")] = nil
+	destroyElement(businesses[business])
+	businesses[business] = nil
+	removeBusinessData(business)
+	return true
+end
+
+addCommandHandler("business-del", function(player, cmd, id)
+	deleteBusiness(player, tonumber(id))
+end, true)
+
+function reloadHouse(id)
+	local x,y,z,int,dim = getHousePosition(id)
+		-- Destroy business
+	destroyElement(businesses[id])
+	businesses[id] = nil
+		-- Recreate business
+	local business = createPickup(x, y, z, 3, (isBusinessForSale(id) and 1273 or 1272), 0)
+	setElementInterior(business, int)
+	setElementDimension(business, dim)
+	
+	setElementData(business, "id", id)
+	if (isBusinessForSale(id)) then
+		setElementData(business, "value", getBusinessData(id, "sale_cost") or getBusinessData(id, "value"))
+	else
+		setElementData(business, "value", getBusinessData(id, "bought_for") or getBusinessData(id, "sale_cost"))
+	end
+	setElementData(business, "address", getBusinessData(id, "address"))
+	businesses[id] = business
+	return true
+end
+
+-- Get business ID
+---------------->>
+
+function getHouseIDFromAddress(address)
+	if (not address or type(address) ~= "string") then return false end
+	return addresses[address] or false
+end
+
+function getHouseFromID(id)
+	if (not id or type(id) ~= "number") then return false end
+	return businesses[id] or false
+end
+
+-- Get business Data
+------------------>>
+
+function getHousePosition(id)
+	if (not id or type(id) ~= "number") then return false end
+	local x,y,z = getElementPosition(businesses[id])
+	local int = getElementInterior(businesses[id])
+	local dim = getElementDimension(businesses[id])
+	return x, y, z, int, dim
+end
+
+function getHouseGaragePosition(id)
+	if (not id or type(id) ~= "number") then return false end
+	local loc = getBusinessData(id, "garage")
+	local loc = split(loc, ",")
+	return tonumber(loc[1]), tonumber(loc[2]), tonumber(loc[3]), tonumber(loc[4])
+end
+
+function getHouseInterior(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "interior") or false
+end
+
+function getBusinessAddress(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "address") or false
+end
+
+function getHouseOriginalValue(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "value") or false
+end
+
+-- Home Ownership
+------------------>>
+
+function doesPlayerOwnHouse(player, business)
+	if (not isElement(player) or not business or type(business) ~= "number") then return false end
+	local owner = getHouseOwner(business)
+	local player = getPlayerAccount(player)
+	return owner == player or false
+end	
+
+function getHouseOwner(id)
+	if (not id or type(id) ~= "number") then return false end
+	local owner = getBusinessData(id, "owner") or false
+	if (owner) then 
+		return getAccount(owner)
+	else
+		return false
+	end	
+end
+
+function getHouseSaleCost(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "sale_cost") or getHouseOriginalValue(id)
+end
+
+function isBusinessForSale(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "for_sale") == 1 or false
+end
+
+-- Buy/Sell business
+------------------>>
+
+function buyHouse(player, business)
+	if (not isElement(player) or not business or type(business) ~= "number") then return false end
+		-- Check Money
+	local money = exports.GTIbank:getPlayerBankBalance(client)
+	local cost = getHouseSaleCost(business)
+	if (cost > money) then
+		exports.GTIhud:dm("You cannot afford this business. Your bank account needs $"..exports.GTIutil:tocomma(cost-money).." more.", client, 255, 125, 0)
+		return false
+	end
+	
+	local houses = #getPlayerTotalHouses(player)
+	local houseLimit = getPlayerMaxHouses(player)
+	if (houses >= houseLimit) then
+		exports.GTIhud:dm("You cannot buy this business. You have reach the "..(houseLimit > business_LIMIT and "premium " or "").."max business limit of "..houseLimit.." per player", client, 255, 125, 0)
+		return
+	end
+	
+	exports.GTIbank:modifyPlayerBankBalance(player, -cost, "Housing: Purchased "..getBusinessAddress(business))
+	exports.GTIstats:modifyPlayerStatData(player, "budget_property", cost)
+		-- Give Money to Owner
+	local owner = getHouseOwner(business)
+	if (owner) then
+		exports.GTIbank:modifyAccountBankBalance(owner, cost, "Housing: Sold "..getBusinessAddress(business).." to "..getPlayerName(player))
+		local plr = getAccountPlayer(owner)
+		if (plr) then
+			exports.GTIhud:dm("HOUSING: Your business at "..getBusinessAddress(business).." has been sold to "..getPlayerName(player).." for $"..exports.GTIutil:tocomma(cost), plr, 25, 255, 25)
+		end
+		removeOwnerCache(getAccountName(owner), business)
+	end
+	
+	local account = getPlayerAccount(player)
+	local accName = getAccountName(account)
+	setBusinessData(business, "owner", accName)
+	setBusinessData(business, "for_sale", 0)
+	setBusinessData(business, "bought_for", cost)
+	addOwnerCache(accName, business)
+	
+	reloadHouse(business)
+	
+	exports.GTIhud:dm("Success! You are now the owner of "..getBusinessAddress(business).."!", player, 25, 255, 25)
+	exports.GTIlogs:outputServerLog("HOUSING: "..getPlayerName(player).." purchased "..getBusinessAddress(business).." for $"..cost, "housing", player)
+	return true
+end
+
+function sellHouse(player, business, value)
+	if (not isElement(player) or not business or type(business) ~= "number") then return false end
+	if (value and type(value) == "number") then
+		setBusinessData(business, "sale_cost", value)
+	else
+		removeOwnerCache(getAccountName(getHouseOwner(business)), business)
+		setBusinessData(business, "owner", nil)
+		value = math.floor(getBusinessData(business, "value") * SERVER_SALE)
+		setBusinessData(business, "sale_cost", value)
+		exports.GTIbank:modifyPlayerBankBalance(player, value, "Housing: Sold "..getBusinessAddress(business).." to SAHA")
+	end
+	setBusinessData(business, "for_sale", 1)
+	clearHouseInventory(business)
+	
+	exports.GTIhud:dm(getBusinessAddress(business).." has been put up for sale for $"..exports.GTIutil:tocomma(value), player, 25, 255, 25)
+	reloadHouse(business)
+	exports.GTIlogs:outputServerLog("HOUSING: "..getPlayerName(player).." placed "..getBusinessAddress(business).." for sale for $"..value, "housing", player)
+	return true
+end
+
+function sellHouseToSAHA(account, business)
+	if ( type(account) ~= "userdata" and type(business) ~= "number" ) then return false end
+	removeOwnerCache(getAccountName(getHouseOwner(business)), business)
+	setBusinessData(business, "owner", nil)
+	value = math.floor(getBusinessData(business, "value") * SERVER_SALE)
+	setBusinessData(business, "sale_cost", value)
+	exports.GTIbank:modifyAccountBankBalance(account, value, "Housing: Sold "..getBusinessAddress(business).." to SAHA (inactivity)")
+	setBusinessData(business, "for_sale", 1)
+	clearHouseInventory(business)
+	reloadHouse(business)
+	exports.GTIhud:dm("HOUSING: Console placed "..getBusinessAddress(business).." for sale for $"..value, root, 0, 255, 0)
+end
+
+function revokeSale(player, business)
+	if (not isElement(player) or not business or type(business) ~= "number") then return false end
+	setBusinessData(business, "for_sale", 0)
+	exports.GTIhud:dm("You are no longer selling you business at "..getBusinessAddress(business), player, 255, 125, 25)
+	reloadHouse(business)
+	exports.GTIlogs:outputServerLog("HOUSING: "..getPlayerName(player).." stopped selling "..getBusinessAddress(business), "housing", player)
+	return true
+end
+
+-- Lock/Unlock State
+--------------------->>
+
+function isHouseLocked(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "locked") or false
+end
+
+function setHouseLocked(id, state)
+	if (not id or type(id) ~= "number" or type(state) ~= "boolean") then return false end
+	setBusinessData(id, "locked", state)
+	return true
+end
+
+-- business Access
+---------------->>
+
+function canPlayerAccessHouse(player, business)
+	if (not isElement(player) or not business or type(business) ~= "number") then return true end
+		-- business for Sale
+	if (isBusinessForSale(business)) then return true end
+		-- business Unlocked
+	if (not isHouseLocked(business)) then return true end
+		-- business Locked & Is Owner
+	if (doesPlayerOwnHouse(player, business)) then return true end
+		-- In Same Group as Player
+	if (exports.GTIgroups:areAccountsInSameGroup(getPlayerAccount(player), getHouseOwner(business))) then return true end
+		-- Is Cop and are wanted players inside
+	if (exports.GTIpoliceArrest:canPlayerArrest(player)) then
+		local occupants = getPlayersInHouseInterior(business)
+		for i,plr in ipairs(occupants) do
+			if (exports.GTIpoliceWanted:isPlayerWanted(plr)) then return true end
+		end
+	end
+	return false
+end
+
+-- Ownership Change
+-------------------->>
+
+function setHouseOwner(business, owner)
+	if (not business or type(business) ~= "number" or not owner or not getAccount(owner)) then return false end
+	setBusinessData(business, "owner", owner)
+	clearHouseInventory(business)
+	return true
+end
+
+-- business Limit
+--------------->>
+
+function getPlayerMaxHouses(player)
+	if (not isElement(player)) then return end
+	if (exports.GTIpremium:isPremium(player, "max_houses")) then return business_LIMIT_DONOR end
+	return business_LIMIT
+end
+
+function getAccountMaxHouses(account)
+	if (not account or isGuestAccount(account)) then return false end
+	if (exports.GTIpremium:isAccountPremium(account, "max_houses")) then return business_LIMIT_DONOR end
+	return business_LIMIT
+end
+
+-- Home Rentals
+---------------->>
+
+function getHouseRenter(id)
+	if (not id or type(id) ~= "number") then return false end
+	local renter = getBusinessData(id, "renter") or false
+	if (renter) then 
+		return getAccount(renter)
+	else
+		return false
+	end	
+end
+
+function getHouseRentCost(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "rent_cost") or false
+end
+
+function isHouseForRent(id)
+	if (not id or type(id) ~= "number") then return false end
+	return getBusinessData(id, "for_rent") == 1 or false
+end
+
+-- Miscellaneous
+----------------->>
+
+function getPlayerHousingNetWorth(player)
+	if (not isElement(player)) then return false end
+	local houses = getPlayerTotalHouses(player)
+	
+	local worth = 0
+	for i,business in ipairs(houses) do
+		local value = getHouseOriginalValue(business)
+		local pprice = getBusinessData(business, "bought_for") or 0
+		if (value > pprice) then
+			worth = worth + value
+		else
+			worth = worth + pprice
+		end
+	end
+	return worth
+end

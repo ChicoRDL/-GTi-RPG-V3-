@@ -1,0 +1,46 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    label = {},
+    gridlist = {},
+    window = {},
+    button = {}
+}
+GUIEditor.window[1] = guiCreateWindow(591, 271, 384, 460, "GTI Premium Shop", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.85)
+
+GUIEditor.staticimage[1] = guiCreateStaticImage(13, 31, 64, 64, ":GTIpremium/images/Token.png", false, GUIEditor.window[1])
+GUIEditor.label[1] = guiCreateLabel(87, 46, 69, 15, "MY ŦOKENS:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 0, 178, 240)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(87, 63, 68, 15, "9999", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.label[3] = guiCreateLabel(164, 28, 205, 68, "Visit http://gtirpg.net/premium to find out information on how to purchase Ŧokens.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", true)
+guiLabelSetVerticalAlign(GUIEditor.label[3], "center")
+GUIEditor.gridlist[1] = guiCreateGridList(9, 121, 366, 256, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Cost", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Description", 0.5)
+GUIEditor.label[4] = guiCreateLabel(15, 104, 347, 15, "Select an item off the list that you wish to purchase", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "center", false)
+GUIEditor.label[5] = guiCreateLabel(10, 416, 362, 37, "Note: Each item on the list expires after 30 days.\nAccess does not mean that you get the item for free, it simply means that you are able to access/buy the item", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", true)
+GUIEditor.button[1] = guiCreateButton(24, 384, 104, 25, "Purchase Item", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(142, 384, 104, 25, "Get Ŧokens", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(260, 384, 104, 25, "Exit Shop", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")

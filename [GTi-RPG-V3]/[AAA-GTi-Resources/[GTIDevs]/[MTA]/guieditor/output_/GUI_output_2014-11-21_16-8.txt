@@ -1,0 +1,44 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    label = {},
+    button = {},
+    window = {},
+    scrollpane = {},
+    combobox = {}
+}
+GUIEditor.window[1] = guiCreateWindow(528, 711, 590, 180, "GTI Ammu-Nation Weapons Store", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.85)
+
+GUIEditor.scrollpane[1] = guiCreateScrollPane(190, 23, 392, 146, false, GUIEditor.window[1])
+
+GUIEditor.staticimage[1] = guiCreateStaticImage(31, 5, 64, 64, ":GTIammu/weapons/22.png", false, GUIEditor.scrollpane[1])
+GUIEditor.label[1] = guiCreateLabel(7, 71, 114, 15, "Pistol", false, GUIEditor.scrollpane[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.button[1] = guiCreateButton(10, 88, 106, 39, "Buy Weapon\n$9,999,999", false, GUIEditor.scrollpane[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.combobox[1] = guiCreateComboBox(9, 46, 173, 22, "", false, GUIEditor.window[1])
+
+GUIEditor.label[2] = guiCreateLabel(4, -18, 158, 15, "", false, GUIEditor.combobox[1])
+
+GUIEditor.label[3] = guiCreateLabel(12, 26, 168, 15, "Weapons Category", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+GUIEditor.label[4] = guiCreateLabel(185, 23, 15, 142, "|  |  |  |  |  |  |  |  |  |  |  |  |  |  ", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+GUIEditor.label[5] = guiCreateLabel(185, 30, 15, 142, "|  |  |  |  |  |  |  |  |  |  |  |  |  |  ", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "left", true)
+GUIEditor.staticimage[2] = guiCreateStaticImage(31, 78, 128, 60, ":GTIammu/files/Ammu-Nation.png", false, GUIEditor.window[1])
+GUIEditor.button[2] = guiCreateButton(47, 149, 95, 20, "Leave", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

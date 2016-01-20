@@ -1,0 +1,260 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 23 Sept 2014
+-- Resource: GTIbank/bank.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local TRANSFER_TIME = 300	-- Minutes Needed to Transfer Cash
+
+-- Bank Login
+-------------->>
+
+function bankAccountLogin(player, dim)
+	if (not isElement(player) or not dim) then return end
+	if (getElementType(player) ~= "player" or not isPedOnGround(player)) then return end
+	
+	bindKey(player, "z", "down", bankAccountLoginBind)
+	exports.GTIhud:drawNote("bankLogin", "Press Z to login to your bank account.", player, 25, 255, 25, 8000)
+	addEventHandler("onColShapeLeave", source, bankAccountLoginUnbind)
+	setTimer(function(source)
+		removeEventHandler("onColShapeLeave", source, bankAccountLoginUnbind)
+	end, 8000, 1, source)
+end
+
+function bankAccountLoginUnbind(player)
+	if (not isElement(player) or getElementType(player) ~= "player") then return end
+	unbindKey(player, "z", "down", bankAccountLoginBind)
+	exports.GTIhud:drawNote("bankLogin", nil, player)
+	removeEventHandler("onColShapeLeave", source, bankAccountLoginUnbind)
+end
+
+function bankAccountLoginBind(player)
+	triggerClientEvent(player, "GTIbank.bankAccountLogin", resourceRoot)
+	unbindKey(player, "z", "down", bankAccountLoginBind)
+	exports.GTIhud:drawNote("bankLogin", nil, player)
+end
+
+addEvent("GTIbank.bankAccountLogin", true)
+addEventHandler("GTIbank.bankAccountLogin", root, function(password, pin)
+	local account = getPlayerAccount(client)
+	if (not pin) then
+		local accname = getAccountName(account)
+		if (not getAccount(accname, password)) then
+			triggerClientEvent(client, "GTIbank.displayBankAccount", resourceRoot)
+			return
+		end
+		
+		local bankpin = getBankData(account, "pin")
+		if (bankpin) then
+			triggerClientEvent(client, "GTIbank.bankAccountLogin2", resourceRoot)
+			return
+		end
+	else
+		local bankpin = getBankData(account, "pin")
+		if (bankpin ~= password) then
+			exports.GTIhud:dm("Error: Incorrect PIN", client, 255, 25, 25)
+			return
+		end
+	end
+	
+	local bank = getBankAccounts(client)
+	triggerClientEvent(client, "GTIbank.displayBankAccount", resourceRoot, bank, bDimensions)
+end)
+
+-- Make Transaction
+-------------------->>
+
+addEvent("GTIbank.makeTransaction", true)
+addEventHandler("GTIbank.makeTransaction", root, function(deposit, account, amount)
+	if (account == "Main Account") then
+		
+		if (deposit) then
+			local money = getPlayerMoney(client)
+			if (money < amount) then
+				exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+				return
+			end
+			modifyPlayerBankBalance(client, amount, "Bank Deposit")
+			TPM(client, amount, "Bank Deposit to Main Account")
+		else
+			local money = getPlayerBankBalance(client)
+			if (money < amount) then
+				exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+				return
+			end
+			modifyPlayerBankBalance(client, -amount, "Bank Withdrawal")
+			GPM(client, amount, "Bank Withdrawal from Main Account")
+		end
+		
+	elseif (account == "Group Account") then
+		
+		local groupID = exports.GTIgroups:getPlayerGroup(client)
+		if (not groupID) then 
+			exports.GTIhud:dm("Error: Group not found. Transaction failed.", client, 255, 25, 25)
+		return end
+		
+		if (deposit) then
+			if (not exports.GTIgroups:hasMemberPermissionTo(client, "deposit_cash")) then
+				exports.GTIhud:dm("Error: You do not have permission to deposit money into the group account.", client, 255, 25, 25)
+			return end
+			local money = getPlayerMoney(client)
+			if (money < amount) then
+				exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+				return
+			end
+			modifyGroupBankBalance(groupID, amount, "Bank Deposit from "..getPlayerName(client))
+			TPM(client, amount, "Bank Deposit to Group Account")
+		else
+			if (not exports.GTIgroups:hasMemberPermissionTo(client, "withdraw_cash")) then
+				exports.GTIhud:dm("Error: You do not have permission to withdraw money from into the group account.", client, 255, 25, 25)
+			return end
+			local money = getGroupBankBalance(groupID)
+			if (money < amount) then
+				exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+				return
+			end
+			modifyGroupBankBalance(groupID, -amount, "Bank Withdrawal from "..getPlayerName(client))
+			GPM(client, amount, "Bank Withdrawal from Group Account")
+		end
+		
+	end
+	
+	exports.GTIhud:dm("Transaction Successful", client, 25, 255, 25)
+	
+	setPedAnimation(client, "INT_SHOP", "shop_pay", -1, false, false, false, false) 
+	
+	local bank = getBankAccounts(client)
+	triggerClientEvent(client, "GTIbank.displayBankAccount", resourceRoot, bank, bDimensions)
+end)
+
+-- Make Transfer
+----------------->>
+
+addEvent("GTIbank.makeTransfer", true)
+addEventHandler("GTIbank.makeTransfer", root, function(from_account, new_account, to_account, amount)
+	if (from_account == to_account) then
+		exports.GTIhud:dm("Error: You cannot transfer money to the same account.", client, 255, 125, 25)
+		return
+	end
+		-- Cancel Transfer for New Players
+	if (exports.GTIstats:getPlayerPlaytime(client) < TRANSFER_TIME) then
+		exports.GTIhud:dm("Error: You cannot transfer cash until you have at least "..(TRANSFER_TIME/60).." hours of playtime.", client, 255, 125, 25)
+		return
+	end
+	
+	if (from_account == "Main Account") then
+		
+		local money = getPlayerBankBalance(client)
+		if (money < amount) then
+			exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+			return
+		end
+		
+		if (new_account) then
+			local account = getAccount(to_account)
+			if (not account) then
+				exports.GTIhud:dm("Error: Account '"..to_account.."' not found. Transfer Failed.", client, 255, 125, 25)
+				return
+			end
+			if (getAccountName(getPlayerAccount(client)) == to_account) then
+				exports.GTIhud:dm("Error: You cannot transfer money to the same account.", client, 255, 125, 25)
+				return
+			end
+			modifyPlayerBankBalance(client, -amount, "Bank Transfer to "..to_account)
+			modifyAccountBankBalance(account, amount, "Bank Transfer from "..getAccountName(getPlayerAccount(client)))
+		else
+			if (to_account == "Group Account") then
+				local groupID = exports.GTIgroups:getPlayerGroup(client)
+				if (not groupID) then 
+					exports.GTIhud:dm("Error: Group not found. Transfer failed.", client, 255, 25, 25)
+				return end
+				
+				if (not exports.GTIgroups:hasMemberPermissionTo(client, "deposit_cash")) then
+					exports.GTIhud:dm("Error: You do not have permission to deposit money into the group account.", client, 255, 25, 25)
+				return end
+				
+				local group_name = exports.GTIgroups:getGroupName(groupID)
+				modifyPlayerBankBalance(client, -amount, "Bank Transfer to "..group_name.." (Group)")
+				modifyGroupBankBalance(groupID, amount, "Bank Transfer from "..getAccountName(getPlayerAccount(client)))
+			end
+		end
+		
+	elseif (from_account == "Group Account") then
+		
+		local groupID = exports.GTIgroups:getPlayerGroup(client)
+		if (not groupID) then 
+			exports.GTIhud:dm("Error: Group not found. Transfer failed.", client, 255, 25, 25)
+		return end
+		if (not exports.GTIgroups:hasMemberPermissionTo(client, "withdraw_cash")) then
+			exports.GTIhud:dm("Error: You do not have permission to withdraw money from into the group account.", client, 255, 25, 25)
+		return end
+		
+		local group_name = exports.GTIgroups:getGroupName(groupID)
+
+		local money = getGroupBankBalance(groupID)
+		if (money < amount) then
+			exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+			return
+		end
+		
+		if (new_account) then
+			local account = getAccount(to_account)
+			if (not account) then
+				exports.GTIhud:dm("Error: Account '"..to_account.."' not found. Transfer Failed.", client, 255, 125, 25)
+				return
+			end
+			modifyGroupBankBalance(groupID, -amount, "Bank Transfer to "..to_account.." by "..getPlayerName(client))
+			modifyAccountBankBalance(account, amount, "Bank Transfer from "..group_name.." (Group)")
+		else
+			if (to_account == "Main Account") then
+				modifyGroupBankBalance(groupID, -amount, "Bank Transfer to "..getAccountName(getPlayerAccount(client)).." by "..getPlayerName(client))
+				modifyPlayerBankBalance(client, amount, "Bank Transfer from '"..group_name.."' (Group)")
+			end
+		end
+		
+	end
+	
+	exports.GTIhud:dm("Bank Transfer Successful", client, 25, 255, 25)
+	
+	local bank = getBankAccounts(client)
+	triggerClientEvent(client, "GTIbank.displayBankAccount", resourceRoot, bank, bDimensions)
+end)
+
+-- Transaction Log
+------------------->>
+
+addEvent("GTIbank.transactionLog", true)
+addEventHandler("GTIbank.transactionLog", root, function()
+	getBankLogs(client)
+end)
+
+addEvent("onLogDatabaseLoad")
+addEventHandler("onLogDatabaseLoad", root, function(category, logs)
+	if (getElementType(source) ~= "player") then return end
+	if (category ~= "cash" and category ~= "bank" and category ~= "groupbank") then return false end
+	triggerClientEvent(source, "GTIbank.transactionLog", resourceRoot, category, logs)
+end)
+
+-- Ped Animations
+------------------>>
+
+function startBankPedAnim(player, dim)
+	if (not isElement(player) or getElementType(player) ~= "player" or not dim) then return end
+	local ped = pedsByCol[source]
+	if (not ped) then return end
+	setPedAnimation(ped, "SHOP", "SHP_Serve_Loop")
+end
+
+function stopBankPedAnim(player, dim)
+	if (not isElement(player) or getElementType(player) ~= "player" or not dim) then return end
+	local ped = pedsByCol[source]
+	if (not ped) then return end
+	setPedAnimation(ped)
+end
+
+addEvent("GTIbank.stopAnimation", true)
+addEventHandler("GTIbank.stopAnimation", root, function()
+	setPedAnimation(client)
+end)

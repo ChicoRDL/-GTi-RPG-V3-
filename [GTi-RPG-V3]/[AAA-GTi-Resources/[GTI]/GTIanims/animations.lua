@@ -1,0 +1,101 @@
+local catsTable = {
+"Girlfriend",
+"Relax",
+"Dances",
+"Police",
+"Strip",
+"Rap",
+"Misc"
+}
+local animsTable = {--block, anim, category, name
+		{"Attractors", "Stepsit_loop", "Relax", "Relax"},
+		{"BD_FIRE", "BD_GF_Wave", "Girlfriend", "Hello!"},
+		{"BD_FIRE", "Grlfrd_Kiss_03", "Girlfriend", "Kiss"},
+		{"BD_FIRE", "M_smklean_loop", "Relax", "Eat"},
+		{"BEACH", "bather", "Relax", "Take a bath"},
+		{"BEACH", "Lay_Bac_Loop", "Relax", "Lay back"},	
+		{"BEACH", "ParkSit_M_loop", "Relax", "Think"},
+		{"BEACH", "SitnWait_loop_W", "Relax", "Sit and wait"}, 
+		{"benchpress", "gym_bp_celebrate", "Misc", "Celebrate"},
+		{"BOMBER", "BOM_Plant", "Misc", "Plant a bomb"},
+		{"CAR", "flag_drop", "Misc", "Flag drop"},
+		{"CAR", "Sit_relaxed", "Relax", "Sit relaxed"},
+		{"CAR", "Tap_hand", "Misc", "Sit in a car n' tap"},
+		{"COP_AMBIENT", "Coplook_think", "Police", "Cop thinking"},
+		{"CRACK", "crckdeth2", "Relax", "Crack death1"},
+		{"CRACK", "crckdeth3", "Relax", "Crack death2"},
+		{"CRACK", "crckidle1", "Relax", "Crack idle1"},
+		{"CRACK", "crckidle2", "Relax", "Crack idle2"},
+		{"CRACK", "crckidle3", "Relax", "Crack idle3"},
+		{"DANCING", "bd_clap", "Dances", "Clap"},
+		{"DANCING", "dance_loop", "Dances", "Dance1"},
+		{"DANCING", "DAN_Loop_A", "Dances", "Dance2"},
+		{"DANCING", "dnce_M_a", "Dances", "Dance3"},
+		{"DANCING", "dnce_M_b", "Dances", "Dance4"},
+		{"DANCING", "dnce_M_c", "Dances", "Dance5"},
+		{"DANCING", "dnce_M_d", "Dances", "Dance6"},
+		{"DANCING", "DAN_Up_A", "Dances", "Dance up"},
+		{"DANCING", "DAN_Down_A", "Dances", "Dance down"},
+		{"DANCING", "DAN_Left_A", "Dances", "Dance left"},
+		{"DANCING", "DAN_Right_A", "Dances", "Dance right"},
+		{"DEALER", "DEALER_IDLE", "Relax", "Dealer idle1"},
+		{"DEALER", "DEALER_IDLE_01", "Relax", "Dealer idle2"},
+		{"DILDO", "DILDO_IDLE", "Rap", "Dildo"}, 
+		{"FAT", "IDLE_tired", "Relax", "Tired"}, 
+		{"GHANDS", "gsign1LH", "Misc", "Gang sign1"},
+		{"GHANDS", "gsign2LH", "Misc", "Gang sign2"},
+		{"GRAVEYARD", "prst_loopa", "Misc", "Priest"}, 
+		{"MISC", "Plyrlean_loop", "Misc", "Lean"},
+		{"MISC", "plyr_shkhead", "Misc", "Facepalm"},
+		{"MISC", "Scratchballs_01", "Rap", "Scratch balls"},
+		{"ON_LOOKERS", "lkup_loop", "Misc", "Look up"},
+		{"ON_LOOKERS", "panic_cower", "Misc", "Panic cower"},
+		{"ON_LOOKERS", "panic_hide", "Misc", "Panic hide"},
+		{"ON_LOOKERS", "panic_loop", "Misc", "Panic"},
+		{"ON_LOOKERS", "wave_loop", "Misc", "Bye bye!"},
+		{"PARK", "Tai_Chi_Loop", "Misc", "Tai Chi"},
+		{"PAULNMAC", "Piss_loop", "Rap", "Piss"},
+		{"PAULNMAC", "Piss_out", "Rap", "Pissing"},
+		{"PAULNMAC", "wank_loop", "Rap", "Wanking"},
+		{"ped", "cower", "Misc", "Cower"},
+		{"ped", "endchat_02", "Misc", "End it out"},
+		{"ped", "endchat_03", "Misc", "End it out2"},
+		{"ped", "gang_gunstand", "Police", "Gun stand"},
+		{"ped", "handsup", "Police", "Hands up!"},
+		{"ped", "SEAT_idle", "Relax", "Seat"},
+		{"POLICE", "CopTraf_Come", "Police", "Come"},
+		{"POLICE", "Door_Kick", "Police", "Door Kick"},
+		{"RAPPING", "RAP_A_Loop", "Rap", "Rap1"},
+		{"RAPPING", "RAP_B_Loop", "Rap", "Rap2"},
+		{"RAPPING", "RAP_C_Loop", "Rap", "Rap3"}, 
+		{"SMOKING", "M_smklean_loop", "Misc", "Smoke lean"},
+		{"SMOKING", "M_smkstnd_loop", "Misc", "Smoke"},
+		{"STRIP", "strip_A", "Strip", "Strip1"},
+		{"STRIP", "strip_B", "Strip", "Strip2"},
+		{"STRIP", "strip_C", "Strip", "Strip3"},
+		{"STRIP", "strip_D", "Strip", "Strip4"},
+		{"STRIP", "strip_E", "Strip", "Strip5"},
+		{"STRIP", "strip_F", "Strip", "Strip6"},
+		{"STRIP", "strip_G", "Strip", "Strip7"},
+		{"STRIP", "STR_C1", "Strip", "Strip8"},
+		{"STRIP", "STR_C2", "Strip", "Strip9"},
+		{"STRIP", "STR_Loop_A", "Strip", "Strip10"},
+		{"STRIP", "STR_Loop_B", "Strip", "Strip11"},
+		{"STRIP", "STR_Loop_C", "Strip", "Strip12"}, 
+		{"SWEET", "sweet_ass_slap", "Strip", "Strip13"},
+		{"SWEET", "Sweet_injuredloop", "Strip", "Strip14"},
+}
+
+function getCategories()
+	for i,v in ipairs(catsTable) do
+		setCat(v)
+	end
+end
+
+function getAnims(cat)
+	for i,v in ipairs(animsTable) do
+		if v[3] == cat then
+			setAnim(v[1],v[2],v[4])
+		end
+	end
+end

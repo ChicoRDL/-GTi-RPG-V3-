@@ -1,0 +1,181 @@
+<meta>
+	<info name=" Vehmods Client Side Performence" author="Ares" autostart="true" />
+	<script src="vTable.luac" type="client" />
+	<script src="vClient.luac" type="client"/>
+	
+	<file src="IMG/Vehicles.png" />
+	<file src="mods/Tor3to54.txd" type="client" download="false" />
+	<file src="mods/Tor3to54.dff" type="client" download="false" />
+	<file src="mods/Tor3toV10.txd" type="client" download="false" />
+	<file src="mods/Tor3toV10.dff" type="client" download="false" />	
+	<file src="mods/BulletGT.txd" type="client" download="false" />
+	<file src="mods/BulletGT.dff" type="client" download="false" />
+	<file src="mods/picador.txd" type="client" download="false" />
+	<file src="mods/picador.dff" type="client" download="false" />
+	<file src="mods/vigero.txd" type="client" download="false" />
+	<file src="mods/vigero.dff" type="client" download="false" />
+	<file src="mods/pegass.txd" type="client" download="false" />
+	<file src="mods/pegass.dff" type="client" download="false" />
+	<file src="mods/frost.txd" type="client" download="false" />
+	<file src="mods/frost.dff" type="client" download="false" />
+	<file src="mods/TampaGT.txd" type="client" download="false" />
+	<file src="mods/TampaGT.dff" type="client" download="false" />
+	<file src="mods/DiabloSV.txd" type="client" download="false" />
+	<file src="mods/DiabloSV.dff" type="client" download="false" />	
+	<file src="mods/PorschePan.txd" type="client" download="false" />
+	<file src="mods/PorschePan.dff" type="client" download="false" />		
+	<file src="mods/SwatHQ.txd" type="client" download="false" />
+	<file src="mods/SwatHQ.dff" type="client" download="false" />		  
+	<file src="mods/BuggyMW.txd" type="client" download="false" />
+	<file src="mods/BuggyMW.dff" type="client" download="false" />
+	<file src="mods/blueray.txd" type="client" download="false" />
+	<file src="mods/blueray.dff" type="client" download="false" />
+	<file src="mods/tor3tov9.txd" type="client" download="false" />
+	<file src="mods/tor3tov9.dff" type="client" download="false" />
+	<file src="mods/FordMGT.txd" type="client" download="false" />
+	<file src="mods/FordMGT.dff" type="client" download="false" />
+	<file src="mods/ML500.txd" type="client" download="false" />
+	<file src="mods/ML500.dff" type="client" download="false" />
+	<file src="mods/ElCaminoSS.txd" type="client" download="false" />
+	<file src="mods/ElCaminoSS.dff" type="client" download="false" />
+	<file src="mods/Army.txd" type="client" download="false" />
+	<file src="mods/Army.dff" type="client" download="false" />
+	<file src="mods/HaulerGTAV.txd" type="client" download="false" />
+	<file src="mods/HaulerGTAV.dff" type="client" download="false" />
+	<file src="mods/NRG500.txd" type="client" download="false" />
+	<file src="mods/NRG500.dff" type="client" download="false" />
+	<file src="mods/bmx.txd" type="client" download="false" />
+	<file src="mods/bmx.dff" type="client" download="false" />
+	<file src="mods/clover.txd" type="client" download="false" />
+	<file src="mods/clover.dff" type="client" download="false" />
+	<file src="mods/cheetah.txd" type="client" download="false" />
+	<file src="mods/cheetah.dff" type="client" download="false" />	
+	<file src="mods/sabre.txd" type="client" download="false" />
+	<file src="mods/sabre.dff" type="client" download="false" />
+	<file src="mods/hotknife.txd" type="client" download="false" />
+	<file src="mods/hotknife.dff" type="client" download="false" />
+	<file src="mods/CheCorv.txd" type="client" download="false" />
+	<file src="mods/CheCorv.dff" type="client" download="false" />
+	<file src="mods/TowTruckIV.txd" type="client" download="false" />
+	<file src="mods/TowTruckIV.dff" type="client" download="false" />
+	<file src="mods/copcarls.txd" type="client" download="false" />
+	<file src="mods/copcarls.dff" type="client" download="false" />
+	<file src="mods/Coronet.txd" type="client" download="false" />
+	<file src="mods/Coronet.dff" type="client" download="false" />
+	<file src="mods/Golf2GTI.txd" type="client" download="false" />
+	<file src="mods/Golf2GTI.dff" type="client" download="false" />
+	<file src="mods/PlymouthDuste.txd" type="client" download="false" />
+	<file src="mods/PlymouthDuste.dff" type="client" download="false" />
+	<file src="mods/VazGladiator.txd" type="client" download="false" />
+	<file src="mods/VazGladiator.dff" type="client" download="false" />
+	<file src="mods/LamborghiniCountach.txd" type="client" download="false" />
+	<file src="mods/LamborghiniCountach.dff" type="client" download="false" />
+	<file src="mods/SmithMafia.txd" type="client" download="false" />
+	<file src="mods/SmithMafia.dff" type="client" download="false" />
+	<file src="mods/SuperBird1970.txd" type="client" download="false" />
+	<file src="mods/SuperBird1970.dff" type="client" download="false" />
+	<file src="mods/Boeing737800.txd" type="client" download="false" />
+	<file src="mods/Boeing737800.dff" type="client" download="false" />
+	<file src="mods/BobcatHQ.txd" type="client" download="false" />
+	<file src="mods/BobcatHQ.dff" type="client" download="false" />
+	<file src="mods/TurismoF40.txd" type="client" download="false" />
+	<file src="mods/TurismoF40.dff" type="client" download="false" />	
+	<file src="mods/DodgeChaSRT8.txd" type="client" download="false" />
+	<file src="mods/DodgeChaSRT8.dff" type="client" download="false" />	
+	<file src="mods/FlipCar.txd" type="client" download="false" />
+	<file src="mods/FlipCar.dff" type="client" download="false" />	
+	<file src="mods/Chopper.txd" type="client" download="false" />
+	<file src="mods/Chopper.dff" type="client" download="false" />		
+	<file src="mods/JeepSRT8.txd" type="client" download="false" />
+	<file src="mods/JeepSRT8.dff" type="client" download="false" />	
+	<file src="mods/PickupWake.txd" type="client" download="false" />
+	<file src="mods/PickupWake.dff" type="client" download="false" />
+	<file src="mods/SilveradoRed.txd" type="client" download="false" />
+	<file src="mods/SilveradoRed.dff" type="client" download="false" />
+	<file src="mods/Suburban2010.txd" type="client" download="false" />
+	<file src="mods/Suburban2010.dff" type="client" download="false" />		
+	<file src="mods/FerrariF430.txd" type="client" download="false" />
+	<file src="mods/FerrariF430.dff" type="client" download="false" />
+	<file src="mods/CheCruze.txd" type="client" download="false" />
+	<file src="mods/CheCruze.dff" type="client" download="false" />	
+
+	<!-- Disabled cus its size:
+
+	<file src="mods/AntiZombie.txd" type="client" download="false" />
+	<file src="mods/AntiZombie.dff" type="client" download="false" />	
+
+	<file src="mods/FordMustangRTR.txd" type="client" download="false" />
+	<file src="mods/FordMustangRTR.dff" type="client" download="false" />
+
+	<file src="mods/Koenigsegg.txd" type="client" download="false" />
+	<file src="mods/Koenigsegg.dff" type="client" download="false" />	
+
+	<file src="mods/BMWM3E92.txd" type="client" download="false" />
+	<file src="mods/BMWM3E92.dff" type="client" download="false" />
+
+	<file src="mods/BMWZ4.txd" type="client" download="false" />
+	<file src="mods/BMWZ4.dff" type="client" download="false" />	
+
+	<file src="mods/EvoVIII.txd" type="client" download="false" />
+	<file src="mods/EvoVIII.dff" type="client" download="false" />
+
+	<file src="mods/MaseratiGhibliS.txd" type="client" download="false" />
+	<file src="mods/MaseratiGhibliS.dff" type="client" download="false" />	
+
+	<file src="mods/Silverado2500.txd" type="client" download="false" />
+	<file src="mods/Silverado2500.dff" type="client" download="false" />
+
+	<file src="mods/Peugeot206.txd" type="client" download="false" />
+	<file src="mods/Peugeot206.dff" type="client" download="false" />		
+
+	<file src="mods/ChevroletC10.txd" type="client" download="false" />
+	<file src="mods/ChevroletC10.dff" type="client" download="false" />	
+
+	<file src="mods/Morgan.txd" type="client" download="false" />
+	<file src="mods/Morgan.dff" type="client" download="false" />
+
+	<file src="mods/S65AMG.txd" type="client" download="false" />
+	<file src="mods/S65AMG.dff" type="client" download="false" />
+
+	<file src="mods/ShubertArmored.txd" type="client" download="false" />
+	<file src="mods/ShubertArmored.dff" type="client" download="false" />	
+
+	<file src="mods/FORDF100.txd" type="client" download="false" />
+	<file src="mods/FORDF100.dff" type="client" download="false" />	
+
+	<file src="mods/StanislawMKIXC.txd" type="client" download="false" />
+	<file src="mods/StanislawMKIXC.dff" type="client" download="false" />	
+
+	<file src="mods/copcarvg.txd" type="client" download="false" />
+	<file src="mods/copcarvg.dff" type="client" download="false" />	
+
+	<file src="mods/copcarla.txd" type="client" download="false" />
+	<file src="mods/copcarla.dff" type="client" download="false" /> 
+
+	<file src="mods/copcarsf.txd" type="client" download="false" />
+	<file src="mods/copcarsf.dff" type="client" download="false" />
+
+	<file src="mods/copcarlv.txd" type="client" download="false" />
+	<file src="mods/copcarlv.dff" type="client" download="false" />	
+
+	<file src="mods/AmbulanceHQ.txd" type="client" download="false" />
+	<file src="mods/AmbulanceHQ.dff" type="client" download="false" />
+
+	<file src="mods/Firetruk.txd" type="client" download="false" />
+	<file src="mods/Firetruk.dff" type="client" download="false" />	
+
+	<file src="mods/FiretruckLA.txd" type="client" download="false" />
+	<file src="mods/FiretruckLA.dff" type="client" download="false" />
+
+	<file src="mods/Mazda8.txd" type="client" download="false" />
+	<file src="mods/Mazda8.dff" type="client" download="false" />	
+
+	<file src="mods/PlymouthGTX1972.txd" type="client" download="false" />
+	<file src="mods/PlymouthGTX1972.dff" type="client" download="false" />
+
+	<file src="mods/sabre1.txd" type="client" download="false" />
+	<file src="mods/sabre1.dff" type="client" download="false" />
+	-->	
+	
+	<min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

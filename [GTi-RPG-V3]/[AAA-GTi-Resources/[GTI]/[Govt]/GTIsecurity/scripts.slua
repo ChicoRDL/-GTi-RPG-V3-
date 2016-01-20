@@ -1,0 +1,9 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 06 Feb 2014
+-- Resource: GTIsecurity/scripts.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+setElementData(root, "mapSecurity", "G32MdAZtHJ9Ajmm9GkuvtFQh")

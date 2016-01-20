@@ -1,0 +1,45 @@
+<meta>
+    <info author="Mitch" name="/markatm, /markstore, /dropdrug, /dropmoney, /dropwep" autostart="true" />
+    <script src="Misc/misc_s.lua" type="client" />
+    <script src="Fixs/jailF_c.luac" type="client" />
+    <script src="Commands/mark24_c.luac" type="client" />
+    <script src="Misc/intMarker_s.lua" type="server" />
+    <script src="Commands/dropDrug_s.lua" type="server" />
+    <script src="Fixs/doors_s.lua" type="server" />
+    <script src="Commands/dropMoney_s.lua" type="server" />
+    <script src="Commands/dropWeapon_s.lua" type="server" />
+	<script src="dxDrawBorderedText.luac" type="client" />
+	<script src="Misc/spawnProtection_c.luac" type="client" />
+	<script src="Misc/spawnProtection_s.lua" type="server" />
+	<script src="Commands/clearchat_c.lua" type="client" />
+	<script src="Misc/headshot_s.lua" type="server" />
+	<script src="PremiumVehRespawn/client.luac" type="client" />
+	<script src="PremiumVehRespawn/server.lua" type="server" />
+	<script src="WheelsColor/pack.lua" type="client" />
+	<script src="server.lua" type="server" />
+	<script src="infoTextDX_c.lua" type="client" />
+	<script src="infoTextDX_s.lua" type="server" />
+	<file src="WheelsColor/car/wheel_gn1.dff" />
+	<file src="WheelsColor/car/wheel_gn2.dff" />
+	<file src="WheelsColor/car/wheel_gn3.dff" />
+	<file src="WheelsColor/car/wheel_gn4.dff" />
+	<file src="WheelsColor/car/wheel_gn5.dff" />
+	<file src="WheelsColor/car/wheel_lr1.dff" />
+	<file src="WheelsColor/car/wheel_lr2.dff" />
+	<file src="WheelsColor/car/wheel_lr3.dff" />
+	<file src="WheelsColor/car/wheel_lr4.dff" />
+	<file src="WheelsColor/car/wheel_lr5.dff" />
+	<file src="WheelsColor/car/wheel_or1.dff" />
+	<file src="WheelsColor/car/wheel_sr1.dff" />
+	<file src="WheelsColor/car/wheel_sr2.dff" />
+	<file src="WheelsColor/car/wheel_sr3.dff" />
+	<file src="WheelsColor/car/wheel_sr4.dff" />
+	<file src="WheelsColor/car/wheel_sr5.dff" />
+	<file src="WheelsColor/car/wheel_sr6.dff" />
+
+    <export function="dxDrawBorderedText" type="client" />
+	<export function="isPlayerNearGangster" type="server" />
+	<export function="isPlayerNearSWAT" type="server" />
+	<export function="create3DText" type="client" />
+	<export function="create3DText" type="server" />
+</meta>

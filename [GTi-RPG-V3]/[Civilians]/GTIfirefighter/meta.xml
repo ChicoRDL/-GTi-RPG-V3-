@@ -1,0 +1,10 @@
+<meta>
+<info author="Emile" name="Firefighter Job" autostart="true" />
+	<script src="FirefighterClient.lua" type="client" />
+	<script src="FirefighterServer.lua" type="server" />
+	<script src="maps.slua" type="server" />
+<file src="fire.dff" />
+<file src="fire.mp3" />
+<file src="vehfire.png" />
+<file src="fire.png" />
+</meta>

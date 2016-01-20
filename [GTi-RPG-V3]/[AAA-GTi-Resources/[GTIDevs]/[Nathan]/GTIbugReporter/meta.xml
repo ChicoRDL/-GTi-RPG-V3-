@@ -1,0 +1,5 @@
+<meta>
+    <info author="Nathan" version="1.0" name="Ingame Bug Reporting System" autostart="false" />
+    <script src="gui.luac" type="client" />
+    <script src="igbugreport_s.lua" type="server" />
+</meta>

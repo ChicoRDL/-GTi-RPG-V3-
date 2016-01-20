@@ -1,0 +1,22 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="[EXP] Prison System" autostart="false" />
+    
+	<file src="files/celldoorclose.mp3" />
+	<file src="files/SAPD_logo.png" />
+	
+	<script src="busted/busted.luac"		type="client" />
+	
+	<script src="police_report/report_gui.luac"	type="client" />
+	<script src="police_report/report.luac"		type="client" />
+	<script src="police_report/report.slua"		/>
+	
+	<script src="player_death.slua" />
+	<script src="prison.slua" 		/>
+	<script src="release.slua" 		/>
+	
+    <export function="jailPlayer" 			type="server" />
+    <export function="releasePlayer" 		type="server" />
+    <export function="releasePlayer2" 		type="server" />
+    <export function="isPlayerInJail" 		type="server" />
+    <export function="getRemainingJailTime"	type="server" />
+</meta>

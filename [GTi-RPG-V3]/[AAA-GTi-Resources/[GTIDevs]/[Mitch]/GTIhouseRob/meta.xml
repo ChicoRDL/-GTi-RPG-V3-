@@ -1,0 +1,7 @@
+<meta>
+<info author="Mitch" name="House Robbery" autostart="true" />
+<script src="houserob_c.luac" type="client" />
+<script src="houserob_s.lua" type="server" />
+
+<export function="isPlayerRobbing" type="client" />
+</meta>

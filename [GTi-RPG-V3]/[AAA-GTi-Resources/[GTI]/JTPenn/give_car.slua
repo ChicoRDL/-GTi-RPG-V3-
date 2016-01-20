@@ -1,0 +1,59 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 01 Jun 2014
+-- Resource: JTPenn/give_car.slua
+-- Version: 0.5
+----------------------------------------->>
+
+local vehicles = {}
+
+local restricted = {
+	[520] = true,	-- Hydra
+	[425] = true,	-- Hunter
+	[432] = true,	-- Rhino
+	[447] = true,	-- Seasparrow
+	[476] = true,	-- Rustler
+	[464] = true,	-- RC Baron
+}
+
+function setVehicle(player, command, ...)
+	local vehicle_ = table.concat({...}, " ")
+	local vehicle = getVehicleIDFromName(vehicle_)
+	if (not vehicle) then
+		outputChatBox("Invalid Vehicle Name: '"..vehicle_.."'", player, 255, 25, 25)
+		return
+	end
+	
+	if (restricted[vehicle]) then
+		outputChatBox("You cannot spawn a "..vehicle_, player, 255, 25, 25)
+		return
+	end
+	
+	if (vehicles[player] and isElement(vehicles[player])) then
+		destroyElement(vehicles[player])
+		vehicles[player] = nil
+	end
+	
+	local x,y,z = getElementPosition(player)
+	local _,_,rot = getElementRotation(player)
+	local int, dim = getElementInterior(player), getElementDimension(player)
+	
+	vehicles[player] = createVehicle(vehicle, x, y, z, 0, 0, rot)
+	setElementInterior(vehicles[player], int)
+	setElementDimension(vehicles[player], dim)
+	warpPedIntoVehicle(player, vehicles[player])
+end
+addCommandHandler("sv", setVehicle)
+
+function hideVehicle(player)
+	if (vehicles[player] and isElement(vehicles[player])) then
+		destroyElement(vehicles[player])
+		vehicles[player] = nil
+	end
+end
+addCommandHandler("hide", hideVehicle)
+
+addEventHandler("onPlayerQuit", root, function()
+	hideVehicle(source)
+end)

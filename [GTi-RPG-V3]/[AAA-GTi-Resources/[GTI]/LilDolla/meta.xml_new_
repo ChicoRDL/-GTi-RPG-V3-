@@ -1,0 +1,13 @@
+<meta>
+    <info author="LilDolla" name="LilDolla" autostart="false"></info>
+    
+    <script src="dx_tests.lua" type="client" />
+    
+    <script src="lildolla_s.lua" type="server" />
+    <script src="irc_s.lua" type="server" />
+    
+    <export function="remoteIRCOutput" type="server" http="true" />
+    <export function="queryIRCUser" type="server" http="true" />
+    <export function="getIRCServer" type="server" http="true" />
+    <export function="kaylaKick" type="server" http="true" />
+</meta>

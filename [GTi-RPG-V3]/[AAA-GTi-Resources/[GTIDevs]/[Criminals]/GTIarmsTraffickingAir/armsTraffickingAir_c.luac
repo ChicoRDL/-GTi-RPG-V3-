@@ -1,0 +1,459 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: Mitch
+-- Date: 11 Feb 2015
+-- Resource: armsTraffickingAir_c.lua
+-- Version: 1.0
+----------------------------------------->>
+
+allowedPlanes = {
+    [593] = true, -- Dodo
+}
+-- object,  car, car, car, car, car
+
+local refilloc = {
+{347.700, 2538.311, 15.751},
+{367.502, 2461.013, 15.484},
+{245.291, 2468.685, 15.477},
+{291.397, 2539.674, 15.821},
+{325.845, 2543.845, 15.807}
+}
+
+local missionloc = {
+{-1424.912, -950.802, 200.094, -1437.740, -953.418, 201.063, -1439.671, -953.398, 201.094, -1438.638, -955.527, 201.079, -1429.232, -957.927, 200.905 },
+{-253.969, 1532.482, 74.563, -249.999, 1528.162, 75.563, -252.482, 1524.536, 75.563, -254.314, 1529.652, 75.563, -264.090, 1537.354, 75.563},
+{-788.025, 2423.010, 156.165, -780.382, 2414.261, 157.111, -780.504, 2410.009, 157.093, -784.249, 2411.803, 157.054, -800.799, 2423.254, 157.024},
+{85.533, 2793.058, 78.275, 104.263, 2787.146, 78.731, 104.466, 2784.794, 78.875, 106.544, 2786.792, 78.642, 94.145, 2788.816, 79.120},
+{279.339, 673.418, 9.115, 278.510, 680.170, 10.357, 281.959, 680.301, 10.346, 279.342, 681.604, 10.396, 288.616, 667.029, 9.914},
+{-1130.368, 2023.124, 136.921, -1123.682, 2019.170, 138.363, -1122.788, 2017.552, 138.330, -1121.864, 2015.517, 137.866, -1125.683, 2030.311, 139.250},
+{-1996.372, -1496.437, 83.117, -1984.169, -1498.207, 85.522, -1984.702, -1500.594, 85.420, -1982.057, -1498.746, 85.792, -1994.652, -1510.826, 84.343},
+{-2749.024, -2483.095, 3.558, -2750.269, -2475.800, 4.598, -2747.122, -2474.520, 4.405, -2751.214, -2473.860, 4.645, -2740.412, -2479.499, 4.029},
+{255.620, 138.735, 0.517, 268.057, 136.263, 1.941, 268.934, 132.805, 2.388, 271.459, 135.103, 2.303, 255.244, 134.300, 1.576},
+}
+
+local destination = {
+{347.700, 2538.311, 15.751},
+{367.502, 2461.013, 15.484},
+{245.291, 2468.685, 15.477},
+{291.397, 2539.674, 15.821},
+{325.845, 2543.845, 15.807}
+}
+
+removeRefill = false
+isRobbing = false
+bombs = false
+totalItems = 4
+
+function startMission ( player, seat )
+    if ( allowedPlanes [getElementModel(source)] and isRobbing == false and player == localPlayer and seat == 0 ) then
+	 --local job = exports.GTIemployment:getPlayerJob ( true )
+        if ( exports.AresMisc:isAbleToCrime ( player ) ) then
+		exports.GTIhud:drawNote('trafABind', 'Press [N] to start the mission', 255, 0, 0, 10000)
+		bindKey ( 'N', 'down', startNewMission )
+	end
+    end
+end
+addEventHandler ("onClientVehicleEnter", root, startMission )
+
+addEventHandler ( "onClientVehicleExit", root, 
+	function ( player, seat ) 
+		if localPlayer == player and allowedPlanes [ getElementModel ( source ) ] and seat == 0 then 
+			unbindKey ( 'N', 'down', startNewMission )
+			exports.GTIhud:drawNote ( 'trafABind', '', 0, 0, 0, 0 )
+		end
+	end 
+) 
+
+function startNewMission ()
+	 --local job = exports.GTIemployment:getPlayerJob ( true )
+	unbindKey( 'N', 'down', startNewMission)
+	exports.GTIhud:drawNote ( 'trafABind', '', 0, 0, 0, 0 )
+        if ( exports.AresMisc:isAbleToCrime ( localPlayer ) ) then
+		    totalItems = 4
+			exports.GTIhud:dm("There are enemy's near the ammo package! Use your bombs to take them out!", 200, 0,0)
+			exports.GTIhud:dm ("Weapons: Locked", 200, 0, 0 )
+                loc = math.random ( #missionloc )
+                enemyPed1 = createPed ( 28, missionloc[loc][4], missionloc[loc][5], missionloc[loc][6], 90 )
+	        enemyPed2 = createPed ( 29, missionloc[loc][7], missionloc[loc][8], missionloc[loc][9], -90 )
+		enemyPed3 = createPed ( 30, missionloc[loc][10], missionloc[loc][11], missionloc[loc][12], 0 )
+		vehicle = createVehicle ( 470, missionloc[loc][13], missionloc[loc][14], missionloc[loc][15] )
+	        pedBlip1 = createBlipAttachedTo ( enemyPed1, 0, 2, 255, 0, 0)
+	        pedBlip2 = createBlipAttachedTo ( enemyPed2, 0, 2, 255, 0, 0)
+		pedBlip3 = createBlipAttachedTo ( enemyPed3, 0, 2, 255, 0, 0)
+		x, y, z = getElementPosition ( vehicle )
+		colshape = createColCuboid ( x-75, y-75, z-75, 150, 150, 150 )
+		addEventHandler ("onClientColShapeHit", colshape, bindKeys )
+		addEventHandler ("onClientColShapeLeave", colshape, unbindZKey )
+		addEventHandler ("onClientColShapeLeave", colshape, weaponsLocked )
+	        setElementFrozen ( enemyPed1, true )
+	        setElementFrozen ( enemyPed2, true )
+		setElementFrozen ( enemyPed3, true )
+		setElementFrozen ( vehicle, true )
+	        addEventHandler ("onClientPedDamage", enemyPed2, ifCarsExploded)
+	        bombs = true
+	        isRobbing = true
+	end
+end
+
+function bindKeys ( player )
+    if ( player == localPlayer ) then
+	    exports.GTIhud:drawNote("armsTraffickingDropBombs", "Press [LCTRL] or [SPACE] to drop the bombs", 200, 0, 0, 9999999)
+		exports.GTIhud:drawStat ("bombsGTIArms", "Bombs Left", totalItems.."/4", 200, 0, 0, 45000 )
+		exports.GTIhud:dm ("Weapons: Free", 0, 255, 0 )
+		bindKey ("lctrl", "down", dropBombs )
+		bindKey ("space", "down", dropBombs )
+		bombs = true
+	end
+end
+
+function weaponsLocked ( player )
+    if ( player == localPlayer ) then
+	    exports.GTIhud:dm ("Weapons: Locked", 200, 0, 0 )
+		unbindKey ("lctrl", "down", dropBombs )
+		unbindKey ("space", "down", dropBombs )
+	end
+end
+
+function unbindZKey ( player )
+    if ( player == localPlayer ) then
+	if ( bombs == false ) then return end
+	    exports.GTIhud:drawNote("armsTraffickingDropBombs", "", 200, 0, 0, 0)
+		exports.GTIhud:drawStat("bombsGTIArms", "", "", 200, 0, 0, 0)
+		exports.GTIhud:drawNote ("wepStatusGTIarms", "", "", 200, 0, 0, 0 )
+		unbindKey ("lctrl", "down", dropBombs )
+		unbindKey ("space", "down", dropBombs )
+	end
+end
+addEventHandler ("onClientVehicleExit", root, unbindZKey )
+addEventHandler ("onClientPlayerWasted", root, unbindZKey )
+
+function ifCarsExploded ( )
+    	removeRefill = true
+	markerAmmo = createMarker ( missionloc[loc][1], missionloc[loc][2], missionloc[loc][3], "cylinder", 4, 200, 0, 0, 150 )
+   	markerBlip1 = createBlipAttachedTo ( markerAmmo, 0, 2, 0, 255, 0, 255, 0, 99999.0 )
+	exports.GTIhud:dm("You killed the enemy, now get the ammo!", 200, 0, 0)
+	if isElement ( enemyPed1 ) then
+		destroyElement ( enemyPed1 )
+	end
+	if isElement ( enemyPed2 ) then
+		destroyElement ( enemyPed2 )
+	end
+	if isElement ( enemyPed3 ) then
+	    destroyElement ( enemyPed3 )
+	end
+	if isElement ( pedBlip1 ) then
+		destroyElement ( pedBlip1 )
+	end
+	if isElement ( pedBlip2 ) then
+		destroyElement ( pedBlip2 )
+	end
+	if isElement ( pedBlip3 ) then
+	    destroyElement ( pedBlip3 )
+	end
+	if isElement ( vehicle ) then
+	    destroyElement ( vehicle )
+	end
+	if isElement ( vehicle1 ) then
+		destroyElement ( vehicle1 )
+	end
+	if isElement ( colshape ) then
+	    destroyElement ( colshape )
+	end
+	addEventHandler ("onClientMarkerHit", markerAmmo, loadAmmo )
+	unbindKey ("lctrl", "down", dropBombs )
+	unbindKey ("space", "down", dropBombs )
+	exports.GTIhud:drawNote("armsTraffickingDropBombs", "", 200, 0, 0, 0)
+	exports.GTIhud:drawStat("bombsGTIArms", "", "", 200, 0, 0, 0)
+end
+
+function loadAmmo ( player )
+    if ( player == localPlayer ) then
+	    local veh = getPedOccupiedVehicle ( localPlayer )
+		if ( not isVehicleOnGround ( veh ) ) then return end
+        exports.GTIhud:drawProgressBar("GTIarmsTrafficking_loadInAmmo", "Loading Ammo", 200, 0, 0, 20000)
+		exports.GTIhud:dm ("Weapons: Locked", 200, 0, 0 )
+	    toggleControl ( "enter_exit", false )
+	    toggleControl ( "accelerate", false )
+	    toggleControl ( "brake_reverse", false )
+        local veh = getPedOccupiedVehicle ( localPlayer )
+	    setElementFrozen ( veh, true )
+		setElementFrozen ( localPlayer, true )
+        timer1 = setTimer ( returnAirfield, 20000, 1 )
+		unbindKey ("lctrl", "down", dropBombs )
+		unbindKey ("space", "down", dropBombs )
+	end
+end
+
+function returnAirfield ( )
+    locu = math.random ( #destination )
+	deliveryMarker = createMarker ( destination[locu][1], destination[locu][2], destination[locu][3], "cylinder", 4, 200, 0, 0, 150 )
+	deliveryBlip = createBlipAttachedTo ( deliveryMarker, 51, 2, 0, 0, 0, 255, 0, 99999.0 )
+	exports.GTIhud:dm("The ammo is loaded, get back to the airfield.", 200, 0, 0)
+	triggerServerEvent ("GTIarmsTrafficking_wantedLevel", localPlayer )
+	toggleControl ( "enter_exit", true )
+	toggleControl ( "accelerate", true )
+	toggleControl ( "brake_reverse", true )
+	local veh = getPedOccupiedVehicle ( localPlayer )
+	setElementFrozen ( veh, false )
+	setElementFrozen ( localPlayer, false )
+	addEventHandler ("onClientMarkerHit", deliveryMarker, payOut )
+	addEventHandler ("onClientMarkerHit", deliveryMarker, startNewMission )
+	unbindKey ("lctrl", "down", dropBombs )
+	unbindKey ("space", "down", dropBombs )
+	if isElement ( markerAmmo ) then	
+	    destroyElement ( markerAmmo )
+	end
+	if isElement ( markerBlip1 ) then
+  	    destroyElement ( markerBlip1 )
+	end
+	if isElement ( vehicle ) then
+	    destroyElement ( vehicle )
+	end
+end
+
+function payOut ( player )
+    if ( player == localPlayer and isPedInVehicle ( localPlayer ) ) then
+		local veh = getPedOccupiedVehicle ( localPlayer )
+		if ( not isVehicleOnGround ( veh ) ) then return end
+		setElementFrozen ( veh, true )
+		isRobbing = false
+		destroyElement ( deliveryMarker )
+		destroyElement ( deliveryBlip )
+		setTimer ( unfreeze, 3000, 1 )
+		toggleControl ( "enter_exit", false )
+		triggerServerEvent ("GTIarmsTrafficking_payOutForPlane", localPlayer )
+	end
+end
+
+function unfreeze ( )
+    local veh = getPedOccupiedVehicle ( localPlayer )
+	setElementFrozen ( veh, false )
+	toggleControl ( "enter_exit", true )
+end
+
+function dropBombs ( )
+	if totalItems <= 0 then return end
+	if isVehicleOnGround ( getPedOccupiedVehicle ( localPlayer ) ) then
+		exports.GTIhud:dm("You can't drop bombs, fly higher!", 200, 0,0)
+		return
+	end
+	local x, y ,z = getElementPosition ( getPedOccupiedVehicle ( localPlayer ) )
+	createProjectile ( localPlayer, 21, x, y, z-1.9, 3, localPlayer, 0, 0, 0, 0, 0, -3 )
+	totalItems = totalItems - 1
+	exports.GTIhud:drawStat ("bombsGTIArms", "Bombs Left", totalItems.."/4", 200, 0, 0, 9999999 )
+	triggerEvent ("GTIarmsTrafficking_totalBombs", localPlayer, localPlayer )
+end
+
+function totalBombs ( )
+    if ( totalItems == 0 ) then
+	    unbindKey ("lctrl", "down", dropBombs )
+	    unbindKey ("space", "down", dropBombs )
+		exports.GTIhud:drawNote("armsTraffickingDropBombs", "", 200, 0, 0, 0)
+		exports.GTIhud:dm ("Weapons: Locked", 200, 0, 0 )
+	if ( removeRefill == true ) then return end
+		exports.GTIhud:dm("You are out of bombs, Re-Arm at Verdant Meadows Airport", 200, 0,0)
+		loc = math.random ( #refilloc )
+		refilM = createMarker ( refilloc[loc][1], refilloc[loc][2], refilloc[loc][3], "cylinder", 5, 200, 0, 0, 150 )
+		refilB = createBlipAttachedTo ( refilM, 51 )
+		addEventHandler ("onClientMarkerHit", refilM, refillingBombs )
+		bombs = false
+	end
+end
+addEvent ("GTIarmsTrafficking_totalBombs", true )
+addEventHandler ("GTIarmsTrafficking_totalBombs", root, totalBombs )
+
+function refillingBombs ( player )
+    if ( player == localPlayer and isPedInVehicle ( localPlayer ) ) then
+	    local veh = getPedOccupiedVehicle ( localPlayer )
+		if ( not isVehicleOnGround ( veh ) ) then return end
+	    exports.GTIhud:drawProgressBar("refillingBombs", "Re-arming Bombs", 200, 0, 0, 20000)
+		setElementFrozen ( veh, true )
+	    --[[ loc = math.random ( #missionloc )
+	     vehicle1 = createVehicle ( 470, missionloc[loc][13], missionloc[loc][14], missionloc[loc][15] )
+	    x, y, z = getElementPosition ( vehicle1 )
+	    colshape2 = createColCuboid ( x-75, y-75, z-75, 150, 150, 150 ) ]]
+		timerUnfreeze = setTimer ( unfreezeVeh, 20000, 1 )
+		toggleControl ( "enter_exit", false )
+	end
+end
+
+function unfreezeVeh ( )
+    local veh = getPedOccupiedVehicle ( localPlayer )
+	setElementFrozen ( veh, false )
+	exports.GTIhud:dm("Re-armed 4 new bombs!", 200, 0,0)
+	totalItems = 4
+	exports.GTIhud:drawStat ("bombsGTIArms", "Bombs Left", totalItems.."/4", 200, 0, 0, 45000 )
+	--addEventHandler ("onClientColShapeHit", colshape, bindKeys )
+	--addEventHandler ("onClientColShapeLeave", colshape, unbindZKey )
+	--addEventHandler ("onClientColShapeLeave", colshape, weaponsLocked )
+	if isElement ( refilM ) then	
+	    destroyElement ( refilM )
+	end
+	if isElement ( refilB ) then
+	    destroyElement ( refilB )
+	end
+	if isElement ( vehicle1 ) then
+	    destroyElement ( vehicle1 )
+	end
+	toggleControl ( "enter_exit", true )
+	removeRefill = false
+	bombs = true
+end
+
+function stopMissionAir ( jobName )
+    if ( source == localPlayer ) then
+	    --removeEventHandler ("onClientVehicleEnter", root, startNewMission )
+	    --addEventHandler ("onClientVehicleEnter", root, startNewMission )
+	    exports.GTIhud:drawNote("armsTraffickingDropBombs", "", 200, 0, 0, 0)
+		exports.GTIhud:drawStat("bombsGTIArms", "", "", 200, 0, 0, 0)
+		exports.GTIhud:drawProgressBar("refillingBombs", "", 200, 0, 0, 0)
+		exports.GTIhud:drawProgressBar("GTIarmsTrafficking_loadInAmmo", "", 200, 0, 0, 0)
+		isRobbing = false
+		removeRefill = false
+		bombs = false
+		unbindKey ("lctrl", "down", dropBombs )
+		unbindKey ("space", "down", dropBombs )
+		toggleControl ( "enter_exit", true )
+		if ( isTimer ( timer1 ) ) then killTimer ( timer1 )
+	end
+		totalItems = 4
+		if isElement ( refilM ) then
+		    destroyElement ( refilM )
+		end
+		if isElement ( refilB ) then
+		    destroyElement ( refilB )
+		end
+		if isElement ( enemyPed1 ) then
+		    destroyElement ( enemyPed1 )
+	    end
+	    if isElement ( enemyPed2 ) then
+		    destroyElement ( enemyPed2 )
+	    end
+	    if isElement ( enemyPed3 ) then
+	        destroyElement ( enemyPed3 )
+	    end
+	    if isElement ( pedBlip1 ) then
+		    destroyElement ( pedBlip1 )
+	    end
+	    if isElement ( pedBlip2 ) then
+		    destroyElement ( pedBlip2 )
+	    end
+	    if isElement ( pedBlip3 ) then
+	        destroyElement ( pedBlip3 )
+	    end
+	    if isElement ( vehicle ) then
+	        destroyElement ( vehicle )
+	    end
+		if isElement ( markerAmmo ) then	
+	        destroyElement ( markerAmmo )
+	    end
+	    if isElement ( markerBlip1 ) then
+  	        destroyElement ( markerBlip1 )
+	    end
+		if isElement ( deliveryMarker ) then
+		    destroyElement ( deliveryMarker )
+		end
+		if isElement ( deliveryBlip ) then
+		    destroyElement ( deliveryBlip )
+		end
+		if isElement ( colshape ) then
+		    destroyElement ( colshape )
+		end
+		if isElement ( colshape ) then
+		    destroyElement ( colshape )
+		end
+		if ( isTimer ( timerUnfreeze ) ) then killTimer ( timerUnfreeze )
+		end
+	end
+end
+addEvent ("GTIarmsTrafficking_onPlaneHide", true )
+addEventHandler ("GTIarmsTrafficking_onPlaneHide", root, stopMissionAir )
+addEventHandler ("onClientPlayerQuitJob", root, 
+function ( jobName ) 
+	if not jobName or exports.GTIemployment:getPlayerJob(true) == "Criminal" then 
+		return true
+	else
+		return stopMissionAir ( )
+	end
+end
+)
+
+addEventHandler ("onClientPlayerGetJob", root, 
+function ( jobName ) 
+	if jobName == "Criminal" then 
+		return true
+	else
+		return stopMissionAir ( )
+	end
+end
+)
+
+addEventHandler ("onClientPlayerWasted", root, stopMissionAir )
+
+function stopMissionAirs ( player )
+    if ( player == localPlayer ) then
+	    --removeEventHandler ("onClientVehicleEnter", root, startNewMission )
+	    --addEventHandler ("onClientVehicleEnter", root, startNewMission )
+	    exports.GTIhud:drawNote("armsTraffickingDropBombs", "", 200, 0, 0, 0)
+		exports.GTIhud:drawStat("bombsGTIArms", "", "", 200, 0, 0, 0)
+		exports.GTIhud:drawProgressBar("refillingBombs", "", 200, 0, 0, 0)
+		exports.GTIhud:drawProgressBar("GTIarmsTrafficking_loadInAmmo", "", 200, 0, 0, 0)
+		isRobbing = false
+		removeRefill = false
+		bombs = false
+		unbindKey ("lctrl", "down", dropBombs )
+		unbindKey ("space", "down", dropBombs )
+		toggleControl ( "enter_exit", true )
+		if ( isTimer ( timer1 ) ) then killTimer ( timer1 )
+	end
+		totalItems = 4
+		if isElement ( refilM ) then
+		    destroyElement ( refilM )
+		end
+		if isElement ( refilB ) then
+		    destroyElement ( refilB )
+		end
+		if isElement ( enemyPed1 ) then
+		    destroyElement ( enemyPed1 )
+	    end
+	    if isElement ( enemyPed2 ) then
+		    destroyElement ( enemyPed2 )
+	    end
+	    if isElement ( enemyPed3 ) then
+	        destroyElement ( enemyPed3 )
+	    end
+	    if isElement ( pedBlip1 ) then
+		    destroyElement ( pedBlip1 )
+	    end
+	    if isElement ( pedBlip2 ) then
+		    destroyElement ( pedBlip2 )
+	    end
+	    if isElement ( pedBlip3 ) then
+	        destroyElement ( pedBlip3 )
+	    end
+	    if isElement ( vehicle ) then
+	        destroyElement ( vehicle )
+	    end
+		if isElement ( markerAmmo ) then	
+	        destroyElement ( markerAmmo )
+	    end
+	    if isElement ( markerBlip1 ) then
+  	        destroyElement ( markerBlip1 )
+	    end
+		if isElement ( deliveryMarker ) then
+		    destroyElement ( deliveryMarker )
+		end
+		if isElement ( deliveryBlip ) then
+		    destroyElement ( deliveryBlip )
+		end
+		if isElement ( colshape ) then
+		    destroyElement ( colshape )
+		end
+		if isElement ( colshape ) then
+		    destroyElement ( colshape )
+		end
+		if ( isTimer ( timerUnfreeze ) ) then killTimer ( timerUnfreeze )
+		end
+	end
+end
+addEventHandler ("onClientVehicleExit", root, stopMissionAirs )

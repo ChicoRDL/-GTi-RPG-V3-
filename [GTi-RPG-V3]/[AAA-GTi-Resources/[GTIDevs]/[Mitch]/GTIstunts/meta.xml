@@ -1,0 +1,8 @@
+<meta>
+	<info author="Mitch" name="Stunt System" autostart="true" />
+	<script src="client.lua" type="client" />
+	<script src="server.lua" type="server" />
+	
+	<export function="getPlayerStunts" type="server"/>
+	<export function="setPlayerStunts" type="server"/>
+</meta>

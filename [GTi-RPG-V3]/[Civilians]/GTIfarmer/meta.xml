@@ -1,0 +1,29 @@
+<meta>
+    <script src="farmer_c.lua" type="client"/>
+    <script src="farmer_plant.lua" type="client"/>
+    <script src="farmer_veh.lua" type="client" />
+    <script src="utils_c.lua" type="client" />
+    <script src="farm_map.lua" type="client" />
+    
+    <script src="ui/dx_c.lua" type="client" />
+    <script src="ui/functions.lua" type="client" />
+    <script src="ui/tables.lua" type="client" />
+    <script src="ui/utils.lua" type="client" />
+    <file src="ui/images/logo.png" />
+    <file src="ui/images/d.png" />
+    <file src="ui/images/u.png" />
+    <file src="ui/images/ttile.png" />
+    
+    <script src="ui/guide/guide.lua" type="client" />
+    <file src="ui/guide/l_mouse.png" />
+    <file src="ui/guide/r_mouse.png" />
+    <file src="ui/guide/m_mouse.png" />
+    
+    <script src="farmer_s.lua" type="server" />
+	
+	<export function="getPlayerHemp" type="server"/>
+	<export function="setPlayerHemp" type="server"/>
+    
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+    <info autostart="true" author="LilDolla" name="Farmer Job"></info>
+</meta>

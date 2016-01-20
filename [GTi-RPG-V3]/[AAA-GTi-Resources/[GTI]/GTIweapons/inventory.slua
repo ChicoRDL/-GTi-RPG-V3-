@@ -1,0 +1,82 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 07 Jan 2014
+-- Resource: GTIweapons/weap_inventory.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local weaponSlots = {
+	[0] = {0, 1},
+	[1] = {2, 3, 4, 5, 6, 7, 8, 9},
+	[2] = {22, 23, 24},
+	[3] = {25, 26, 27},
+	[4] = {28, 29, 32},
+	[5] = {30, 31},
+	[6] = {33, 34},
+	[7] = {35, 36, 37, 38}, --Minigun slot
+	[8] = {16, 17, 18, 39},
+	[9] = {41, 42, 43},
+	[10] = {10, 11, 12, 14, 15},
+	[11] = {44, 45, 46},
+}
+
+-- Weapons Inventory
+--------------------->>
+
+function getWeaponsInventory(player)
+	if (not isElement(player)) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local weap = exports.GTIaccounts:invGet(account, "weapons.inventory")
+	if (not weap) then return {} end
+	weap = split(weap, ";")
+	
+	local weapons = {}
+	for i,weapon in ipairs(weap) do
+		local weapon = split(weapon, ",")
+		weapons[tonumber(weapon[1])] = tonumber(weapon[2])
+	end
+	
+	return weapons	
+end
+
+function getWeaponAmmoFromInventory(player, weapon)
+	if (not isElement(player) or type(weapon) ~= "number") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local plr_inv = getWeaponsInventory(player)
+	return plr_inv[weapon] or 0
+end
+
+function updateWeaponInInventory(player, weapon, ammo)
+	if (not isElement(player) or type(weapon) ~= "number" or type(ammo) ~= "number") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local plr_inv = getWeaponsInventory(player)
+	plr_inv[weapon] = ammo
+	
+	setWeaponsInventory(player, plr_inv)
+	return true
+end
+
+function setWeaponsInventory(player, inventory)
+	if (not isElement(player) or type(inventory) ~= "table") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	
+	local weapons = {}
+	for i=1,46 do
+		if (inventory[i]) then
+			table.insert(weapons, 
+				table.concat({i, inventory[i]}, ",")
+			)
+		end
+	end
+	weapons = table.concat(weapons, ";")
+	exports.GTIaccounts:invSet(account, "weapons.inventory", weapons)
+	return true
+end

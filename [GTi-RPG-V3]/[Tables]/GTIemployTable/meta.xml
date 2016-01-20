@@ -1,0 +1,12 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Employment System Table" autostart="true" />
+    <script src="jobs_table.lua" />
+    <script src="ranks_table.lua" />
+    
+    <export function="getJobsTable" type="server" />
+    
+    <export function="getRanks" type="server" />
+    <export function="getRankBase" type="server" />
+    <export function="getExperience" type="server" />
+    <export function="getLevelPay" type="server" />
+</meta>

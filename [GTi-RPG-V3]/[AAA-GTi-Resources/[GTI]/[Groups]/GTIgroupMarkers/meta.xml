@@ -1,0 +1,5 @@
+<meta>
+	<info author="Mitch" name="Base Markers" autostart="true" />
+    <script src="server.lua" type="server"/>
+    <script src="client.luac" type="client"/>
+</meta>

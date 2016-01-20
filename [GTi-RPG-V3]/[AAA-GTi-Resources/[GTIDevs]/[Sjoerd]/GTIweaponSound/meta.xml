@@ -1,0 +1,40 @@
+<meta>
+
+    <file src='/sounds/firingmode.mp3' />
+    <file src='/sounds/no_ammo.mp3' />
+    <file src='/sounds/reload_1.mp3' />
+    <file src='/sounds/reload_2.mp3' />
+    <file src='/sounds/reload_3.mp3' />
+    <file src='/sounds/weap/AK-47.mp3' />
+    <file src='/sounds/weap/AK-47.wav' />
+    <file src='/sounds/weap/beanbag.mp3' />
+    <file src='/sounds/weap/beanbag.wav' />
+    <file src='/sounds/weap/Colt45.mp3' />
+    <file src='/sounds/weap/Colt45.wav' />
+    <file src='/sounds/weap/Combat Shotgun.mp3' />
+    <file src='/sounds/weap/Combat Shotgun.wav' />
+    <file src='/sounds/weap/Deagle.mp3' />
+    <file src='/sounds/weap/Deagle.wav' />
+    <file src='/sounds/weap/M4.mp3' />
+    <file src='/sounds/weap/M4.wav' />
+    <file src='/sounds/weap/MP5.mp3' />
+    <file src='/sounds/weap/MP5.wav' />
+    <file src='/sounds/weap/Rifle.mp3' />
+    <file src='/sounds/weap/Rifle.wav' />
+    <file src='/sounds/weap/Sawed-Off.mp3' />
+    <file src='/sounds/weap/Sawed-Off.wav' />
+    <file src='/sounds/weap/Silenced.mp3' />
+    <file src='/sounds/weap/Silenced.wav' />
+	<file src='/sounds/weap/Shotgun.mp3' />
+    <file src='/sounds/weap/Shotgun.wav' />
+    <file src='/sounds/weap/Sniper.mp3' />
+    <file src='/sounds/weap/Sniper.wav' />
+    <file src='/sounds/weap/Tazer.wav' />
+    <file src='/sounds/weap/tec9.wav' />
+    <file src='/sounds/weap/tec9.mp3' />
+    <file src='/sounds/weap/UZI.mp3' />
+    <file src='/sounds/weap/UZI.wav' />
+
+
+    <script src='C_Sounds.lua' type='client' />
+</meta>

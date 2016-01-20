@@ -1,0 +1,49 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    scrollpane = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(514, 274, 580, 361, "GTI Criminal Reputation System", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(10, 39, 92, 15, "Criminal Level:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+GUIEditor.label[2] = guiCreateLabel(193, 39, 75, 15, "Reputation:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+GUIEditor.label[3] = guiCreateLabel(10, 65, 562, 15, "______________________________________________________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[4] = guiCreateLabel(10, 110, 562, 15, "______________________________________________________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(9, 130, 238, 15, "Criminal Task List", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", false)
+GUIEditor.gridlist[1] = guiCreateGridList(9, 149, 239, 201, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Criminal Task", 0.9)
+GUIEditor.label[6] = guiCreateLabel(262, 132, 84, 15, "Selected Task:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 255, 25, 25)
+GUIEditor.label[7] = guiCreateLabel(262, 159, 84, 15, "Rep. Earned:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 255, 25, 25)
+GUIEditor.label[8] = guiCreateLabel(262, 186, 84, 15, "Cash Earned:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[8], 255, 25, 25)
+GUIEditor.label[9] = guiCreateLabel(353, 132, 213, 15, "Select a Task from the List", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[9], "clear-normal")
+GUIEditor.label[10] = guiCreateLabel(341, 159, 213, 15, "1,234,567 RP", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "clear-normal")
+GUIEditor.label[11] = guiCreateLabel(341, 185, 213, 15, "$1,234,567", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "clear-normal")
+GUIEditor.label[12] = guiCreateLabel(253, 199, 314, 15, "______________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[13] = guiCreateLabel(250, 121, 15, 227, "|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  ", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[13], "left", true)
+GUIEditor.label[14] = guiCreateLabel(250, 125, 15, 227, "|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  ", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[14], "left", true)
+GUIEditor.scrollpane[1] = guiCreateScrollPane(257, 219, 314, 133, false, GUIEditor.window[1])
+
+GUIEditor.label[15] = guiCreateLabel(4, 4, 289, 15, "", false, GUIEditor.scrollpane[1])
+
+GUIEditor.label[16] = guiCreateLabel(549, 21, 25, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[16], "default-small")

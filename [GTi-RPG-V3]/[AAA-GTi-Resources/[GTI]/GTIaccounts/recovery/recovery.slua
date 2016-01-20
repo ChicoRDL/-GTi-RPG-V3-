@@ -1,0 +1,91 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 28 Aug 2014
+-- Resource: GTIaccounts/recovery.slua
+-- Version: 2.0
+----------------------------------------->>
+
+local pendingRecoveries = {}	-- Table of Pending Account Recoveries
+
+local RECOVERY_TIMEOUT = 600000	-- Timeout for Account Recovery
+
+-- Attempt Recovery
+-------------------->>
+
+addEvent("GTIaccounts.attemptRecovery", true)
+addEventHandler("GTIaccounts.attemptRecovery", root, function(username, email)
+	local account = getAccount(username)
+	if (not account or isGuestAccount(account)) then
+		triggerClientEvent(client, "GTIaccounts.outputRecoveryNote", resourceRoot, "Error: Invalid Account Name", 255, 25, 25)
+		return
+	end
+	
+	local acc_mail = exports.GTIaccounts:GAD(account, "email")
+	if (email ~= acc_mail) then
+		triggerClientEvent(client, "GTIaccounts.outputRecoveryNote", resourceRoot, "Error: Email Address does not match email associated with account", 255, 25, 25)
+		return
+	end
+	
+	local recoveryCode = generateHexNumber(32)
+	pendingRecoveries[client] = {username, recoveryCode, getTickCount() + RECOVERY_TIMEOUT}
+	
+	callRemote("http://gtirpg.net/MTA/mta_recovery.php", function() end, email, getPlayerName(client), getPlayerIP(client), getPlayerSerial(client), recoveryCode)
+	triggerClientEvent(client, "GTIaccounts.recoverAccount", resourceRoot)
+end)
+
+-- Recover Account
+------------------->>
+
+addEvent("GTIaccounts.recoverAccount", true)
+addEventHandler("GTIaccounts.recoverAccount", root, function(code, password, password2)
+	if (not pendingRecoveries[client]) then
+		exports.GTIhud:dm("ERROR: Your recovery code has expired. You must resubmit an account recovery request.", client, 255, 25, 25)
+		return
+	end
+	
+	if (code ~= pendingRecoveries[client][2]) then
+		exports.GTIhud:dm("ERROR: Your recovery code is invalid. Make sure you enter the correct recovery code.", client, 255, 25, 25)
+		return
+	end
+	
+	if (password ~= password2) then
+		exports.GTIhud:dm("ERROR: Your passwords do not match! Go back and check that your passwords match.", client, 255, 25, 25)
+		return
+	end
+	
+	local account = pendingRecoveries[client][1]
+	local account = getAccount(pendingRecoveries[client][1])
+	setAccountPassword(account, password)
+	
+	exports.GTIhud:dm("Account Password has been reset! Please log in.", client, 25, 255, 25)
+	triggerClientEvent(client, "GTIaccounts.endAccountRecovery", resourceRoot)	
+end)
+
+-- Utilities
+------------->>
+
+local hex = {"a", "b", "c", "d", "e", "f", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+
+function generateHexNumber(length)
+	if (type(length) ~= "number") then return false end
+	
+	local number = {}
+	for i=1,length do
+		table.insert(number, hex[math.random(#hex)])
+	end
+	number = table.concat(number, "")
+	return number
+end
+
+addEventHandler("onPlayerQuit", root, function()
+	pendingRecoveries[source] = nil
+end)
+
+setTimer(function()
+	for player,tbl in pairs(pendingRecoveries) do
+		if (getTickCount() > tbl[3]) then
+			pendingRecoveries[player] = nil
+		end
+	end
+end, 15000, 0)

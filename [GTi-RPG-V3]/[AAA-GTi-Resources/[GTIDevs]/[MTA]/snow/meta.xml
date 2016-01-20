@@ -1,0 +1,22 @@
+<meta>
+<info author="MTA Community" name="snow" autostart="false" />
+	<file src="direction_image.png"/>
+	<file src="direction_pointer.png"/>
+	<file src="cursor.png"/>
+	
+	<file src="flakes/cartoon_tile.png"/>
+	<file src="flakes/real_tile.png"/>
+	
+
+	<script src="snow_gui.lua" type="client"/>
+	<script src="snow.lua" type="client"/>
+	<script src="snow_s.lua"/>
+	<script src="c.lua" type="client"/>
+	
+
+	<file src="smallnoise3d.dds" type="client" />
+	<file src="snow_ground.fx" type="client" />
+	<file src="snow_trees.fx" type="client" />
+	<file src="snow_naughty_trees.fx" type="client" />
+	<file src="mta-helper.fx" type="client" />
+</meta>

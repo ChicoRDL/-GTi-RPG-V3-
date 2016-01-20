@@ -1,0 +1,57 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    button = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(17, 67, 270, 429, ":GTIdroid/wallpapers/bkgr_black.png", false)
+
+        GUIEditor.label[1] = guiCreateLabel(2, 38, 43, 19, "Name:", false, GUIEditor.staticimage[1])
+        local font_0 = guiCreateFont(":GTIdroid/fonts/Roboto-Bold.ttf")
+        guiSetFont(GUIEditor.label[1], font_0)
+        guiLabelSetColor(GUIEditor.label[1], 0, 127, 118)
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.gridlist[1] = guiCreateGridList(2, 108, 268, 284, false, GUIEditor.staticimage[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Music Name", 0.9)
+        GUIEditor.label[2] = guiCreateLabel(2, 67, 43, 19, "URL:", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.label[2], font_0)
+        guiLabelSetColor(GUIEditor.label[2], 0, 127, 118)
+        guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[2], "center")
+        GUIEditor.label[3] = guiCreateLabel(0, 82, 270, 22, "_________________________________________", false, GUIEditor.staticimage[1])
+        GUIEditor.label[4] = guiCreateLabel(55, 38, 215, 19, "xName", false, GUIEditor.staticimage[1])
+        local font_1 = guiCreateFont(":GTIdroid/fonts/Roboto.ttf")
+        guiSetFont(GUIEditor.label[4], font_1)
+        guiLabelSetVerticalAlign(GUIEditor.label[4], "center")
+        GUIEditor.label[5] = guiCreateLabel(55, 67, 215, 19, "xURL", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.label[5], font_1)
+        guiLabelSetVerticalAlign(GUIEditor.label[5], "center")
+        GUIEditor.button[1] = guiCreateButton(0, 398, 68, 30, "Play", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.button[1], font_0)
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FF007F76")
+        GUIEditor.button[2] = guiCreateButton(68, 398, 68, 30, "Stop", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.button[2], font_0)
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FF007F76")
+        GUIEditor.button[3] = guiCreateButton(136, 398, 68, 30, "Add", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.button[3], font_0)
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FF007F76")
+        GUIEditor.button[4] = guiCreateButton(204, 398, 68, 30, "Remove", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.button[4], font_0)
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FF007F76")
+        GUIEditor.staticimage[2] = guiCreateStaticImage(45, 200, 44, 44, ":GTIdroid/apps/Music.png", false, GUIEditor.staticimage[1])
+        GUIEditor.staticimage[3] = guiCreateStaticImage(0, 0, 270, 30, ":GTIdroid/phone/search_bar.png", false, GUIEditor.staticimage[1])    
+    end
+)

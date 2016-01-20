@@ -1,0 +1,38 @@
+<meta>
+	<script src="skin/personal.slua" />
+    <script src="skin/group.slua" />
+	
+	<!-- <script src="vehicle/personal.slua" /> -->
+    <script src="vehicle/group.slua" />
+	
+    <file src="shader/shader.fx" />
+    <script src="shader/shader_c.luac" type="client"/>
+
+	<!-- Skins -->
+    <file src="skin/textures/groups/PM1.jpeg" />
+    <file src="skin/textures/groups/PM2.jpeg" />
+	<file src="skin/textures/groups/Q1.jpg" />
+    <file src="skin/textures/groups/CIA1.jpeg" />
+	<file src="skin/textures/groups/CIA2.jpg" />
+	<file src="skin/textures/groups/CIA3.jpg" />
+	<file src="skin/textures/groups/CIA4.jpg" />
+    <file src="skin/textures/groups/GHoST1.jpeg" />
+	<file src="skin/textures/groups/GHoST2.png" />
+	<file src="skin/textures/groups/GHoST3.png" />
+	<file src="skin/textures/groups/GHoST4.png" />
+    <file src="skin/textures/groups/RP1.jpeg" />
+	<file src="skin/textures/groups/Dem1.jpg" />
+	
+	<!-- Vehicles -->
+	<file src="vehicle/textures/GHoST1.jpg" />
+	<file src="vehicle/textures/GHoST2.jpg" />
+	<file src="vehicle/textures/GHoST3.jpg" />
+	<file src="vehicle/textures/GHoST4.jpg" />
+	<file src="vehicle/textures/GHoST5.jpg" />
+	<file src="vehicle/textures/CIA1.png" />
+	<file src="vehicle/textures/CIA2.jpg" />
+	<file src="vehicle/textures/CIA3.jpg" />
+	<file src="vehicle/textures/DEM1.png" />
+	<file src="vehicle/textures/TF1.png" />
+    <info autostart="true"/>
+</meta>

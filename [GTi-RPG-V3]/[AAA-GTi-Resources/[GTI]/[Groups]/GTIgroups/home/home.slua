@@ -1,0 +1,42 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 31 Mar 2014
+-- Resource: GTIgroupPanel/panel_home.slua
+-- Type: Client Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+-- Create Group
+---------------->>
+
+addEvent("GTIgroupPanel.groupCreate", true)
+addEventHandler("GTIgroupPanel.groupCreate", root, function(group_name)
+	local password = exports.GTIutil:generatePassword(15, true)
+	local isCreated = createGroup(group_name, password, client)
+	if (not isCreated) then
+		exports.GTIhud:dm("Your group '"..group_name.."' could not be created. Try picking another group name.", client, 255, 100, 100)
+	return end
+	exports.GTIhud:dm("Your group '"..group_name.."' has been successfully created! You can now manage your group.", client, 255, 100, 100)
+	triggerEvent("GTIgroupPanel.showGroupPanelHome", resourceRoot, client)
+end)
+
+-- Show Group Panel
+-------------------->>
+
+addEvent("GTIgroupPanel.showGroupPanelHome", true)
+addEventHandler("GTIgroupPanel.showGroupPanelHome", root, function(player)
+	if (client) then player = client end
+	if (not isPlayerInGroup(player)) then return end
+	
+	local group = {}
+	local groupID = getPlayerGroup(player)
+	group["name"] = getGroupName(groupID)
+	group["date"] = getGroupCreationDate(groupID)
+	group["info"] = getGroupInformation(groupID)
+	group["news"] = getGroupNews(groupID)
+	
+	local r,g,b = getGroupColor(groupID)
+	local col = {r,g,b}
+	
+	triggerClientEvent(player, "GTIgroupPanel.showGroupPanelHome", resourceRoot, group, col)
+end)

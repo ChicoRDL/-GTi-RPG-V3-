@@ -1,0 +1,29 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: LilDolla
+-- Date: 02 Feb 2015
+-- Resource: GTIgroups/groupList.slua
+-- Type: Server Side
+----------------------------------------->>
+
+function retrieveGroups()
+	local groups = {}
+	local mem_high = 0
+    for groupID in pairs(Group) do
+        local name = getGroupName(groupID)
+        local members = #getGroupMembers(groupID)
+        local experience = getGroupExperience(groupID) or 0
+        local create = getGroupCreationDate(groupID)
+		if (name and members and members > 1 and experience and create) then
+			local d,m,y = exports.GTIutil:todate(create)
+			local d = string.format("%02d", d)
+			local m = exports.GTIutil:getMonthName(m, 3)
+			if (not groups[members]) then groups[members] = {} end
+			table.insert(groups[members], {name, members, exports.GTIutil:tocomma(experience), d.." "..m.." "..y})
+			if (mem_high < members) then mem_high = members end        
+		end
+    end
+	triggerClientEvent(client, "GTIgroups.getGroupInfo", resourceRoot, groups, mem_high)
+end
+addEvent("GTIgroups.getGroupInfo", true)
+addEventHandler("GTIgroups.getGroupInfo", root, retrieveGroups)

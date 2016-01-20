@@ -1,0 +1,5 @@
+<meta>
+<info name="Group Armor Pickups" author="Mitch" autostart="true" />
+<script src="armor.luac" type="client" cache="false" />
+<script src="armor_s.lua" type="server" />
+</meta>

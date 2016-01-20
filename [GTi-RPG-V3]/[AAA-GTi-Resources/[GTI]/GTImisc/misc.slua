@@ -1,0 +1,41 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Jack Johnson (Jack)
+-- Date: 13 April 2015
+-- Resource: GTImisc/misc.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Set "port" data to prevent V2 stuff leaking.
+function setPortData()
+	setElementData(root,"port",tonumber(getServerPort()))
+end
+addEventHandler("onResourceStart",resourceRoot,setPortData)
+
+function addMoneyColumn ()
+	exports.scoreboard:addScoreboardColumn('Money', getRootElement(), 6, 80)
+
+	function updateMoneyTab()
+	    for index, player in ipairs( getElementsByType "player" ) do
+	    local cash = exports.GTIutil:tocomma(getPlayerMoney(player))
+		setElementData(player, "Money", "$"..cash)
+	    end 
+	end
+	setTimer(updateMoneyTab, 2500, 0)
+end
+
+addEventHandler("onResourceStart", root, 
+	function (res)
+		if ( getResourceName(res) == "scoreboard" or getResourceName(res) == getResourceName(getThisResource()) ) then
+			addMoneyColumn()
+		end
+	end
+)
+
+addEventHandler("onElementModelChange", root,	
+	function ()
+		if ( getElementType(source) == "player" ) then
+			setPedAnimation(source)
+		end
+	end
+)

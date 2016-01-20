@@ -1,0 +1,10 @@
+<meta>
+    <info author="NicKeLz" name="Group IRC Echo System" autostart="true" />
+    <script src="Tables.lua" type="server" />
+    <script src="Server.lua" type="server" />
+    <script src="joinquit.lua" type="server" />
+    <export function="group_chat" type="server" />
+    <export function="group_online" type="server" />
+    <export function="group_xp" type="server" />
+    <export function="outputGroupChannel" type="server" />
+</meta>

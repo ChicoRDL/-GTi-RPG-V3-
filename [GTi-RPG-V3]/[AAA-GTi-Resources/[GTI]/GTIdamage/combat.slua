@@ -1,0 +1,36 @@
+local combat = {}
+COMBAT_DURATION = 3
+
+function onPlayerDamage(attacker)
+	if not attacker then return false end
+	
+	if (getElementData(root,"port") == 22004) then
+		combat[source] = {tick = getTickCount(), attacker = attacker}
+	end
+end
+
+function onPlayerLogin()
+	local combatlog = exports.GTIaccounts:GAD(getPlayerAccount(source),"combatlogged")
+	if combatlog then
+		exports.GTIprisonJTP:jailPlayer(source,60,"Anti-Combat Log System",true)
+		exports.killmessages:outputMessage("You combat logged in your last seesion. <",source,255,0,0)
+		exports.killmessages:outputMessage("You have been punished for it. Don't do it again! <",source,255,0,0)
+	end
+end
+addEventHandler("onPlayerLogin",root,onPlayerLogin)
+
+function onPlayerQuit()
+	if isGuestAccount(getPlayerAccount(source)) then return end
+	
+	if isPlayerInCombat(source) then
+		exports.GTIaccounts:SAD(getPlayerAccount(source),"combatlogged",true)
+	end
+end
+addEventHandler("onPlayerQuit",root,onPlayerQuit)
+
+function isPlayerInCombat(player)
+	if not player or not isElement(player) or getElementType(player) ~= "player" then return false end
+	if not combat[player] then return false end
+	
+	if (getTickCount() - combat[player].tick > COMBAT_DURATION) then return false else return true end
+end

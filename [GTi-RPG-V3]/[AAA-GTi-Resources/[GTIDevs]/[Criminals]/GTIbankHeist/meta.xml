@@ -1,0 +1,7 @@
+<meta>
+<info author="Mitch" name="Bank Heist" autostart="true" />
+<script src="bankHeist_c.lua" type="client" cache="false" />
+<script src="bankHeist_s.lua" type="server" />
+<file src="alarm.mp3"/>
+<file src="drill.mp3"/>
+</meta>

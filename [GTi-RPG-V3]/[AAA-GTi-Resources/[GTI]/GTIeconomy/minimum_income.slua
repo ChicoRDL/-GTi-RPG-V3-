@@ -1,0 +1,24 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 19 Feb 2015
+-- Resource: GTIeconomy/minimum_income.slua
+-- Type: Server Side
+----------------------------------------->>
+
+local INCOME_AMT = 7500	-- Income Earned Per Hour
+local AFK_PRCT = 0.25	-- Percent of Time Active to not be considered AFK
+local PAY_INTERVAL = 30	-- Pay Income Every X Minutes
+
+setTimer(function()
+	for i,player in ipairs(getElementsByType("player")) do
+		if (exports.GTIutil:isPlayerInTeam("General Population") or getElementData(player, "isWorking") == 0) then
+			if (exports.GTIutil:getPercentOfTimeAFK(player, PAY_INTERVAL) <= AFK_PRCT) then
+				if (not exports.GTIprison:isPlayerInJail(player)) then
+					exports.GTIhud:dm("Minimum Income: $"..exports.GTIutil:tocomma(math.floor(INCOME_AMT * (PAY_INTERVAL/60))).." has been added to your bank account for being unemployed or off-duty.", player, 25, 255, 25)
+					exports.GTIbank:modifyPlayerBankBalance(player, math.floor(INCOME_AMT * (PAY_INTERVAL/60)), "Minimum Income Payment")
+				end
+			end
+		end
+	end
+end, (PAY_INTERVAL/60)*60000*60, 0)

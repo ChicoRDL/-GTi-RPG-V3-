@@ -1,0 +1,10 @@
+<meta>
+	<info author="Mitch" name="Tutorial Panel" autostart="true" />
+	<script src="code.luac" type="client" />
+	<script src="code_s.lua" type="server" />
+	
+	<file src="radar_ammugun.png" />
+	<file src="radar_light.png" />
+	<file src="radar_police.png" />
+	<file src="wanted.png" />
+</meta>

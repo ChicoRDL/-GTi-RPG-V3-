@@ -1,0 +1,6 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="F9 Rules Panel" autostart="true" />
+    <file src="courier.ttf" />
+    <script src="rules.luac" type="client" />
+    <script src="rules.slua" />
+</meta>

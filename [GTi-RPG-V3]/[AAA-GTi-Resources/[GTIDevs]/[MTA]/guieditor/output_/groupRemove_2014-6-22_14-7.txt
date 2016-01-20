@@ -1,0 +1,26 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    edit = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(629, 335, 330, 165, "GTI Groups System — Remove Player", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(11, 30, 306, 15, "Player to be removed:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(11, 48, 306, 15, "[ABC]Player>123", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.label[3] = guiCreateLabel(11, 73, 306, 15, "Reason (Logged):", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+GUIEditor.edit[1] = guiCreateEdit(19, 92, 294, 23, "", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(87, 124, 79, 26, "Remove (2)", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(178, 124, 79, 26, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

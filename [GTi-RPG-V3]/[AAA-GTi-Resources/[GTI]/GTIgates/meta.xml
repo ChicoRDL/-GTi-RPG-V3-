@@ -1,0 +1,4 @@
+<meta>
+    <script src="gates_s.lua" type="server" />
+    <info author="LilDolla" name="Central Gates System" autostart="true"></info>
+</meta>

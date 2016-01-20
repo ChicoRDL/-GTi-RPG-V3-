@@ -1,0 +1,5 @@
+<meta>
+<info author="Emile" name="CnR: Los Santos Police Raid" autostart="false" />
+	<script src="GTIpdr.lua" type="server" />
+	<export function="getEventDetails" type="server"/> 
+</meta>

@@ -1,0 +1,5 @@
+<meta>
+	<info author="Mitch" name="Race System" autostart="true" />
+    <script src="Race_C.luac" type="client" />
+    <script src="Race_S.lua" type="server" />
+</meta>

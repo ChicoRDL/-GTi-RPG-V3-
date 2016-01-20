@@ -1,0 +1,21 @@
+
+GUIEditor = {
+    label = {},
+    window = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(10, 166, 226, 340, "Animations GTI", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.70)
+
+        GUIEditor.label[1] = guiCreateLabel(55, 314, 35, 16, " Start", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 0, 160, 0)
+        GUIEditor.label[2] = guiCreateLabel(10, 314, 35, 16, " Stop", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[2], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[2], 160, 0, 0)
+        GUIEditor.label[3] = guiCreateLabel(181, 24, 35, 16, " Close", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[3], "default-bold-small")    
+    end
+)

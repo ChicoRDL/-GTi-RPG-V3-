@@ -1,0 +1,6 @@
+<meta>
+	<info autostart="false"/>
+	<script src="donations.slua"/>
+	<script src="donations.lua" type="client"/>
+	<script src="donations_gui.lua" type="client"/>
+</meta>

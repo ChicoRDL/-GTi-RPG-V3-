@@ -1,0 +1,29 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    button = {},
+    staticimage = {},
+    edit = {}
+}
+GUIEditor.button[1] = guiCreateButton(566, 325, 63, 25, "", false)
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+
+
+GUIEditor.button[2] = guiCreateButton(796, 325, 63, 25, "", false)
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+
+
+GUIEditor.edit[1] = guiCreateEdit(628, 325, 150, 25, "Username", false)
+
+
+GUIEditor.edit[2] = guiCreateEdit(858, 325, 150, 25, "Password", false)
+guiEditSetMasked(GUIEditor.edit[2], true)
+
+
+GUIEditor.staticimage[1] = guiCreateStaticImage(602, 188, 372, 126, ":GTIaccounts2/files/gti_logo.png", false)

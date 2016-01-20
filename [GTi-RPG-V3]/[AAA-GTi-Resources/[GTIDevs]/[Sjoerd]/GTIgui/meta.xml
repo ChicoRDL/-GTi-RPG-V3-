@@ -1,0 +1,12 @@
+<meta>
+	<info author="Sjoerd" type="script" name="GTIGui" description="Manage Walrus GUI elements and custom fonts" autostart="true" />
+	<script src="Window_C.lua" type="client" />
+	<script src="Refresh_S.lua" type="server" />
+
+	<file src="img/back.png" download="true"/>
+	<file src="fonts/RobotoSlab-Bold.ttf" download="true"/>
+
+	<export function="createWindow" type="client"/>
+	<export function="setDefaultFont" type="client"/>
+	<export function="toggleCursor" type="client"/>
+</meta>

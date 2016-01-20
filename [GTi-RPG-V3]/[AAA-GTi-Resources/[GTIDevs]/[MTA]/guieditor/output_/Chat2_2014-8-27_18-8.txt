@@ -1,0 +1,22 @@
+
+GUIEditor = {
+    tabpanel = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        panel = guiCreateWindow(0.22, 0.10, 0.63, 0.81, "GTI - Chat System", true)
+        guiWindowSetMovable(panel, false)
+        guiWindowSetSizable(panel, false)
+
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 25, 836, 588, false, panel)
+
+        mainTab = guiCreateTab("Main", GUIEditor.tabpanel[1])
+
+        msgsL = guiCreateGridList(0.01, 0.01, 0.98, 0.91, true, mainTab)
+        guiGridListAddColumn(msgsL, "Time", 0.5)
+        guiGridListAddColumn(msgsL, "Message", 0.5)
+        textE = guiCreateEdit(0.01, 0.93, 0.90, 0.05, "", true, mainTab)
+        sendB = guiCreateButton(0.93, 0.93, 0.06, 0.05, "Send", true, mainTab)
+        guiSetProperty(sendB, "NormalTextColour", "FFAAAAAA")    
+    end
+)

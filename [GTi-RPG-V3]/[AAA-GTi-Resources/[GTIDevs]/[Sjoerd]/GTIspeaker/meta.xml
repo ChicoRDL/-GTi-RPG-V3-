@@ -1,0 +1,10 @@
+<meta>
+    <info author="Sjoerd" type="script" name="Speakers Script" autostart="true"/>
+    <script src="speaker_s.lua" type="server" />
+    <script src="speaker_c.luac" type="client" />
+    <file src="gti.png" />
+	<file src="radio.ttf" />
+    
+    <script src="speakerEvent_s.lua" type="server" />-->
+	<!-- Disabled again by JTPenn because of irresponsible founders -->
+</meta>

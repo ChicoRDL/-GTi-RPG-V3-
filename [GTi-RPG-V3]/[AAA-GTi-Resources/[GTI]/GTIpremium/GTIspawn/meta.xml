@@ -1,0 +1,58 @@
+<meta>
+    <info author="LilDolla" description="Player Hospital Spawning Script" type="script" version="1.0" name="Hospital Respawn System" autostart="true" />
+    <script src="spawn_s.lua" type="server" />
+	<script src="suicide_s.lua" type="server" />
+	<script src="suicide.lua" type="client" />
+    <script src="spawn_c.luac" type="client" />
+	<script src="utils.luac" type="client" />
+    
+    <file src="ARLRDBD.TTF" />
+    
+    <!--Weapon Icons-->
+    <file src="weaps/2.png" />
+    <file src="weaps/3.png" />
+    <file src="weaps/4.png" />
+    <file src="weaps/5.png" />
+    <file src="weaps/6.png" />
+    <file src="weaps/7.png" />
+    <file src="weaps/8.png" />
+    <file src="weaps/9.png" />
+    <file src="weaps/10.png" />
+    <file src="weaps/11.png" />
+    <file src="weaps/12.png" />
+    <file src="weaps/14.png" />
+    <file src="weaps/15.png" />
+    <file src="weaps/16.png" />
+    <file src="weaps/17.png" />
+    <file src="weaps/18.png" />
+    <file src="weaps/22.png" />
+    <file src="weaps/23.png" />
+    <file src="weaps/24.png" />
+    <file src="weaps/25.png" />
+    <file src="weaps/26.png" />
+    <file src="weaps/27.png" />
+    <file src="weaps/28.png" />
+    <file src="weaps/29.png" />
+    <file src="weaps/30.png" />
+    <file src="weaps/31.png" />
+    <file src="weaps/32.png" />
+    <file src="weaps/33.png" />
+    <file src="weaps/34.png" />
+    <file src="weaps/35.png" />
+    <file src="weaps/36.png" />
+    <file src="weaps/37.png" />
+    <file src="weaps/38.png" />
+    <file src="weaps/39.png" />
+    <file src="weaps/40.png" />
+    <file src="weaps/41.png" />
+    <file src="weaps/42.png" />
+    <file src="weaps/43.png" />
+    <file src="weaps/44.png" />
+    <file src="weaps/45.png" />
+    <file src="weaps/46.png" />
+	<file src="weaps/noose.png" />
+	
+    <export function="isPlayerSuiciding" type="shared" />
+	<oop>true</oop>
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

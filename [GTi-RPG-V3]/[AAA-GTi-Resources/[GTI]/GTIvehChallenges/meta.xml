@@ -1,0 +1,8 @@
+<meta>
+    <info author="JTPenn" name="[GTI2] BMX Challenge" autostart="true" />
+    <script src="bmx_challenge.luac" type="client" />
+    <script src="bmx_challenge.slua" />
+    
+    <script src="records/records.luac" type="client" />
+    <script src="records/records.slua" />
+</meta>

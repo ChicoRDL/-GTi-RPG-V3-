@@ -1,0 +1,66 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 02 Jun 2014
+-- Resource: GTIweapons/weapon_limits.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local PREMIUM_LIMIT = 1.25	-- Limit Increase (Premium)
+
+local weaponLimits = {
+	-- Pistols
+	[22] = 750,		-- Pistol
+	[23] = 750,		-- Silenced Pistol
+	[24] = 750,		-- Desert Eagle
+	-- Shotguns
+	[25] = 600,		-- Shotgun
+	[26] = 600,		-- Sawn-Off Shotgun
+	[27] = 600,		-- SPAZ-12 Combat Shotgun
+	-- Sub-Machine Guns
+	[28] = 3500,	-- Uzi
+	[29] = 3500,	-- MP5
+	[32] = 3500,	-- Tec-9
+	-- Assault Rifles
+	[30] = 2500,	-- AK-47
+	[31] = 2500,	-- M4
+	-- Rifles
+	[33] = 250,		-- Country Rifle
+	[34] = 250,		-- Sniper Rifle
+	-- Heavy Weapons
+	[35] = 15,		-- Rocket Launcher
+	[36] = 15,		-- Heat-Seaking RPG
+	[37] = 1500,	-- Flamethrower
+	[38] = 2500,	-- Minigun
+	-- Projectiles
+	[16] = 25,		-- Grenade
+	[17] = 25,		-- Tear Gas
+	[18] = 25,		-- Molotov Cocktails
+	[39] = 25,		-- Satchel Charges
+	-- Special 1
+	[41] = 5000,	-- Spraycan
+	[42] = 5000,	-- Fire Extinguisher
+	[43] = 500,		-- Camera
+}
+
+-- Weapon Limit Functions
+-------------------------->>
+
+function getWeaponMaxAmmo(player, weapon)
+	if (not isElement(player)) then return false end
+	
+	local multi = 1
+	if (exports.GTIpremium:isPremium(player, "25_more_ammo")) then
+		multi = PREMIUM_LIMIT
+	end
+	
+	if (type(weapon) == "number" and weapon <= 47) then
+		return math.floor( (weaponLimits[weapon] or 1) * multi )
+	else
+		local limit2 = {}
+		for weap,ammo in pairs(weaponLimits) do
+			limit2[weap] = math.floor( ammo * multi )
+		end
+		return limit2
+	end
+end

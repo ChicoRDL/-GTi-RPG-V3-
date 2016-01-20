@@ -1,0 +1,5 @@
+<meta>
+    <info author="Mitch" name="Stealth Radar" autostart="false" />
+    <script src="stealthRadar_c.lua" type="client" />
+	<script src="stealthRadar_s.lua" type="server" />
+</meta>

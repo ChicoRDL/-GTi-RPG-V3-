@@ -1,0 +1,34 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    button = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(17, 67, 270, 429, ":GTIdroid/wallpapers/bkgr_black.png", false)
+
+        GUIEditor.staticimage[2] = guiCreateStaticImage(0, 0, 270, 30, ":GTIdroid/phone/search_bar.png", false, GUIEditor.staticimage[1])
+        GUIEditor.gridlist[1] = guiCreateGridList(10, 40, 250, 351, false, GUIEditor.staticimage[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Note", 0.9)
+        GUIEditor.button[1] = guiCreateButton(9, 394, 79, 30, "Add", false, GUIEditor.staticimage[1])
+        local font_0 = guiCreateFont(":GTIdroid/fonts/Roboto-Bold.ttf")
+        guiSetFont(GUIEditor.button[1], font_0)
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FF878200")
+        GUIEditor.button[2] = guiCreateButton(95, 394, 79, 30, "Remove", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.button[2], font_0)
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FF878200")
+        GUIEditor.button[3] = guiCreateButton(181, 394, 79, 30, "View/Edit", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.button[3], font_0)
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FF878200")    
+    end
+)

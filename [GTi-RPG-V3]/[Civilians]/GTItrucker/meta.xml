@@ -1,0 +1,5 @@
+<meta>
+    <info author="Sjoerd" type="script" name="Trucker Job" autostart="false" />
+    <script src="trucker_s.lua" type="server" />
+    <script src="trucker_c.lua" type="client" />
+</meta>

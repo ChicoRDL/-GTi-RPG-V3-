@@ -1,0 +1,55 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(491, 194, 625, 525, "Grand Theft International (GTi) -|- gtirpg.net   —  64/512", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 23, 607, 493, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Admin", GUIEditor.tabpanel[1])
+
+GUIEditor.gridlist[1] = guiCreateGridList(10, 40, 150, 418, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Player List", 0.9)
+GUIEditor.edit[1] = guiCreateEdit(10, 9, 123, 24, "Sear5h...", false, GUIEditor.tab[1])
+GUIEditor.label[1] = guiCreateLabel(166, 91, 32, 15, "Serial:", false, GUIEditor.tab[1])
+GUIEditor.label[2] = guiCreateLabel(202, 91, 231, 15, "ABCDEFABCDEFABCDEFABCDEFABCDEFAB", false, GUIEditor.tab[1])
+GUIEditor.label[3] = guiCreateLabel(165, 10, 110, 15, "Player Information", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 0, 190, 255)
+GUIEditor.label[4] = guiCreateLabel(166, 31, 37, 15, "Player:", false, GUIEditor.tab[1])
+GUIEditor.label[5] = guiCreateLabel(207, 31, 141, 15, "[ABC]Player>123", false, GUIEditor.tab[1])
+GUIEditor.label[6] = guiCreateLabel(166, 51, 51, 15, "Account:", false, GUIEditor.tab[1])
+GUIEditor.label[7] = guiCreateLabel(222, 51, 126, 15, "AccountName", false, GUIEditor.tab[1])
+GUIEditor.label[8] = guiCreateLabel(166, 71, 16, 15, "IP:", false, GUIEditor.tab[1])
+GUIEditor.label[9] = guiCreateLabel(186, 71, 97, 15, "255.255.255.255", false, GUIEditor.tab[1])
+GUIEditor.button[1] = guiCreateButton(288, 74, 16, 10, "<flag>", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[10] = guiCreateLabel(309, 70, 15, 15, "XY", false, GUIEditor.tab[1])
+GUIEditor.label[11] = guiCreateLabel(166, 111, 43, 15, "Version:", false, GUIEditor.tab[1])
+GUIEditor.label[12] = guiCreateLabel(214, 111, 91, 15, "1.4.0-1.01234.0", false, GUIEditor.tab[1])
+GUIEditor.label[13] = guiCreateLabel(166, 131, 67, 15, "ACL Groups:", false, GUIEditor.tab[1])
+GUIEditor.label[14] = guiCreateLabel(239, 131, 194, 15, "GroupA, GroupB, GroupC, GroupD", false, GUIEditor.tab[1])
+GUIEditor.label[15] = guiCreateLabel(166, 151, 74, 15, "AC Detected:", false, GUIEditor.tab[1])
+GUIEditor.label[16] = guiCreateLabel(244, 151, 189, 15, "12, 14, 15, 16, 20, 22, 28", false, GUIEditor.tab[1])
+GUIEditor.label[17] = guiCreateLabel(166, 171, 85, 15, "gta3.img mods:", false, GUIEditor.tab[1])
+GUIEditor.label[18] = guiCreateLabel(257, 171, 29, 15, "2048", false, GUIEditor.tab[1])
+GUIEditor.label[19] = guiCreateLabel(164, 182, 280, 15, "________________________________________________", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[19], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[19], 0, 190, 255)
+GUIEditor.label[20] = guiCreateLabel(165, 201, 110, 15, "Game Information", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[20], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[20], 0, 190, 255)
+GUIEditor.label[21] = guiCreateLabel(167, 220, 39, 15, "Health:", false, GUIEditor.tab[1])
+GUIEditor.label[22] = guiCreateLabel(211, 220, 39, 15, "100%", false, GUIEditor.tab[1])
+GUIEditor.label[23] = guiCreateLabel(279, 220, 39, 15, "Armor:", false, GUIEditor.tab[1])
+GUIEditor.label[24] = guiCreateLabel(321, 220, 39, 15, "100%", false, GUIEditor.tab[1])
+GUIEditor.label[25] = guiCreateLabel(382, 220, 28, 15, "Ping:", false, GUIEditor.tab[1])
+GUIEditor.label[26] = guiCreateLabel(415, 220, 29, 15, "2048", false, GUIEditor.tab[1])
+GUIEditor.label[27] = guiCreateLabel(167, 240, 39, 15, "Health:", false, GUIEditor.tab[1])

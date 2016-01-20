@@ -1,0 +1,11 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="General Server Statistics" autostart="true" />
+    
+  	<script src="database.slua" />
+	<script src="server_stats.slua" />
+	
+	<export function="setServerStat" 	type="server" />
+	<export function="getServerStat" 	type="server" />
+	<export function="modifyServerStat" type="server" />
+	<export function="ircPeak" type="server"/>
+</meta>

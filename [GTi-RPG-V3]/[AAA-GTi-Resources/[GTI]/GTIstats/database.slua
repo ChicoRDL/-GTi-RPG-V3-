@@ -1,0 +1,118 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 24 Jul 2014
+-- Resource: GTIstats/database.slua
+-- Version: 2.5
+----------------------------------------->>
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `stats`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+
+local database1_online	-- Is 'stats' Database Online?
+local stats = {}		-- 'stats' Database Cache
+
+local SERVER_PORT = 22003
+
+addEvent("onDatabaseLoad", true)	-- Triggers when the database is ready
+
+-- Database Cache
+------------------>>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(function(qh)
+		local result = dbPoll(qh, -1)
+		stats["Console"] = {}
+		for i,row in ipairs(result) do
+			stats[row.name] = {}
+			for column,value in pairs(row) do
+				if (column ~= "id" or column ~= "name") then
+					stats["Console"][column] = true
+					if (value == "true") then value = true end
+					if (value == "false") then value = false end
+					stats[row.name][column] = value
+					if getStatData( getAccount( row.name), column) == nil or getStatData( getAccount( row.name), column) == "nil" then
+						setStatData( getAccount( row.name), column, 0)
+					end
+				end
+			end
+		end
+		database1_online = true
+		triggerEvent("onDatabaseLoad", resourceRoot)
+	end, {}, db, "SELECT * FROM `stats`")
+end)
+
+-- Database Exports
+-------------------->>
+
+function setStatData(account, key, value)
+	if (not database1_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+
+	local account = getAccountName(account)
+	if (type(stats[account]) ~= "table") then
+		stats[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `stats`(name) VALUES(?)", account)
+		end
+	end
+
+	if (stats["Console"][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `stats` ADD `??` text", key)
+		end
+		stats["Console"][key] = true
+	end
+
+	stats[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `stats` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `stats` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function getStatData(account, key)
+	if (not database1_online) then return false end
+	if (not account or not key) then return nil end
+	if (isGuestAccount(account) or type(key) ~= "string") then return nil end
+
+	local account = getAccountName(account)
+	if (stats[account] == nil) then return nil end
+	if (stats[account][key] == nil) then return nil end
+
+	return tonumber(stats[account][key]) or stats[account][key]
+end
+
+function modifyStatData(account, key, value)
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	
+	local data = getStatData(account, key) or 0
+	setStatData(account, key, data+value)
+	return true
+end
+
+function modifyPlayerStatData(player, key, value)
+	if (not player or not isElement(player) or not key) then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	
+	local data = getStatData(account, key) or 0
+	setStatData(account, key, data+value)
+	return true
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(db, "DELETE FROM `stats` WHERE name=?", account)
+	stats[account] = nil
+end)

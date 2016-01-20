@@ -1,0 +1,4 @@
+﻿addEvent("onPlayerReload",true)
+addEventHandler("onPlayerReload", root, function()
+	reloadPedWeapon(source)
+end)

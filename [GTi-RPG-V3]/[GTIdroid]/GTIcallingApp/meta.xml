@@ -1,0 +1,23 @@
+<meta>
+	<info name="GTIdroid Phone App" author="Diego" autostart="true"/>
+	<script src="callingApp_c.lua" type="client" />
+	
+	<file src="images/1.png" />
+	<file src="images/2.png" />
+	<file src="images/3.png" />
+	<file src="images/4.png" />
+	<file src="images/5.png" />
+	<file src="images/6.png" />
+	<file src="images/7.png" />
+	<file src="images/8.png" />
+	<file src="images/9.png" />
+	<file src="images/0.png" />
+	<file src="images/^.png" />
+	<file src="images/CALLING.png" />
+	
+	<file src="dial.mp3" />
+	<file src="ring.mp3" />
+	<file src="911/911_1.mp3" />
+	<file src="911/911_2.mp3" />
+	<file src="911/911_3.mp3" />
+</meta>

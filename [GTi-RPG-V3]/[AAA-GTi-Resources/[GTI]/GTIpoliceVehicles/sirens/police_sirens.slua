@@ -1,0 +1,86 @@
+﻿--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+-------------------------------------------------------------------------
+-- What			: plb_s.lua
+-- For			: Grand Theft International
+-- Author(s)	: Diego & Kanto.
+-- Description	: Lightbar for undercover police cruisers.
+-- All rights reserved to authors and to Grand Theft International MTASA ©
+-------------------------------------------------------------------------
+--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--
+
+local l_bar = {}
+local v_bar = {}
+
+local vehOffsets = {[428]= {0, 0.8, 1.38}, [541]= {-0.35, 0.1, 0.7}, [402]= {-0.35, -0.3, 0.82}, [470]= {-0.5, 0.15, 1.15}, [560]= {-0.4, 0.13, 0.88}, [426]= {-0.4, 0.13, 0.88}, [421]= {-0.4, 0.13, 0.76}, [426]= {-0.4, 0.13, 0.88}, [559]= {0, 0, 0.78}, [541]= {-0.4, 0.13, 0.7}}
+
+-- Notify of Lightbar
+----------------------->>
+
+addEventHandler("onVehicleEnter", root, function(player, seat)
+	if (seat ~= 0) then return end
+	if (not exports.GTIutil:isPlayerInTeam(player, "Law Enforcement", "Emergency Services")) then return end
+	if (not vehOffsets[getElementModel(source)]) then return end
+	exports.GTIhud:drawNote("plb", "Use /plb to enable police sirens", player, 30, 125, 255, 7500)
+end)
+
+-- Attach Lightbar
+------------------->>
+
+function attachDetachLightbarOnCommand(player, cmd)
+	if (not isPedInVehicle(player)) then return end
+	if (not exports.GTIutil:isPlayerInTeam(player, "Law Enforcement", "Emergency Services")) then return end
+
+	local vehicle = getPedOccupiedVehicle(player)
+	local id = getElementModel(vehicle)
+	if (not vehOffsets[id] or getVehicleController(vehicle) ~= player) then return end
+	
+	if (not l_bar[vehicle]) then
+		local x, y, z =  getElementPosition(vehicle)
+		local light = createObject (3895, x, y, z)
+		addVehicleSirens(vehicle,1,1)
+		setVehicleSirensOn(vehicle, true)
+		attachElements(light, vehicle, unpack(vehOffsets[id]))
+		l_bar[vehicle] = light
+		v_bar[player] = vehicle
+	elseif (l_bar[vehicle]) then
+		removeVehicleSirens(vehicle)
+		setVehicleSirensOn(vehicle, false)
+		destroyElement(l_bar[vehicle])
+		l_bar[vehicle] = nil
+		v_bar[player] = nil
+	end
+end
+addCommandHandler("plb", attachDetachLightbarOnCommand)
+
+-- Remove Lightbar
+------------------->>
+
+function destroyLight()
+	if (getElementType(source) ~= "vehicle") then return end
+	if (not l_bar[source]) then return end
+	destroyElement(l_bar[source])
+	for player, vehicle in pairs (v_bar) do
+		if ( vehicle == source and l_bar[vehicle]) then
+			l_bar[source] = nil
+			v_bar[player] = nil
+			removeVehicleSirens(vehicle)
+			setVehicleSirensOn(vehicle, false)
+		end
+	end
+end
+addEventHandler("onVehicleRespawn", root, destroyLight)
+addEventHandler("onElementDestroy", root, destroyLight)
+addEventHandler("onVehicleExplode", root, destroyLight)
+
+addEventHandler("onPlayerQuitJob", root, 
+	function ()
+		if (v_bar[source]) then
+			if isElement(l_bar[v_bar[source]]) then
+				destroyElement(l_bar[v_bar[source]])
+				l_bar[v_bar[source]] = nil
+				v_bar[source] = nil
+			end
+		end
+	end
+)
+

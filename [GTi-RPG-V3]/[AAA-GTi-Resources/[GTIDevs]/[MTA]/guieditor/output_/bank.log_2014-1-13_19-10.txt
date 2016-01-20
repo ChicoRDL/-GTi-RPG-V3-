@@ -1,0 +1,44 @@
+
+GUIEditor = {
+    checkbox = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(381, 127, 600, 500, "GTI Bank and Money Log", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(12, 423, 75, 15, "Player Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 75, 200, 75)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "right", false)
+GUIEditor.label[2] = guiCreateLabel(12, 448, 75, 15, "IP Address:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 75, 200, 75)
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "right", false)
+GUIEditor.label[3] = guiCreateLabel(12, 472, 75, 15, "Serial:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 75, 200, 75)
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "right", false)
+GUIEditor.label[4] = guiCreateLabel(93, 423, 243, 15, "[ABC]Player>123", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(93, 448, 243, 15, "12.34.567.890", false, GUIEditor.window[1])
+GUIEditor.label[6] = guiCreateLabel(93, 472, 242, 15, "ABCDEF123456ABCDEF678901ABC123DE", false, GUIEditor.window[1])
+GUIEditor.label[7] = guiCreateLabel(350, 423, 240, 15, "Server Time: 2013-01-01 12:00:00", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 75, 200, 75)
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+GUIEditor.edit[1] = guiCreateEdit(12, 396, 579, 19, "", false, GUIEditor.window[1])
+guiEditSetReadOnly(GUIEditor.edit[1], true)
+GUIEditor.checkbox[1] = guiCreateCheckBox(350, 447, 109, 15, "Show Bank Log", false, false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.checkbox[1], "NormalTextColour", "FF4BC84B")
+GUIEditor.checkbox[2] = guiCreateCheckBox(474, 447, 116, 15, "Show Money Log", false, false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.checkbox[2], "NormalTextColour", "FF4BC84B")
+GUIEditor.button[1] = guiCreateButton(407, 470, 117, 21, "Close", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.gridlist[1] = guiCreateGridList(9, 25, 582, 363, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Date", 0.3)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Time", 0.3)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Log Text", 0.3)

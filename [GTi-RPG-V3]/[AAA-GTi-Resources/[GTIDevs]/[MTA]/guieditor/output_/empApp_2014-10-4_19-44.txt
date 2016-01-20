@@ -1,0 +1,68 @@
+
+GUIEditor = {
+    scrollpane = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {},
+    combobox = {}
+}
+GUIEditor.window[1] = guiCreateWindow(579, 251, 451, 373, "GTI Employment Application — <Job Name>", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.label[1] = guiCreateLabel(13, 30, 44, 15, "Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "right", false)
+GUIEditor.label[2] = guiCreateLabel(221, 55, 58, 15, "Rank:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "right", false)
+GUIEditor.label[3] = guiCreateLabel(62, 35, 150, 15, "_____________________________________", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+GUIEditor.label[4] = guiCreateLabel(62, 30, 150, 15, "[ABC]Player>123", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "clear-normal")
+guiLabelSetColor(GUIEditor.label[4], 255, 200, 0)
+GUIEditor.label[5] = guiCreateLabel(284, 55, 150, 15, "<Rank Name>", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "clear-normal")
+guiLabelSetColor(GUIEditor.label[5], 255, 200, 0)
+GUIEditor.label[6] = guiCreateLabel(284, 60, 150, 15, "_____________________________________", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "clear-normal")
+GUIEditor.label[7] = guiCreateLabel(221, 30, 58, 15, "Date:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "right", false)
+GUIEditor.label[8] = guiCreateLabel(284, 35, 150, 15, "_____________________________________", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "clear-normal")
+GUIEditor.label[9] = guiCreateLabel(284, 30, 150, 15, "01 January 2015", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[9], "clear-normal")
+guiLabelSetColor(GUIEditor.label[9], 255, 200, 0)
+GUIEditor.label[10] = guiCreateLabel(9, 77, 433, 15, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", false, GUIEditor.window[1])
+GUIEditor.label[11] = guiCreateLabel(13, 55, 44, 15, "Job:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[11], "right", false)
+GUIEditor.label[12] = guiCreateLabel(62, 55, 150, 15, "<Job Name>", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[12], "clear-normal")
+guiLabelSetColor(GUIEditor.label[12], 255, 200, 0)
+GUIEditor.label[13] = guiCreateLabel(62, 60, 150, 15, "_____________________________________", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[13], "clear-normal")
+GUIEditor.label[14] = guiCreateLabel(10, 102, 48, 15, "Division:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[14], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[14], "right", false)
+GUIEditor.label[15] = guiCreateLabel(231, 102, 48, 15, "Uniform:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[15], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[15], "right", false)
+GUIEditor.combobox[1] = guiCreateComboBox(62, 99, 150, 25, "", false, GUIEditor.window[1])
+GUIEditor.combobox[2] = guiCreateComboBox(285, 99, 150, 25, "", false, GUIEditor.window[1])
+GUIEditor.label[16] = guiCreateLabel(9, 123, 433, 15, "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", false, GUIEditor.window[1])
+GUIEditor.gridlist[1] = guiCreateGridList(9, 142, 433, 191, false, GUIEditor.window[1])
+
+GUIEditor.scrollpane[1] = guiCreateScrollPane(6, 6, 420, 177, false, GUIEditor.gridlist[1])
+
+GUIEditor.label[17] = guiCreateLabel(0, 0, 394, 15, "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. ", false, GUIEditor.scrollpane[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[17], "left", true)
+
+
+GUIEditor.button[1] = guiCreateButton(84, 337, 140, 25, "Submit Application", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(231, 337, 140, 25, "Delete Application", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

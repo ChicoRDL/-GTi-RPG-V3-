@@ -1,0 +1,10 @@
+<meta>
+    <info author="Emile" name="Market" autostart="false" />
+    <script src="Client.lua" type="client" cache="false" />
+    <script src="GUI.luac" type="client" />
+    <script src="Server.lua" type="server" />
+    
+    <file src="font/myfont.ttf" />
+    <file src="font/market.png" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

@@ -1,0 +1,96 @@
+-- Make Checks and Commands Server-Side -->>
+
+function moveveh(player)
+    triggerClientEvent(player, "GTIstaffutil.moveACar", resourceRoot)
+end
+addCommandHandler("moveveh", moveveh, true)
+
+--[[function delveh(player)
+    triggerClientEvent(player, "GTIstaffutil.calledByCommand", resourceRoot)
+end
+addCommandHandler("delveh", delveh, true)]]
+
+addEventHandler("onResourceStart", resourceRoot, function()
+    for i,player in ipairs(getElementsByType("player")) do
+        if (hasObjectPermissionTo(player, "command.moveveh", false)) then
+            bindKey(player, "num_5", "down", moveveh, player)
+        end
+        --[[if (hasObjectPermissionTo(player, "command.delveh", false)) then
+            bindKey(player, "num_6", "down", delveh, player)
+        end]]
+    end
+end)
+
+addEventHandler("onPlayerLogin", root, function()
+    if (hasObjectPermissionTo(source, "command.moveveh", false)) then
+        bindKey(source, "num_5", "down", moveveh, source)
+    end
+    --[[if (hasObjectPermissionTo(source, "command.delveh", false)) then
+        bindKey(source, "num_6", "down", delveh, source)
+    end]]
+end)
+
+-------------------------->>
+
+--[[function destroyCar(theElement)
+    if (not isElement(theElement)) then return end
+    if (getElementType(theElement) == "vehicle") then
+        local driver = getVehicleOccupant(theElement, 0)
+        local owner = exports.GTIvehicles:getVehicleOwner(theElement)
+        if (owner) then
+            --exports.GTIlogs:outputWebLog("DESTROY: "..getPlayerName(client).." destroyed "..getPlayerName(owner).."'s "..getVehicleName(theElement))
+            outputChatBox(getPlayerName(client).." destroyed your car.", owner, 255, 0, 0)
+            destroyElement(theElement)
+        elseif (driver) then
+            --exports.GTIlogs:outputWebLog("DESTROY: "..getPlayerName(client).." destroyed "..getPlayerName(driver).."'s "..getVehicleName(theElement))
+            outputChatBox(getPlayerName(client).." destroyed your car.", driver, 255, 0, 0)
+            destroyElement(theElement)
+        else
+            --exports.GTIlogs:outputWebLog("DESTROY: "..getPlayerName(client).." destroyed a "..getVehicleName(theElement))
+            destroyElement(theElement)
+        end
+    end
+end
+addEvent("GTIstaffutil.destroyCar", true)
+addEventHandler("GTIstaffutil.destroyCar", root, destroyCar)
+]]
+
+function moveCar(element, x, y, z)
+    if (not isElement(element)) then return end
+    setElementPosition(element, x, y, z)
+end
+addEvent("GTIstaffutil.moveCar", true)
+addEventHandler("GTIstaffutil.moveCar", root, moveCar)
+
+function freezeTheElement(element)
+    if (not isElement(element)) then return end
+    setElementFrozen(element, true)
+    if (getElementType(element) == "player") then
+        outputChatBox(getPlayerName(client).." is moving you.", element, 255, 0, 0)
+        --exports.GTIlogs:outputWebLog("MOVING: "..getPlayerName(client).." moved "..getPlayerName(element))
+    else
+        occupants = getVehicleOccupants(element)
+        driver = getVehicleOccupant (element, 0)
+        if (not occupants) then return end
+        for seat, player in pairs(occupants) do
+            outputChatBox(getPlayerName(client).." is moving your car.", player, 255, 0, 0)
+            --exports.GTIlogs:outputWebLog("MOVING: "..getPlayerName(client).." moved "..getPlayerName(driver).."'s "..getVehicleName(element))
+        end
+    end
+end
+addEvent("GTIstaffutil.startMovingElement", true)
+addEventHandler("GTIstaffutil.startMovingElement", root, freezeTheElement)
+
+function updateFrozenElement(element, x, y, z)
+    if (not isElement(element)) then return end
+    setElementPosition(element, x, y, z)
+end
+addEvent("GTIstaffutil.onMovementUpdate", true)
+addEventHandler("GTIstaffutil.onMovementUpdate", root, updateFrozenElement)
+
+function stopFreezeElement(element)
+    if (not isElement(element)) then return end
+    setElementFrozen(element, false)
+end
+addEvent("GTIstaffutil.stopMovingElement", true)
+addEventHandler("GTIstaffutil.stopMovingElement", root, stopFreezeElement)

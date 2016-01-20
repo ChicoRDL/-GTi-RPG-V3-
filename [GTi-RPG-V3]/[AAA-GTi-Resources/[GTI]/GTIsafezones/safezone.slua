@@ -1,0 +1,7 @@
+
+function handleLogin()
+	if (isElement(source)) then
+		triggerClientEvent("GTIsafeZones.login", source, source)
+	end
+end
+addEventHandler("onPlayerLogin", root, handleLogin)	

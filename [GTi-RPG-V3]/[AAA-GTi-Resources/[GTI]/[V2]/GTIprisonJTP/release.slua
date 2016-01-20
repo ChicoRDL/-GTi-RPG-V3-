@@ -1,0 +1,69 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 15 May 2014
+-- Resource: GTIprison/release.slua
+-- Version: 2.0
+----------------------------------------->>
+
+local prison_release = {
+	{262.017, 1419.163, 9.492, 270},
+	{264.511, 1405.734, 9.490, 270},
+	{267.243, 1416.685, 9.472, 270},
+}
+
+local pd_release = {
+	{{1550.471, -1675.513, 14.422, 90},	{1472.078, -1637.932, 70.170, 1475.546, -1639.388, 68.303},	{"Los Santos"}},
+	{{631.721, -571.702, 15.336, 270}, 	{651.165, -586.146, 27.557, 648.161, -584.348, 26.717},		{"Red County"}},
+	{{-1604.202, 716.506, 10.741, 0}, 	{-1527.722, 749.673, 45.191, -1531.930, 746.944, 43.819},	{"San Fierro", "Flint County", "Whetstone"}},
+	{{-1399.782, 2642.511, 54.688, 90},	{-1410.126, 2628.198, 60.603, -1407.004, 2629.802, 59.799},	{"Tierra Robada"}},
+	{{-212.968, 978.736, 18.329, 90},	{-195.096, 990.852, 24.542, -197.491, 989.966, 24.055},		{"Bone County"}},
+	{{2336.010, 2454.660, 13.969, 135},	{2349.649, 2380.522, 41.010, 2340.772, 2394.750, 37.170},	{"Las Venturas"}},
+}
+
+local RELEASE_INT = 0	-- Release Interior
+local RELEASE_DIM = 0	-- Release Dimension
+
+-- Release Player
+------------------>>
+
+function releasePlayer(player, x, y, z, rot, int, dim)
+	if (not isElement(player)) then return false end
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return end
+	exports.GTIemployment:resign(player, true)
+		-- Return Weapons
+	exports.GTIweapons:loadWeapons(player)
+		-- Unregister Player
+	sentences[player] = nil
+	
+		-- Release Player
+	if (x and y and z) then
+		setElementPosition(player, x, y, z+.3)
+	end
+	setElementRotation(player, 0, 0, rot or 0)
+	setElementInterior(player, int or 0)
+	setElementDimension(player, dim or 0)
+	exports.GTIaccounts:SAD(getPlayerAccount(player), "jail_time", 0)
+	
+	for i,ctrl in ipairs({"enter_exit", "enter_passenger"}) do
+		toggleControl(player, ctrl, true)
+	end
+	
+	exports.GTIhud:drawStat("sentence", nil, nil, player)
+	exports.GTIhud:dm("You have been released from prison.", player, 255, 255, 255)
+	exports.GTIutil:setPlayerGhost(player,true)
+	setTimer(function(player) exports.GTIutil:setPlayerGhost(player, false) end, 3000, 1, player)
+	
+	exports.GTIpoliceWanted:dropWantedCacheData(getPlayerAccount(player))
+	
+	triggerEvent("onPlayerReleased", player)
+	return true
+end
+
+function releasePlayer2(player)
+	local loc = math.random(#prison_release)
+	local pos = prison_release[loc]
+	releasePlayer(player,  pos[1], pos[2], pos[3], pos[4], RELEASE_INT, RELEASE_DIM)
+	return true
+end
+

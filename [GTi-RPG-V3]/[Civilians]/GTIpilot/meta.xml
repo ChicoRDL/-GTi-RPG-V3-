@@ -1,0 +1,27 @@
+<meta>
+    <info author="JTPenn" version="3.0" name="Pilot Job" autostart="true" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+    
+    <file src="files/airport_sounds.mp3" />	<file src="files/attitude_indicator.png" type="client"/>
+	<file src="files/altimeter_1.png" type="client"/>
+	<file src="files/variometer.png" type="client"/>
+	<file src="files/altimeter_pointer_1.png" type="client"/>
+	<file src="files/altimeter_pointer_2.png" type="client"/>
+	<file src="files/airspeed_indicator.png" type="client"/>
+	<file src="files/compass_1.png" type="client"/>
+	<file src="files/compass_2.png" type="client"/>
+	<file src="files/corner_1.png" type="client"/>
+	<file src="files/corner_2.png" type="client"/>
+	<file src="files/led_on.png" type="client"/>
+	<file src="files/led_off.png" type="client"/>
+	
+	<script src="hud/aircraft_client.lua" type="client"/>
+		
+	<script src="small_flight/small_flight.lua" 	type="client" />
+    <script src="medium_flight/medium_flight.lua" 	type="client" />
+    <script src="commercial/commercial.lua" 		type="client" />
+    
+    <script src="locations.lua" 	type="client" />
+    <script src="pilot.lua" 		type="client" />
+    <script src="pilot.slua" 		/>
+</meta>

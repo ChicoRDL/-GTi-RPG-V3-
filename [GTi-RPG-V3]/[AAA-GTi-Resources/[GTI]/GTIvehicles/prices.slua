@@ -1,0 +1,276 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 31 Dec 2013
+-- Resource: GTIvehicles/prices.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+RECOVERY_COST_PER_METER = 1.5
+	-- Cost of Vehicle Recovery Per Meter
+
+-- Vehicle Price Table
+----------------------->>
+
+vehPrices = {
+["2-Door and Compact Cars"] = {
+	{id=602,	cost=48250}, 	-- Alpha
+	{id=496,	cost=14375}, 	-- Blista Compact
+	{id=401,	cost=22590}, 	-- Bravura
+	{id=518,	cost=17580}, 	-- Buccaneer
+	{id=527,	cost=16750}, 	-- Cadrona
+	{id=589,	cost=37800}, 	-- Club
+	{id=419,	cost=12790}, 	-- Esperanto
+	{id=587,	cost=81995}, 	-- Euros
+	{id=533,	cost=62175}, 	-- Feltzer
+	{id=526,	cost=34670}, 	-- Fortune
+	{id=474,	cost=31675}, 	-- Hermes
+	{id=545,	cost=55970}, 	-- Hustler
+	{id=517,	cost=12685}, 	-- Majestic
+	{id=410,	cost=10990}, 	-- Manana
+	{id=600,	cost=18950}, 	-- Picador
+	{id=436,	cost=11560}, 	-- Previon
+	{id=439,	cost=33475}, 	-- Stallion
+	{id=549,	cost=12600}, 	-- Tampa
+	{id=491,	cost=13125}, 	-- Virgo
+},
+
+["4 Door and Luxury Cars"] = {
+	{id=445,	cost=54930}, 	-- Admiral
+	{id=507,	cost=42325}, 	-- Elegant
+	{id=585,	cost=21750}, 	-- Emperor
+	{id=466,	cost=27685}, 	-- Glendale
+	{id=492,	cost=20290}, 	-- Greenwood
+	{id=546,	cost=19390}, 	-- Intruder
+	{id=551,	cost=87335}, 	-- Merit
+	{id=516,	cost=23190}, 	-- Nebula
+	{id=467,	cost=20785}, 	-- Oceanic
+	{id=426,	cost=29265}, 	-- Premier
+	{id=547,	cost=24845}, 	-- Primo
+	{id=405,	cost=71170}, 	-- Sentinel
+	{id=580,	cost=175540}, 	-- Stafford
+	{id=409,	cost=115820}, 	-- Stretch
+	{id=550,	cost=23530}, 	-- Sunrise
+	{id=566,	cost=18375}, 	-- Tahoma
+	{id=540,	cost=18500}, 	-- Vincent
+	{id=421,	cost=62235}, 	-- Washington
+	{id=529,	cost=17985}, 	-- Willard
+},
+
+["Airplanes"] = {
+	{id=592,	cost=4950000}, 	-- Andromada
+	{id=577,	cost=7890000}, 	-- AT-400
+	{id=511,	cost=495000}, 	-- Beagle
+	{id=512,	cost=275000}, 	-- Cropduster
+	{id=593,	cost=335000}, 	-- Dodo
+	{id=520,	cost=9500000}, -- Hydra
+	{id=553,	cost=1175000}, 	-- Nevada
+	{id=476,	cost=1849000}, 	-- Rustler
+	{id=519,	cost=2265000}, 	-- Shamal
+	{id=460,	cost=375000}, 	-- Skimmer
+	{id=513,	cost=268000}, 	-- Stuntplane
+},
+
+["Bikes"] = {
+	{id=581,	cost=15500}, 	-- BF-400
+	{id=509,	cost=500}, 		-- Bike
+	{id=481,	cost=800}, 		-- BMX
+	{id=462,	cost=6500}, 	-- Faggio
+	{id=521,	cost=17500}, 	-- FCR-900
+	{id=463,	cost=10000}, 	-- Freeway
+	{id=510,	cost=1250}, 	-- Mountain Bike
+	{id=522,	cost=22500}, 	-- NRG-500
+	{id=461,	cost=14000}, 	-- PCJ-600
+	{id=448,	cost=7250}, 	-- Pizza Boy
+	{id=468,	cost=9500}, 	-- Sanchez
+	{id=586,	cost=8500}, 	-- Wayfarer
+},
+
+["Boats"] = {
+	{id=472,	cost=197615}, 	-- Coastguard
+	{id=473,	cost=28275}, 	-- Dinghy
+	{id=493,	cost=368590}, 	-- Jetmax
+	{id=595,	cost=287390}, 	-- Launch
+	{id=484,	cost=518860}, 	-- Marquis
+	{id=430,	cost=305170}, 	-- Predator
+	{id=453,	cost=168085}, 	-- Reefer
+	{id=452,	cost=323040}, 	-- Speeder
+	{id=446,	cost=457600}, 	-- Squalo
+	{id=454,	cost=425825}, 	-- Tropic
+},
+
+["Civil Servant"] = {
+	{id=485,	cost=16500}, 	-- Baggage
+	{id=552,	cost=47500}, 	-- Utility Van
+	{id=431,	cost=475000}, 	-- Bus
+	{id=438,	cost=28500}, 	-- Cabbie
+	{id=437,	cost=550000}, 	-- Coach
+	{id=574,	cost=12500}, 	-- Sweeper
+	{id=420,	cost=24500}, 	-- Taxi
+	{id=525,	cost=26000}, 	-- Towtruck
+	{id=408,	cost=225000}, 	-- Trashmaster
+},
+
+["Government"] = {
+	--{id=416,	cost=95700}, 	-- Ambulance
+	--{id=433,	cost=291055}, 	-- Barracks
+	--{id=427,	cost=225075}, 	-- Enforcer
+	--{id=490,	cost=237185}, 	-- FBI Rancher
+	--{id=528,	cost=142760}, 	-- FBI Truck
+	--{id=407,	cost=233760}, 	-- Fire Truck
+	--{id=544,	cost=239790}, 	-- Fire Truck (Ladder)
+	--{id=523,	cost=22655}, 	-- HPV1000
+	--{id=598,	cost=48300}, 	-- Police LV
+	--{id=596,	cost=49800}, 	-- Police LS
+	--{id=597,	cost=46960}, 	-- Police SF
+	--{id=599,	cost=42350}, 	-- Police Ranger
+	--{id=432,	cost=4850000}, 	-- Rhino
+	--{id=601,	cost=743000}, 	-- S.W.A.T.
+},
+
+["Heavy and Utility Trucks"] = {
+	{id=499,	cost=27900}, 	-- Benson
+	{id=609,	cost=33150}, 	-- Black Boxville
+	{id=498,	cost=33150}, 	-- Boxville
+	{id=524,	cost=115950}, 	-- Cement Truck
+	{id=532,	cost=650900}, 	-- Combine Harvester
+	{id=578,	cost=49000}, 	-- DFT-30
+	{id=486,	cost=45215}, 	-- Dozer
+	{id=406,	cost=950000}, 	-- Dumper
+	{id=573,	cost=69500}, 	-- Dune
+	{id=455,	cost=165050}, 	-- Flatbed
+	{id=588,	cost=98650}, 	-- Hotdog
+	{id=403,	cost=215125}, 	-- Linerunner
+	{id=514,	cost=236000}, 	-- Tanker
+	{id=423,	cost=36750}, 	-- Mr. Whoopee
+	{id=414,	cost=29000}, 	-- Mule
+	{id=443,	cost=256750}, 	-- Packer
+	{id=515,	cost=249200}, 	-- Roadtrain
+	{id=531,	cost=10150}, 	-- Tractor
+	{id=456,	cost=38950}, 	-- Yankee
+},
+
+["Helicopters"] = {
+	{id=548,	cost=2150000}, 	-- Cargobob
+	--{id=425,	cost=2750000}, 	-- Hunter
+	{id=417,	cost=1150000}, 	-- Leviathan
+	{id=487,	cost=775000}, 	-- Maverick
+	{id=488,	cost=625000}, 	-- News Chopper
+	{id=497,	cost=825000}, 	-- Police Maverick
+	{id=563,	cost=975000}, 	-- Raindance
+	--{id=447,	cost=1750000}, 	-- Seasparrow
+	{id=469,	cost=440000}, 	-- Sparrow
+},
+
+["Light Trucks and Vans"] = {
+	{id=459,	cost=19650}, 	-- Berkley's RC Van
+	{id=422,	cost=16670}, 	-- Bobcat
+	{id=482,	cost=26980}, 	-- Burrito
+	{id=530,	cost=8950}, 	-- Forklift
+	{id=418,	cost=19590}, 	-- Moonbeam
+	{id=572,	cost=750},	 	-- Mower
+	{id=582,	cost=25650}, 	-- News Van
+	{id=470,	cost=31095}, 	-- Patriot
+	{id=413,	cost=18900}, 	-- Pony
+	{id=440,	cost=17375}, 	-- Rumpo
+	{id=543,	cost=14670}, 	-- Sadler
+	{id=428,	cost=122800}, 	-- Securicar
+	{id=583,	cost=9100}, 	-- Tug
+	{id=478,	cost=13100}, 	-- Walton
+	{id=554,	cost=25595}, 	-- Yosemite
+},
+
+["Lowriders"] = {
+	{id=536,	cost=18460}, 	-- Blade
+	{id=575,	cost=22675}, 	-- Broadway
+	{id=534,	cost=24200}, 	-- Remington
+	{id=567,	cost=20560}, 	-- Savanna
+	{id=535,	cost=26750}, 	-- Slamvan
+	{id=576,	cost=19450}, 	-- Tornado
+	{id=412,	cost=17995}, 	-- Voodoo
+},
+
+["Muscle Cars"] = {
+	{id=402,	cost=39900}, 	-- Buffalo
+	{id=542,	cost=27850}, 	-- Clover
+	{id=603,	cost=53980}, 	-- Phoenix
+	{id=475,	cost=33600}, 	-- Sabre
+},
+
+["Trains"] = {
+	{id=449,	cost=189300}, 	-- Tram
+	{id=537,	cost=580950}, 	-- Freight
+	{id=538,	cost=675400}, 	-- Brown Streak
+	{id=570,	cost=575000}, 	-- Brown Streak Carriage
+	{id=569,	cost=415135}, 	-- Flat Freight
+	{id=590,	cost=502160}, 	-- Box Freight
+},
+
+["RC Vehicles"] = {
+	{id=441,	cost=275}, 		-- RC Bandit
+	{id=464,	cost=3500}, 	-- RC Baron
+	{id=501,	cost=200}, 		-- RC Goblin
+	{id=465,	cost=350}, 		-- RC Raider
+	{id=564,	cost=325}, 		-- RC Tiger
+},
+
+["Recreational"] = {
+	{id=568,	cost=14700}, 	-- Bandito
+	{id=424,	cost=16000}, 	-- BF Injection
+	{id=504,	cost=23900}, 	-- Blondring Banger
+	{id=457,	cost=6875}, 	-- Caddy
+	{id=483,	cost=14645}, 	-- Camper
+	{id=508,	cost=21825}, 	-- Journey
+	{id=571,	cost=1250}, 	-- Kart
+	{id=500,	cost=18600}, 	-- Mesa
+	{id=444,	cost=42600}, 	-- Monster
+	{id=556,	cost=42750}, 	-- Monster 2
+	{id=557,	cost=42445}, 	-- Monster 3
+	{id=471,	cost=8100}, 	-- Quadbike
+	{id=495,	cost=38500}, 	-- Sandking
+	{id=539,	cost=27900}, 	-- Vortex
+},
+
+["Street Racers"] = {
+	{id=429,	cost=297500}, 	-- Banshee
+	{id=541,	cost=315000}, 	-- Bullet
+	{id=415,	cost=265000}, 	-- Cheetah
+	{id=480,	cost=240000}, 	-- Comet
+	{id=562,	cost=138000}, 	-- Elegy
+	{id=565,	cost=130000}, 	-- Flash
+	{id=434,	cost=395000}, 	-- Hotknife
+	{id=494,	cost=250000}, 	-- Hotring Racer
+	{id=502,	cost=250000}, 	-- Hotring Racer 2
+	{id=503,	cost=250000}, 	-- Hotring Racer 3
+	{id=411,	cost=450000}, 	-- Infernus
+	{id=559,	cost=145000}, 	-- Jester
+	{id=561,	cost=115000}, 	-- Stratum
+	{id=560,	cost=165000}, 	-- Sultan
+	{id=506,	cost=225000}, 	-- Super GT
+	{id=451,	cost=375000}, 	-- Turismo
+	{id=558,	cost=135000}, 	-- Uranus
+	{id=555,	cost=205000}, 	-- Windsor
+	{id=477,	cost=195000}, 	-- ZR-350
+},
+
+["SUVs and Wagons"] = {
+	{id=579,	cost=90000}, 	-- Huntley
+	{id=400,	cost=51800}, 	-- Landstalker
+	{id=404,	cost=26800}, 	-- Perennial
+	{id=489,	cost=35325}, 	-- Rancher
+	{id=479,	cost=38160}, 	-- Regina
+	{id=442,	cost=48195}, 	-- Romero
+	{id=458,	cost=30000}, 	-- Solair
+},
+}
+
+-- Export Functions
+-------------------->>
+
+function getVehiclePriceTable()
+	return vehPrices
+end
+
+function getRecoveryCostPerMeter()
+	return RECOVERY_COST_PER_METER
+end

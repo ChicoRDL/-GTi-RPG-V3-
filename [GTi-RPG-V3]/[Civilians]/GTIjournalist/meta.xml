@@ -1,0 +1,8 @@
+<meta>
+	<info author="Nerox" name="Journalist Job" autostart="true" />
+	<script src="journalist_client.lua" type="client"/>
+	<script src="journalist_server.lua" type="server" />
+	<file src="guest.png" />
+	<file src="logo.png" />
+	<file src="SAPDPR.png" />
+</meta>

@@ -1,0 +1,4 @@
+<meta>
+	<info author="Mitch" name="Group 3D text" autostart="true" />
+	<script src="server.lua" type="server" />
+</meta>

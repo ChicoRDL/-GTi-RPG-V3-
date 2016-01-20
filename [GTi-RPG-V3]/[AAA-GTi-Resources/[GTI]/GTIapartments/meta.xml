@@ -1,0 +1,16 @@
+<meta>
+	<script src="editor/editor.lua" type="client"/>
+	<script src="editor/gridlines.lua" type="client"/>
+	<script src="editor/editor_gui.lua" type="client"/>
+	<script src="editor/preview.lua" type="client"/>
+
+	<script src="lib/matrix.lua" type="client"/>
+	<script src="items/items.lua" type="client"/>
+	
+	<script src="shaders/shader.lua" type="client"/>
+	<file src="shaders/shader.fx"/>
+	<file src="shaders/textures/penistexture.png"/>
+	<file src="shaders/textures/planta256.png"/>
+
+	<info author="Ares" autostart="false"/>
+</meta>

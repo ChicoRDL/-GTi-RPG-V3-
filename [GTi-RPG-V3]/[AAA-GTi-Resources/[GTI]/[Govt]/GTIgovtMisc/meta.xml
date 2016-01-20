@@ -1,0 +1,8 @@
+<meta>
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+    <script src="destroy_c.luac" type="client" />
+    <script src="destroy.slua" type="server" />
+	<script src="superman.luac" type="client" />
+    <script src="superman.slua" type="server" />
+    <info author="Sjoerd" name="Miscellaneous Government Tools" autostart="true"></info>
+</meta>

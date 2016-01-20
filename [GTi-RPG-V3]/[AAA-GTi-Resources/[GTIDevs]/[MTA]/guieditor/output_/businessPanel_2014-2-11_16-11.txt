@@ -1,0 +1,22 @@
+
+GUIEditor = {
+    window = {},
+    edit = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(647, 237, 304, 446, "GTI Business Group Creation Panel", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.95)
+
+        GUIEditor.label[1] = guiCreateLabel(11, 30, 89, 15, "Business Name:", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 255, 200, 0)
+        GUIEditor.edit[1] = guiCreateEdit(105, 25, 189, 23, "", false, GUIEditor.window[1])
+        GUIEditor.label[2] = guiCreateLabel(7, 57, 290, 15, "______________________________________________", false, GUIEditor.window[1])
+        GUIEditor.label[3] = guiCreateLabel(81, 52, 134, 15, "Enter the name of your business", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[3], "default-small")
+        guiLabelSetColor(GUIEditor.label[3], 255, 200, 0)    
+    end
+)

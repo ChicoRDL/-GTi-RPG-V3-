@@ -1,0 +1,5 @@
+<meta>
+	<info author="Mitch" name="CJ Muscle" autostart="true" />
+	<script src="muscle_c.luac" type="client" />
+	<script src="muscle_s.lua" type="server" />
+</meta>

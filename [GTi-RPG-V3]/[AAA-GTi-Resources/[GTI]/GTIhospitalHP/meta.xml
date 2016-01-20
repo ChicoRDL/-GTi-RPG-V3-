@@ -1,0 +1,5 @@
+<meta>
+<info name="Hospital Health Pickups" author="Mitch" autostart="true" />
+<script src="hospitalHP.lua" type="client" cache="false" />
+<script src="hospitalHP_s.lua" type="server" />
+</meta>

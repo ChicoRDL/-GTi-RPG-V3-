@@ -1,0 +1,21 @@
+<meta>
+    <info name="Quarry Miner job" author="Emile" autostart="true" />
+    <script src="quarry_server.lua" type="server" />
+    <script src="quarry_client.lua" type="client" />
+    <script src="quarry_sell.lua" type="client" />
+    <file src="misc/pickaxe.dff" />
+    <file src="misc/pickaxe.txd" />
+    <file src="misc/rockfalls.ogg" />
+    <file src="misc/throw.mp3" />
+    <file src="misc/element.png" />
+    <file src="misc/element2.png" />
+    <file src="misc/element3.png" />
+    <file src="misc/element4.png" />
+    <file src="misc/element5.png" />
+    <file src="misc/PetitFormalScript.ttf" />
+    <file src="misc/EmblemaOne.ttf" />
+    <file src="misc/robo.ttf" />
+	
+	<export function="getPlayerIron" type="server"/>
+	<export function="setPlayerIron" type="server"/>
+</meta>

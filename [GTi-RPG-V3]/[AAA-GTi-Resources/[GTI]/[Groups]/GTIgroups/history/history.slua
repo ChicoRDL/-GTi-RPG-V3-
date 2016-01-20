@@ -1,0 +1,18 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 21 Oct 2014
+-- Resource: GTIgroups/history/history.slua
+-- Version: 1.0
+----------------------------------------->>
+
+addEvent("GTIgroups.getGroupHistory", true)
+addEventHandler("GTIgroups.getGroupHistory", root, function()
+	getAccountLogs(client, getPlayerGroup(client), "log_groups")
+end)
+
+addEvent("onLogDatabaseLoad")
+addEventHandler("onLogDatabaseLoad", root, function(category, logs)
+	if (getElementType(source) ~= "player" or category ~= "log_groups") then return end
+	triggerClientEvent(source, "GTIgroups.setGroupHistory", resourceRoot, category, logs, getRealTime().timestamp)
+end)

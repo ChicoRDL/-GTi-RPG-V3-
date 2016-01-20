@@ -1,0 +1,5 @@
+<meta>
+    <info author="Mitch" name="ATM Robbery" autostart="false" />
+    <script src="atmRob_c.lua" type="client" cache="false" />
+    <script src="atmRob_s.lua" type="server" />
+</meta>

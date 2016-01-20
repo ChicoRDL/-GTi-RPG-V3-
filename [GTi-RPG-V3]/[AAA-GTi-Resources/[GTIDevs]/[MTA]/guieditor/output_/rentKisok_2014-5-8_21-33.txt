@@ -1,0 +1,61 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(551, 242, 492, 389, "GTI Employment Rental Kiosk", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.90)
+
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 21, 472, 359, false, GUIEditor.window[1])
+
+        GUIEditor.tab[1] = guiCreateTab("Vehicles", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[1] = guiCreateGridList(23, 20, 210, 292, false, GUIEditor.tab[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Amount", 0.5)
+        GUIEditor.label[1] = guiCreateLabel(250, 20, 202, 113, "Select a vehicle from the list that you would like to rent. Return your rented vehicle here when you are done with it.\n\n(Note: You will be charged for any damage that the vehicle has when you return it.)", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+        GUIEditor.label[2] = guiCreateLabel(251, 145, 199, 82, "This vehicle is restricted to the following groups:\nGroup A, Group B, Group C", false, GUIEditor.tab[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", true)
+        GUIEditor.button[1] = guiCreateButton(250, 238, 201, 45, "Rent Vehicle", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.button[1], "default-bold-small")
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(250, 289, 99, 22, "Return Vehicle", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(353, 289, 99, 22, "Cancel", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.tab[2] = guiCreateTab("Weapons", GUIEditor.tabpanel[1])
+
+        GUIEditor.label[3] = guiCreateLabel(37, 18, 174, 15, "Weapons for Rent", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[3], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+        GUIEditor.gridlist[2] = guiCreateGridList(25, 40, 200, 111, false, GUIEditor.tab[2])
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Weapon Name", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Ammo", 0.5)
+        GUIEditor.label[4] = guiCreateLabel(26, 223, 420, 85, "Select any Weapons or Tools that you would like to rent.\nWhen you check out a weapon, any current weapon that you have in that slot will be automatically deposited in this weapons safe.\n\nYour weapons will remain stored until you take them out.\nWeapons can be taken back at any rental kiosk.", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[4], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[4], "center", true)
+        GUIEditor.gridlist[3] = guiCreateGridList(245, 40, 200, 111, false, GUIEditor.tab[2])
+        guiGridListAddColumn(GUIEditor.gridlist[3], "Weapon Name", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[3], "Ammo", 0.5)
+        GUIEditor.label[5] = guiCreateLabel(258, 18, 174, 15, "My Stored Weapons", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[5], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", false)
+        GUIEditor.button[4] = guiCreateButton(57, 159, 138, 31, "Exchange Weapon", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.button[4], "default-bold-small")
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[5] = guiCreateButton(277, 159, 138, 31, "Take Back Weapon", false, GUIEditor.tab[2])
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[6] = guiCreateButton(215, 166, 41, 18, "Close", false, GUIEditor.tab[2])
+        guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")    
+    end
+)

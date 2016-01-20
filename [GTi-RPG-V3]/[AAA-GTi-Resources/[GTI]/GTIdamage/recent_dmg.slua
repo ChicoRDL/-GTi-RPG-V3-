@@ -1,0 +1,68 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 05 Mar 2015
+-- Resource: GTIdamage/vehicle_damage.slua
+-- Version: 1.5
+----------------------------------------->>
+
+local lastDmg = {}				-- Last Damage by Player
+local lastDmgAttacker = {}		-- Last Damage w/ Attacker by Player
+
+local SELF_DEFENCE_TIME = 10000	-- Time from last attack to be considered self defense
+
+-- Set Last Damage
+------------------->>
+
+addEventHandler("onPlayerDamage", root, 
+	function(attacker, weapon, bodypart, loss)
+		if (loss <= 0) then return end
+		lastDmg[source] = getTickCount()
+		if (attacker and isElement(attacker)) then
+			lastDmgAttacker[source] = getTickCount()
+		end
+	end
+)
+
+addEventHandler("onPlayerWasted", root, 
+	function(_, attacker)
+		lastDmg[source] = getTickCount()
+		if (attacker and isElement(attacker)) then
+			lastDmgAttacker[source] = getTickCount()
+		end
+	end
+)
+
+-- Damage Exports
+------------------>>
+
+function getPlayerTimeSinceDamaged(player, attacker)
+	if (not isElement(player)) then return false end
+	if (attacker) then
+		if (not lastDmgAttacker[source]) then return math.huge end
+		return getTickCount() - lastDmgAttacker[source]
+	else
+		if (not lastDmg[source]) then return math.huge end
+		return getTickCount() - lastDmg[source]
+	end
+end
+
+-- Self Defense
+---------------->>
+
+function isPlayerDefendingSelf(player, target)
+	if (not isElement(player) or not isElement(target)) then return false end
+	local tick = getPlayerTimeSinceDamaged(player, true)
+	if (tick > SELF_DEFENCE_TIME) then return end
+	
+	local attacker = getLastAttacker(player)
+	return attacker == target
+end	
+
+-- Utilities
+------------->>
+
+addEventHandler("onPlayerQuit", root, function()
+	lastDmg[source] = nil
+	lastDmgAttacker[source] = nil
+end)

@@ -1,0 +1,6 @@
+<meta>
+<info author="Emile" name="GTIdroid Clock App" autostart="true" />
+	<script src="ClockAppClient.lua" type="client" />
+<file src="robo.ttf" />
+<file src="clck.png" />
+</meta>

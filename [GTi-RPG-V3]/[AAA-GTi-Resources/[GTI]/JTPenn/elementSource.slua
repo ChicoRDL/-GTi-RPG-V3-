@@ -1,0 +1,39 @@
+------------------------------------->>
+-- CIT: Community of Integrity and Transparency
+-- Date: 28 Nov 2013
+-- Resource: JTPenn/elementSource.lua
+-- Type: Client Side
+-- Author: JT Pennington (JTPenn)
+-- All Rights Reserved By Developers
+------------------------------------->>
+
+local GET_ELEMENT_RESOURCE = true
+
+if (GET_ELEMENT_RESOURCE) then
+
+function getElementResource()
+	outputChatBox( "Getting Element Resource..." )
+	if not isElement( source ) then return end
+	
+	local resources = getResources()
+	local eleType = getElementType( source )
+	for i,resource in ipairs( resources ) do
+		if (getResourceState( resource ) == "running") then
+			local resRoot = getResourceDynamicElementRoot( resource )
+			if (resRoot) then
+				local elements = getElementsByType( eleType, resRoot )
+				if (elements) then
+					for i,element in ipairs( elements ) do
+						if (element == source) then
+							outputChatBox( "Element is from resource "..getResourceName( resource ) )
+							return
+						end
+					end
+				end
+			end
+		end
+	end
+end
+addEventHandler( "onMarkerHit", root, getElementResource )
+
+end

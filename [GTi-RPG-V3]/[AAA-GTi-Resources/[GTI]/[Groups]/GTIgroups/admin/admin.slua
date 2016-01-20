@@ -1,0 +1,156 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 22 Jun 2014
+-- Resource: GTIgroupPanel/Admin/admin.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Admin Tab Info
+------------------>>
+
+addEvent("GTIgroupPanel.getAdminTabInfo", true)
+addEventHandler("GTIgroupPanel.getAdminTabInfo", root, function()
+	local perms = {}
+		-- Modify Ranks
+	perms[7] = hasMemberPermissionTo(client, "mod_group_info")
+	perms[8] = hasMemberPermissionTo(client, "edit_reminders")
+	perms[9] = hasMemberPermissionTo(client, "modify_ranks")
+	perms[12] = hasMemberPermissionTo(client, "change_group_name")
+	perms[14] = hasMemberPermissionTo(client, "mod_group_color")
+	perms[15] = hasMemberPermissionTo(client, "friendly_fire")
+	perms[18] = hasMemberPermissionTo(client, "group_blips")
+	perms[19] = hasMemberPermissionTo(client, "delete_group")
+	
+	local col = {getGroupColor( getPlayerGroup(client) )}
+	triggerClientEvent(client, "GTIgroupPanel.setAdminTabInfo", resourceRoot, perms, col)
+end)
+
+-- Change Group Information
+---------------------------->>
+
+addEvent("GTIgroupPanel.changeGroupInformation", true)
+addEventHandler("GTIgroupPanel.changeGroupInformation", root, function(text)
+	local groupID = getPlayerGroup(client)
+	setGroupInformation(groupID, text)
+	outputGroupChat("* GROUP: "..getPlayerName(client).." updated the group info.", groupID)
+	addLogToDatabase(getPlayerName(client).." updated the group info.", client, groupID)
+end)
+
+-- Add/Remove Group Reminders
+------------------------------>>
+
+addEvent("GTIgroups.getReminders", true)
+addEventHandler("GTIgroups.getReminders", root, function()
+	local groupID = getPlayerGroup(client)
+	local news = getGroupNews(groupID)
+	triggerClientEvent(client, "GTIgroups.getReminders", resourceRoot, news)
+end)
+
+addEvent("GTIgroups.setReminders", true)
+addEventHandler("GTIgroups.setReminders", root, function(news)
+	local groupID = getPlayerGroup(client)
+	setGroupNews(groupID, news)
+	outputGroupChat("* GROUP: "..getPlayerName(client).." updated the group reminders.", groupID)
+	addLogToDatabase(getPlayerName(client).." updated the group reminders.", client, groupID)
+end)
+
+-- Change Group Name
+--------------------->>
+
+addEvent("GTIgroupPanel.changeGroupName", true)
+addEventHandler("GTIgroupPanel.changeGroupName", root, function(group_name)
+	local groupID = getPlayerGroup(client)
+	local old_name = getGroupName(groupID)
+	local success = setGroupName(groupID, group_name)
+	if (success) then
+		outputGroupChat("* GROUP: "..getPlayerName(client).." changed the group name from "..old_name.." to "..group_name, groupID)
+		addLogToDatabase(getPlayerName(client).." changed the group name from "..old_name.." to "..group_name, client, groupID)
+	else
+		exports.GTIhud:dm("ERROR: A group with this name already exists. Pick another name.", client, 255, 25, 25)
+	end
+end)
+
+-- Change Group Color
+---------------------->>
+
+addEvent("GTIgroupPanel.changeGroupColor", true)
+addEventHandler("GTIgroupPanel.changeGroupColor", root, function(r, g, b)
+	local groupID = getPlayerGroup(client)
+	setGroupColor(groupID, r, g, b)
+	outputGroupChat("* GROUP: "..getPlayerName(client).." changed the group color.", groupID)
+	addLogToDatabase(getPlayerName(client).." changed the group color to "..r..", "..g..", "..b, client, groupID)
+end)
+
+-- Group Friendly Fire
+----------------------->>
+
+addEvent("GTIgroups.getFriendlyFire", true)
+addEventHandler("GTIgroups.getFriendlyFire", root, function()
+	local groupID = getPlayerGroup(client)
+	local fFire = getGroupFriendlyFire(groupID)
+	triggerClientEvent(client, "GTIgroups.getFriendlyFire", resourceRoot, fFire)
+end)
+
+addEvent("GTIgroups.setFriendlyFire", true)
+addEventHandler("GTIgroups.setFriendlyFire", root, function(state)
+	local groupID = getPlayerGroup(client)
+	setGroupFriendlyFire(groupID, state)
+	outputGroupChat("* GROUP: "..getPlayerName(client).." "..(state and "enabled" or "disabled").." group friendly fire.", groupID)
+	addLogToDatabase(getPlayerName(client).." "..(state and "enabled" or "disabled").." group friendly fire.", client, groupID)
+end)
+
+-- Group Blips
+--------------->>
+
+addEvent("GTIgroups.getGroupBlips", true)
+addEventHandler("GTIgroups.getGroupBlips", root, function()
+	local groupID = getPlayerGroup(client)
+	local blipID = getGroupBlipsEnabled(groupID)
+	triggerClientEvent(client, "GTIgroups.getGroupBlips", resourceRoot, blipID)
+end)
+
+addEvent("GTIgroups.setGroupBlips", true)
+addEventHandler("GTIgroups.setGroupBlips", root, function(state, blipID)
+	local groupID = getPlayerGroup(client)
+	setGroupBlipsEnabled(groupID, state and blipID or nil)
+	outputGroupChat("* GROUP: "..getPlayerName(client).." "..(state and "enabled" or "disabled").." group blips (ID: "..blipID..").", groupID)
+	addLogToDatabase(getPlayerName(client).." "..(state and "enabled" or "disabled").." group blips (ID: "..blipID..").", client, groupID)
+end)
+
+-- Delete Group
+---------------->>
+
+addEvent("GTIgroupPanel.deletePlayerGroup", true)
+addEventHandler("GTIgroupPanel.deletePlayerGroup", root, function(password)
+	local account = getAccount(getAccountName(getPlayerAccount(client)), password)
+	if (not account) then
+		exports.GTIhud:dm("ERROR: Incorrect Password.", client, 255, 25, 25)
+		return
+	end
+	local groupID = getPlayerGroup(client)
+	local members = getGroupMembers(groupID)
+	for i,v in ipairs(members) do
+		local player = getAccountPlayer(getAccount(v))
+		if (isElement(player)) then
+			triggerClientEvent(player, "GTIgroupPanel.closeGroupPanel", resourceRoot)
+		end
+	end
+	outputGroupChat("* GROUP: "..getPlayerName(client).." deleted the group.", groupID)
+	deleteGroup(groupID)
+end)
+
+-- Job Restriction
+------------------->>
+
+function retrieveJobs()
+	local ranks = {}
+	local Ranks = exports.GTIemployTable:getRanks()
+	ranks["jobList"] = {}
+	for job,_ in pairs(Ranks) do
+		table.insert(ranks["jobList"],job)
+	end
+	triggerClientEvent(client, "GTIgroups.addJobsToGrid", client, ranks)
+end
+addEvent("GTIgroups.retreiveJobs", true)
+addEventHandler("GTIgroups.retreiveJobs", root, retrieveJobs)

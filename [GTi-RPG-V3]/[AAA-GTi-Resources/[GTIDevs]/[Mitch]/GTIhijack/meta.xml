@@ -1,0 +1,7 @@
+<meta>
+    <info author="JTPenn" name="Criminal Hijacker" autostart="true" />
+    <script src="hijack.luac" type="client" />
+    <script src="locations.slua" />
+    <script src="hijack.slua" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+</meta>

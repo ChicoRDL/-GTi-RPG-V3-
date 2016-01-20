@@ -1,0 +1,16 @@
+<meta>
+	<info author="JTPenn"	name="Premium Membership"	autostart="true" />
+	<script src="database.slua" />
+	<script src="premium.slua" />
+	
+	<script src="premium_shop/shop_gui.luac" 	type="client" />
+	<script src="premium_shop/shop.luac" 		type="client" />
+	<script src="premium_shop/shop.slua" 		/>	
+	
+	<file src="images/Token.png" />
+	<file src="images/blip.png" />
+	
+	<export function="isPremium" 		type="server" />
+	<export function="isAccountPremium"	type="server" />
+	<export function="getPlayerTokens"	type="server" />
+</meta>

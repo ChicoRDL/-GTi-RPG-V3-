@@ -1,0 +1,38 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        FishMarket = guiCreateWindow(586, 316, 188, 179, "GTI Fish Market", false)
+        guiWindowSetSizable(FishMarket, false)
+        guiSetAlpha(FishMarket, 0.95)
+
+        edit = guiCreateEdit(26, 89, 141, 21, "", false, FishMarket)
+        SellButtom = guiCreateButton(70, 145, 47, 24, "Sell", false, FishMarket)
+        guiSetFont(SellButtom, "clear-normal")
+        guiSetProperty(SellButtom, "NormalTextColour", "FFFFFFFF")
+        GUIEditor.label[1] = guiCreateLabel(150, 156, 28, 13, "Close", false, FishMarket)
+        pez = guiCreateStaticImage(52, 20, 83, 43, ":GTIfisherman/images/fish3.png", false, FishMarket)
+        earnings = guiCreateLabel(26, 120, 66, 15, "Earnings:", false, FishMarket)
+        local font_0 = guiCreateFont(":guieditor/fonts/PetitFormalScript.ttf")
+        guiSetFont(earnings, font_0)
+        guiLabelSetColor(earnings, 9, 81, 2)
+        SellLabel = guiCreateLabel(16, 38, 26, 15, "Sell", false, FishMarket)
+        guiSetFont(SellLabel, font_0)
+        guiLabelSetHorizontalAlign(SellLabel, "left", true)
+        YourLabel = guiCreateLabel(145, 40, 33, 19, "Your", false, FishMarket)
+        guiSetFont(YourLabel, font_0)
+        FishesLabel = guiCreateLabel(70, 63, 47, 16, "Fishes", false, FishMarket)
+        guiSetFont(FishesLabel, font_0)    
+    end
+)

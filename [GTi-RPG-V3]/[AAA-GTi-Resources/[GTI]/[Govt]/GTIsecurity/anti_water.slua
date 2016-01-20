@@ -1,0 +1,16 @@
+addEventHandler("onPlayerQuit", root,
+	function ()
+		if ( isPedInWater(source) ) then
+			exports.GTIaccounts:SAD( getPlayerAccount(source), "water_level_position", getElementData(source, "water_level"))
+		end
+	end
+)
+addEventHandler("onPlayerLogin", root,
+	function (_, acc)
+		if ( exports.GTIaccounts:GAD(acc, "water_level_position") ) then
+			local x, y = getElementPosition(source)
+			setElementPosition(source, x, y, exports.GTIaccounts:GAD(acc, "water_level_position"))
+			exports.GTIaccounts:SAD(acc, "water_level_position", nil)
+		end
+	end
+)

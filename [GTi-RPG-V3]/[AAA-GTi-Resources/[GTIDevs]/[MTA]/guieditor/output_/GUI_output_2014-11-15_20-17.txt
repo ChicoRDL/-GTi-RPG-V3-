@@ -1,0 +1,24 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(783, 263, 270, 429, ":GTIdroid/wallpapers/bkgr_black.png", false)
+
+        GUIEditor.staticimage[2] = guiCreateStaticImage(9, 132, 251, 31, ":GTIcalculatorapp/button.png", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.staticimage[2], "ImageColours", "tl:FFA9A9A9 tr:FFA9A9A9 bl:FFA9A9A9 br:FFA9A9A9")
+        GUIEditor.staticimage[3] = guiCreateStaticImage(9, 91, 251, 31, ":GTIcalculatorapp/button.png", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.staticimage[3], "ImageColours", "tl:FFA9A9A9 tr:FFA9A9A9 bl:FFA9A9A9 br:FFA9A9A9")
+        GUIEditor.staticimage[4] = guiCreateStaticImage(92, 6, 80, 80, ":GTIdroid/apps/Settings.png", false, GUIEditor.staticimage[1])
+        GUIEditor.staticimage[5] = guiCreateStaticImage(9, 173, 251, 31, ":GTIcalculatorapp/button.png", false, GUIEditor.staticimage[1])
+        guiSetProperty(GUIEditor.staticimage[5], "ImageColours", "tl:FFA9A9A9 tr:FFA9A9A9 bl:FFA9A9A9 br:FFA9A9A9")    
+    end
+)

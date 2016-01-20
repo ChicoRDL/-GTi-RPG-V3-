@@ -1,0 +1,97 @@
+
+GUIEditor = {
+    tab = {},
+    scrollpane = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {},
+    memo = {}
+}
+GUIEditor.window[1] = guiCreateWindow(396, 195, 564, 405, "GTI Civilian Experience System Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 24, 546, 373, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Current Job", GUIEditor.tabpanel[1])
+
+GUIEditor.label[1] = guiCreateLabel(15, 17, 68, 15, "Current Job:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 200, 0)
+GUIEditor.label[2] = guiCreateLabel(92, 17, 173, 15, "<Job Name>", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+GUIEditor.label[3] = guiCreateLabel(381, 9, 88, 15, "Job Description", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 255, 200, 0)
+GUIEditor.label[4] = guiCreateLabel(297, 7, 15, 331, "| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | ", false, GUIEditor.tab[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+GUIEditor.label[5] = guiCreateLabel(314, 291, 226, 15, "____________________________________", false, GUIEditor.tab[1])
+GUIEditor.button[1] = guiCreateButton(316, 313, 106, 25, "End Shift", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(431, 313, 106, 25, "Resign", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[6] = guiCreateLabel(7, 36, 287, 15, "_____________________________________________", false, GUIEditor.tab[1])
+GUIEditor.scrollpane[1] = guiCreateScrollPane(314, 30, 226, 270, false, GUIEditor.tab[1])
+GUIEditor.label[7] = guiCreateLabel(244, 56, 50, 15, "Level XX", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 255, 200, 0)
+GUIEditor.label[8] = guiCreateLabel(10, 81, 80, 15, "Current Rank:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[8], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[8], 255, 200, 0)
+GUIEditor.label[9] = guiCreateLabel(99, 81, 191, 15, "<Rank Name>", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[9], "clear-normal")
+GUIEditor.label[10] = guiCreateLabel(10, 151, 108, 15, "Progress to Promo:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 255, 200, 0)
+GUIEditor.label[11] = guiCreateLabel(10, 115, 80, 15, "Job Progress:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[11], 255, 200, 0)
+GUIEditor.label[12] = guiCreateLabel(126, 151, 164, 15, "XXX,XXX Units of Unit", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[12], "clear-normal")
+GUIEditor.label[13] = guiCreateLabel(99, 115, 191, 15, "XXX,XXX Units of Unit", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[13], "clear-normal")
+GUIEditor.label[14] = guiCreateLabel(7, 168, 287, 15, "_____________________________________________", false, GUIEditor.tab[1])
+
+GUIEditor.tab[2] = guiCreateTab("All Jobs", GUIEditor.tabpanel[1])
+
+GUIEditor.label[15] = guiCreateLabel(10, 23, 70, 15, "Civilian Level:", false, GUIEditor.tab[2])
+GUIEditor.label[16] = guiCreateLabel(91, 8, 62, 46, "XX", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[16], "sa-header")
+guiLabelSetColor(GUIEditor.label[16], 255, 200, 0)
+GUIEditor.label[17] = guiCreateLabel(198, 23, 64, 15, "Experience:", false, GUIEditor.tab[2])
+GUIEditor.label[18] = guiCreateLabel(270, 8, 265, 46, "XX,XXX,XXX", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[18], "sa-header")
+guiLabelSetColor(GUIEditor.label[18], 255, 200, 0)
+GUIEditor.label[19] = guiCreateLabel(7, 46, 534, 15, "_______________________________________________________________________________________", false, GUIEditor.tab[2])
+GUIEditor.label[20] = guiCreateLabel(70, 115, 104, 15, "Civilian Jobs List", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[20], "clear-normal")
+GUIEditor.label[21] = guiCreateLabel(7, 93, 534, 15, "_______________________________________________________________________________________", false, GUIEditor.tab[2])
+GUIEditor.label[22] = guiCreateLabel(231, 108, 15, 232, "| | | | | | | | | | | | | | | | | | | | | | | | | | | | ", false, GUIEditor.tab[2])
+guiLabelSetHorizontalAlign(GUIEditor.label[22], "left", true)
+GUIEditor.gridlist[1] = guiCreateGridList(7, 135, 220, 205, false, GUIEditor.tab[2])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Civilian Jobs List", 0.9)
+GUIEditor.label[23] = guiCreateLabel(488, 115, 50, 15, "Level XX", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[23], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[23], 255, 200, 0)
+
+GUIEditor.label[24] = guiCreateLabel(2, 25, 102, 23, "", false, GUIEditor.label[23])
+guiLabelSetColor(GUIEditor.label[24], 255, 200, 0)
+
+GUIEditor.label[25] = guiCreateLabel(251, 139, 79, 15, "Current Rank:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[25], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[25], 255, 200, 0)
+GUIEditor.label[26] = guiCreateLabel(251, 170, 99, 15, "Current Progress:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[26], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[26], 255, 200, 0)
+GUIEditor.label[27] = guiCreateLabel(251, 201, 114, 15, "Progress for Promo:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[27], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[27], 255, 200, 0)
+GUIEditor.label[28] = guiCreateLabel(340, 139, 196, 15, "<Insert Rank Name Here>", false, GUIEditor.tab[2])
+GUIEditor.label[29] = guiCreateLabel(378, 201, 160, 15, "<Insert Prog. 4 Promo Here>", false, GUIEditor.tab[2])
+GUIEditor.label[30] = guiCreateLabel(362, 170, 177, 15, "<Insert Current Progress Here>", false, GUIEditor.tab[2])
+GUIEditor.label[31] = guiCreateLabel(348, 231, 89, 15, "Job Description", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[31], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[31], 255, 200, 0)
+GUIEditor.memo[1] = guiCreateMemo(251, 250, 289, 90, "", false, GUIEditor.tab[2])

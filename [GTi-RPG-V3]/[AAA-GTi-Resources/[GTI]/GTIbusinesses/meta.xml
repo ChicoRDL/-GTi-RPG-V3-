@@ -1,0 +1,13 @@
+<meta>
+	<info name="Businesses System" 	author="Ares"	autostart="false" />
+	
+	<script src="database.slua" />
+	<script src="businesses.slua" />
+
+	<export function="getBusinessData"		type="server" />
+	<export function="setBusinessData"		type="server" />
+	<export function="setBusinessOwner"		type="server" />
+	
+	<export function="getPlayerTotalBusinesses"	type="server" />
+	<export function="getAccountTotalBusinesses"	type="server" />
+</meta>

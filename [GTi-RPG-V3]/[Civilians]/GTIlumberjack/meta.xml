@@ -1,0 +1,5 @@
+<meta>
+	<info author="Nerox" name="Lumberjack Job" autostart="true" />
+	<script src="lumberjack_client.lua" type="client" cache="false"/>
+	<script src="lumberjack_server.lua" type="server" />
+</meta>

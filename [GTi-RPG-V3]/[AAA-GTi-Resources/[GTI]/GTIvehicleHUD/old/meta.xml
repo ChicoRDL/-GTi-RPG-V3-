@@ -1,0 +1,11 @@
+<meta>
+    <info name="vehicle_hud" author="Aaron" type="script" />
+    <file src="DGI.ttf" type="client" />
+    <!-- <script src="vehicle_hud.lua" type="client" cache="false" /> -->
+    <script src="vehicle_locks.lua" type="server" />
+    <file src="gimbal.png" />
+    <file src="lock_open.png" />
+    <file src="lock_closed.png" />
+
+    <script src="vehhud_c.lua" type="client" cache="false" />
+</meta>

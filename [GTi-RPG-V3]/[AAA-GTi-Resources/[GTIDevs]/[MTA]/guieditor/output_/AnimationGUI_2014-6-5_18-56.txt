@@ -1,0 +1,11 @@
+
+GUIEditor = {
+    window = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(10, 166, 226, 340, "Animations GTI", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.70)    
+    end
+)

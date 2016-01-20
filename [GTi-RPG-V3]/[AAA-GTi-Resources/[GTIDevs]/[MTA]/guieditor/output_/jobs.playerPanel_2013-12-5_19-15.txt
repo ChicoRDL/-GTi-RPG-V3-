@@ -1,0 +1,35 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(14, 262, 321, 199, "GTI Employment Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(11, 29, 59, 15, "Job Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 25, 25)
+GUIEditor.label[2] = guiCreateLabel(78, 29, 231, 15, "<Insert Job Name Here>", false, GUIEditor.window[1])
+GUIEditor.label[3] = guiCreateLabel(9, 44, 303, 15, "_________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[4] = guiCreateLabel(11, 72, 79, 15, "Current Rank:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 255, 25, 25)
+GUIEditor.label[5] = guiCreateLabel(11, 97, 100, 15, "Current Progress:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 255, 25, 25)
+GUIEditor.label[6] = guiCreateLabel(11, 124, 113, 15, "Progress for Promo:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 255, 25, 25)
+GUIEditor.label[7] = guiCreateLabel(99, 72, 213, 15, "<Rank>", false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(121, 97, 190, 15, "XXX,XXX Units of Unit", false, GUIEditor.window[1])
+GUIEditor.label[9] = guiCreateLabel(134, 124, 177, 15, "XXX,XXX Units of Unit", false, GUIEditor.window[1])
+GUIEditor.label[10] = guiCreateLabel(9, 140, 303, 15, "_________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[11] = guiCreateLabel(263, 65, 48, 15, "Level XX", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[11], 255, 25, 25)
+GUIEditor.button[1] = guiCreateButton(83, 160, 67, 30, "End Shift", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(166, 160, 67, 31, "Resign", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

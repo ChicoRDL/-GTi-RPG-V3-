@@ -1,0 +1,111 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 12 Mar 2015
+-- Resource: GTIplayerStats/player_stats.slua
+-- Version: 1.0
+----------------------------------------->>
+
+setGlitchEnabled("fastsprint", true)
+
+local DEF_STAMINA = 100	-- Default Stamina Value (out of 1000)
+
+-- Load Stat Data
+------------------>>
+
+function loadStatData(player)
+	if (not isElement(player)) then return end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return end
+		-- Stamina
+	local skill = exports.GTIstats:getStatData(account, "stamina") or DEF_STAMINA
+	setPedStat(player, 22, skill)
+		-- Bike Skill
+	local skill = exports.GTIstats:getStatData(account, "bike_skill") or 0
+	setPedStat(player, 229, skill)
+		-- Cycling Skill
+	local skill = exports.GTIstats:getStatData(account, "cycling_skill") or 0
+	setPedStat(player, 230, skill)
+		-- Driving Skill
+	local skill = exports.GTIstats:getStatData(account, "driving_skill") or 0
+	setPedStat(player, 160, skill)
+		-- Weapon Skills
+	local skill = exports.GTIstats:getStatData(account, "weapon_skills") or "69,0;70,0;71,0;72,0;73,0;74,0;75,0;76,0;77,0;78,0"
+	skill = split(skill, ";")
+	local skills = {}
+	for i,v in ipairs(skill) do
+		local t = split(v, ",")
+		skills[tonumber(t[1])] = tonumber(t[2])
+	end
+	for i=69,78 do
+		setPedStat(player, i, skills[i])
+	end
+end
+
+addEventHandler("onPlayerLogin", root, function()
+	loadStatData(source)
+end)
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		loadStatData(player)
+	end
+end)
+
+-- Save Stat Data
+------------------>>
+
+function saveStatData(player, stat)
+	if (not isElement(player)) then return end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return end
+		-- Stamina
+	if (not stat or stat == 22) then
+		local skill = getPedStat(player, 22)
+		if (skill == 0) then skill = DEF_STAMINA end
+		exports.GTIstats:setStatData(account, "stamina", math.floor(skill))
+	end
+		-- Bike Skill
+	if (not stat or stat == 229) then
+		local skill = getPedStat(player, 229)
+		exports.GTIstats:setStatData(account, "bike_skill", math.floor(skill))
+	end
+		-- Cycling Skill
+	if (not stat or stat == 230) then
+		local skill = getPedStat(player, 230)
+		exports.GTIstats:setStatData(account, "cycling_skill", math.floor(skill))
+	end
+		-- Driving Skill
+	if (not stat or stat == 160) then
+		local skill = getPedStat(player, 160)
+		exports.GTIstats:setStatData(account, "driving_skill", math.floor(skill))
+	end
+	
+	if (not stat or (stat >= 69 and stat <= 78)) then
+		local skills = {}
+		for i=69,78 do
+			table.insert(skills, i..","..getPedStat(player, i))
+		end
+		exports.GTIstats:setStatData(account, "weapon_skills", table.concat(skills, ";"))
+	end
+end
+
+-- Change Stat Data
+-------------------->>
+
+addEvent("GTIplayerStats.modifyPlayerStat", true)
+addEventHandler("GTIplayerStats.modifyPlayerStat", root, function(stat, amount)
+	local cur_stat = getPedStat(client, stat)
+	setPedStat(client, stat, math.floor(amount+cur_stat))
+	saveStatData(client, stat)
+end)
+
+addEvent("GTIplayerStats.modifyWeaponStats", true)
+addEventHandler("GTIplayerStats.modifyWeaponStats", root, function(stats)
+	for i=69,78 do
+		local cur_stat = getPedStat(client, i)
+		if not setPedStat(client, i, math.floor(stats[i]+cur_stat)) then setPedStat(client, i, 1000) end
+		--outputDebugString("Old stat: "..cur_stat..", New stat: "..stats[i]+cur_stat)
+	end	
+	saveStatData(client, 69)
+end)

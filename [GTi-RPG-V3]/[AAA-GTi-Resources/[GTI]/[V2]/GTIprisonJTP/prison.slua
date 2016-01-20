@@ -1,0 +1,214 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 15 May 2014
+-- Resource: GTIprison/prison.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+prison_spawns = {
+	{3151.014, 843.348, 1655.256, 180},
+	{3146.745, 843.348, 1655.256, 180},
+	{3142.804, 843.348, 1655.256, 180},
+	{3138.495, 843.348, 1655.256, 180},
+	{3134.200, 843.348, 1655.256, 180},
+	{3130.358, 843.348, 1655.256, 180},
+	{3126.167, 843.348, 1655.256, 180},
+	{3121.793, 843.348, 1655.256, 180},
+}
+
+PRISON_INT = 1		-- Prison Interior
+PRISON_DIM = 169	-- Prison Dimension
+
+sentences = {}	-- Table of Jail Sentences by Player
+
+addEvent("onPlayerJailed", true)
+
+-- Jail Player
+--------------->>
+
+function jailPlayer(player, sentence, jailer, adminJail)
+	if (not isElement(player) or type(sentence) ~= "number") then return false end
+	if (not exports.GTIutil:isPlayerLoggedIn(player)) then return end
+	setTimer(function(player)
+		exports.GTIemployment:resign(player, true)
+	end, 50, 1, player)
+		-- Confiscate Weapons
+	local jail_time = exports.GTIaccounts:GAD(getPlayerAccount(player), "jail_time") or 0
+	if (jail_time == 0) then
+		exports.GTIweapons:saveWeapons(player)
+	end
+	
+		-- Warp Ped Into Jail
+	if (isPedInVehicle(player)) then
+		removePedFromVehicle(player)
+	end
+	
+	local loc = math.random(#prison_spawns)
+	local pos = prison_spawns[loc]
+	if (isPedDead(player)) then
+		local skin = getElementModel(player)
+		local team = getPlayerTeam(player)
+		spawnPlayer(player, pos[1], pos[2], pos[3], pos[4], skin, PRISON_INT, PRISON_DIM, team)
+	else
+		setElementPosition(player, pos[1], pos[2], pos[3])
+		setElementRotation(player, 0, 0, pos[4])
+		setElementInterior(player, PRISON_INT)
+		setElementDimension(player, PRISON_DIM)
+	end
+	
+		-- Start Collecting Jail Text
+	local jail_text = ""
+	
+		-- Check WL Record
+	local wp = exports.GTIpoliceWanted:getPlayerWantedLevel(player, true)
+	local wp_record = exports.GTIstats:getStatData(getPlayerAccount(player), "wl_record") or 0
+	if (wp > wp_record) then
+		exports.GTIstats:setStatData(getPlayerAccount(player), "wl_record", wp)
+		jail_text = "You were jailed with "..(wp/10).." stars. A new personal record!\n"
+		outputConsole("You were jailed with "..(wp/10).." stars. A new personal record", player)
+	else
+		jail_text = "You were jailed with "..(wp/10).." stars.\n"
+		outputConsole("You were jailed with "..(wp/10).." stars.", player)
+	end
+	
+		-- Clear Wanted Level
+	exports.GTIpoliceWanted:clearPlayerWantedLevel(player)
+		-- Prevent Entering Vehicles
+	for _,ctrl in ipairs({"enter_exit", "enter_passenger"}) do
+		toggleControl(player, ctrl, false)
+	end
+	
+		-- Premium Sentences
+	local reduction
+	if (not adminJail and exports.GTIpremium:isPremium(player, "5_less_jail")) then
+		sentence = math.floor(sentence*0.95)
+		reduction = "\n[5% Premium Reduction]"
+	elseif (not adminJail and exports.GTIpremium:isPremium(player, "10_less_jail")) then
+		sentence = math.floor(sentence*0.90)
+		reduction = "\n[10% Premium Reduction]"
+	elseif (not adminJail and exports.GTIpremium:isPremium(player, "15_less_jail")) then
+		sentence = math.floor(sentence*0.85)
+		reduction = "\n[15% Premium Reduction]"
+	end
+	
+		-- Begin Sentence
+	sentences[player] = math.floor(sentence)
+	if (not adminJail) then
+		if (isElement(jailer)) then
+			jail_text = jail_text.."You have been sentenced to "..sentence.." seconds in prison. (Jailed by "..getPlayerName(jailer)..")"..(reduction or "")
+			outputConsole("You have been sentenced to "..sentence.." seconds in prison. (Jailed by "..getPlayerName(jailer)..")"..(reduction or ""), player)
+		elseif (type(jailer) == "string") then
+			jail_text = jail_text.."You have been sentenced to "..sentence.." seconds in prison. (Jailed by "..tostring(jailer)..")"..(reduction or "")
+			outputConsole("You have been sentenced to "..sentence.." seconds in prison. (Jailed by "..tostring(jailer)..")"..(reduction or ""), player)
+		else
+			jail_text = jail_text.."You have been sentenced to "..sentence.." seconds in prison."..(reduction or "")
+			outputConsole("You have been sentenced to "..sentence.." seconds in prison."..(reduction or ""), player)
+		end
+	end
+		-- Record Stats
+	exports.GTIstats:modifyPlayerStatData(player, "times_jailed", 1)
+	exports.GTIstats:modifyPlayerStatData(player, "time_in_jail", sentence)
+	
+		-- Trigger Events
+	triggerClientEvent(player, "GTIprison.showBusted", resourceRoot, jail_text)
+	triggerEvent("onPlayerJailed", player, sentence, jailer)
+	
+		-- Show Police Report
+	setTimer(showPoliceReport, 5000, 1, player, wp, sentence)
+	return true
+end
+
+-- Is Jailed?
+-------------->>
+
+function isPlayerInJail(player)
+	if (sentences[player]) then 
+		return true 
+	else
+		return false
+	end
+end
+
+-- Get Remaining Time
+---------------------->>
+
+function getRemainingJailTime(player)
+	if (not sentences[player]) then return false end
+	return sentences[player]
+end
+
+-- Release on Stop
+------------------->>
+
+addEventHandler("onResourceStop", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		if (isPlayerInJail(player)) then
+			releasePlayer2(player)
+		end
+	end
+end)
+
+-- Check Jail Sentence
+----------------------->>
+
+setTimer(function()
+	for player,sentence in pairs(sentences) do
+		if (isElement(player)) then
+			if (sentence > 0) then
+				sentences[player] = sentences[player] - 1
+				local sec = sentences[player]
+				local min = string.format("%02d", math.floor(sec/60) % 60 )
+				local hr = math.floor(sec/3600)
+				sec = string.format("%02d", sec % 60)
+				exports.GTIhud:drawStat("sentence", "Time Remaining", (hr > 0 and string.format("%02d", hr)..":" or "")..min..":"..sec, player, 255, 255, 255)
+				
+				for _,ctrl in ipairs({"enter_exit", "enter_passenger"}) do
+					toggleControl(player, ctrl, false)
+				end
+			else
+				releasePlayer2(player)
+			end
+		else
+			sentences[player] = nil
+		end
+	end
+end, 1000, 0)
+
+-- Anti-Escape
+--------------->>
+
+local no_escape = createColCuboid(111.721, 1350.865, 18.347, 210.950-111.721, 1472.340-1350.865, 2)
+
+function blockEscaping(player, dim)
+	if (not isElement(player) or getElementType(player) ~= "player") then return end
+	if (not isPlayerInJail(player)) then return end
+	setElementPosition(player, 200.551, 1410.832, 10.586)
+end
+addEventHandler("onColShapeHit", no_escape, blockEscaping)
+
+-- Save/Load Sentences
+----------------------->>
+
+function saveJailSentence()
+	if (not exports.GTIutil:isPlayerLoggedIn(source)) then return end
+	
+	local sentence = getRemainingJailTime(source)
+	local account = getPlayerAccount(source)
+	if (sentence) then 
+		exports.GTIaccounts:SAD(account, "jail_time", sentence)
+	end
+end
+addEventHandler("onPlayerQuit", root, saveJailSentence)
+
+function rejailOnSpawn()
+	if (isPlayerInJail(source)) then return end
+	local account = getPlayerAccount(source)
+	if (isGuestAccount(account)) then return end
+	local jail_time = exports.GTIaccounts:GAD(account, "jail_time") or 0
+	
+	if (jail_time > 0) then
+		jailPlayer(source, jail_time)
+	end
+end
+addEventHandler("onPlayerSpawn", root, rejailOnSpawn)

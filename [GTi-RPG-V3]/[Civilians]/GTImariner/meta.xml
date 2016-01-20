@@ -1,0 +1,5 @@
+<meta>
+<info author="Emile" name="Mariner Job" autostart="true" />
+	<script src="MarinerClient.lua" type="client" />
+	<script src="MarinerServer.lua" type="server" />
+</meta>

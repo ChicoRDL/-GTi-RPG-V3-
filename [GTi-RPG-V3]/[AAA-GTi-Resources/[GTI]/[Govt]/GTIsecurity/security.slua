@@ -1,0 +1,24 @@
+
+-- Command Spam
+---------------->>
+
+local cmd_spam = {}
+
+function checkCMDSpam()
+	if not cmd_spam[source] then
+		cmd_spam[source] = 1
+	elseif cmd_spam[source] == 5 then
+		cancelEvent()
+		--cmd_spam[source] = 0
+		--exports.GTIgovt:kickPlayer( source, root, "Command spamming.")
+	end
+	cmd_spam[source] = cmd_spam[source] + 1
+end
+addEventHandler( "onPlayerCommand", root, checkCMDSpam)
+
+setTimer(
+	function()
+		cmd_spam = {}
+	end, 1000, 0
+)
+

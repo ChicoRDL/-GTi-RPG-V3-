@@ -1,0 +1,44 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(548, 190, 278, 421, "GTI Vehicles Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(9, 26, 78, 15, "Vehicle Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 175, 125, 250)
+GUIEditor.label[2] = guiCreateLabel(9, 51, 54, 15, "Location:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 175, 125, 250)
+GUIEditor.label[3] = guiCreateLabel(93, 26, 173, 15, "<Vehicle Name>", false, GUIEditor.window[1])
+GUIEditor.label[4] = guiCreateLabel(70, 51, 196, 15, "<District>, <City>", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(9, 76, 41, 15, "Health:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 175, 125, 250)
+GUIEditor.label[6] = guiCreateLabel(140, 76, 27, 15, "Fuel:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 175, 125, 250)
+GUIEditor.label[7] = guiCreateLabel(55, 75, 79, 15, "XXX%", false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(173, 75, 79, 15, "XXX%", false, GUIEditor.window[1])
+GUIEditor.label[9] = guiCreateLabel(8, 114, 262, 15, "_____________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[10] = guiCreateLabel(9, 100, 49, 15, "Mileage:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 175, 125, 250)
+GUIEditor.label[11] = guiCreateLabel(63, 98, 196, 15, "XXX.XXX Miles", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(9, 382, 60, 30, "Spawn", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(75, 382, 60, 30, "Recover", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(140, 382, 60, 30, "Mark", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[4] = guiCreateButton(205, 382, 60, 30, "Hide", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+GUIEditor.gridlist[1] = guiCreateGridList(9, 138, 260, 238, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.3)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Health", 0.3)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Fuel", 0.3)

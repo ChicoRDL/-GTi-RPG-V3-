@@ -1,0 +1,6 @@
+<meta>
+    <info author="Nathan" version="1.0" name="Check if account has email linked" description="Check if account has email linked" autostart="false" type="script" />
+    <min_mta_version client="1.4.0" server="1.4.0" />
+    <script src="client.luac" type="client" />
+    <script src="server.lua" type="server" />
+</meta>

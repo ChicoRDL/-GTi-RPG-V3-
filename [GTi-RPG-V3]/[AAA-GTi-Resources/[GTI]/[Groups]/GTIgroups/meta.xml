@@ -1,0 +1,134 @@
+<meta>
+	<info author="JTPenn" 	version="1.0"	name="Groups System"	type="script"
+		description="The core of the groups system." autostart="true" />
+	
+	<file src="files/alpha.png" />
+	<file src="files/palette.png" />
+	<file src="files/search.png" />
+	<file src="files/Cambria.ttf" />
+	<file src="files/Calibri.ttf" />
+	<file src="files/blip.png" />
+	
+	<script src="main/panel_gui.lua" 	type="client" />
+	
+	<script src="home/home_gui.luac" 	type="client" />
+	<script src="home/home.luac" 		type="client" />
+	<script src="home/home.slua" 		/>
+	
+	<script src="members/members_gui.luac" 	type="client" />
+	<script src="members/members.luac" 		type="client" />
+	<script src="members/members.slua" 		/>
+	
+	<script src="stats/stats.luac" 	type="client" />
+	<script src="stats/stats.slua" 	/>
+	
+	<script src="history/history.luac" 	type="client" />
+	<script src="history/history.slua" 	/>
+	
+	<script src="grouplist/groupList_c.luac" 	type="client" />
+	<script src="grouplist/groupList.slua" 	/>
+	
+	<script src="groupjobs/job.slua" 	/>
+		
+	<script src="respawn/respawn.slua" 	/>
+		
+	<script src="admin/colorpicker/colorpicker.luac" 	type="client" />
+	<script src="admin/ranks/ranks_gui.luac" 			type="client" />
+	<script src="admin/ranks/ranks.luac" 				type="client" />
+	<script src="admin/ranks/ranks.slua" 				/>
+	<script src="admin/admin_gui.lua" 					type="client" />
+	<script src="admin/admin.lua" 						type="client" />
+	<script src="admin/admin.slua" 						/>
+		
+	<script src="database.slua" 	/>
+	<script src="groups.slua" 		/>
+	<script src="members.slua" 		/>
+	<script src="permissions.slua" 	/>
+	<script src="ranks.slua" 		/>
+	<script src="stats.slua" 		/>
+	
+	 <!-- Database -->
+	<export function="setGroupData" 		type="server" />
+	<export function="getGroupData" 		type="server" />
+	<export function="dropGroupData" 		type="server" />
+	<export function="setGroupMemberData" 	type="server" />
+	<export function="getGroupMemberData" 	type="server" />
+	<export function="dropGroupMemberData" 	type="server" />
+	<export function="setGroupRankData" 	type="server" />
+	<export function="getGroupRankData" 	type="server" />
+	<export function="dropGroupRankData" 	type="server" />
+	<export function="getNextGroupSlot" 	type="server" />
+	<export function="getNextGroupRankSlot" type="server" />
+	
+	<!-- Groups -->
+	<export function="createGroup" 				type="server" />
+	<export function="createGroupAccount" 		type="server" />
+	<export function="deleteGroup" 				type="server" />
+	<export function="getGroupCreationDate" 	type="server" />
+	<export function="getGroupInformation" 		type="server" />
+	<export function="getGroupName" 			type="server" />
+	<export function="getGroupNews" 			type="server" />
+	<export function="getGroupColor" 			type="server" />
+	<export function="getGroupAccount" 			type="server" />
+	<export function="setGroupInformation" 		type="server" />
+	<export function="setGroupName" 			type="server" />
+	<export function="setGroupNews" 			type="server" />
+	<export function="setGroupColor" 			type="server" />
+	
+	<!-- Members -->
+	<export function="addMember" 				type="server" />
+	<export function="arePlayersInSameGroup"	type="server" />
+	<export function="areAccountsInSameGroup"	type="server" />
+	<export function="clearAllInvites"			type="server" />
+	<export function="clearGroupInvite"			type="server" />
+	<export function="deleteMember" 			type="server" />
+	<export function="getGroupInvites"			type="server" />
+	<export function="getGroupLeaders"			type="server" />
+	<export function="getGroupMemberLimit"		type="server" />
+	<export function="getGroupMembers" 			type="server" />
+	<export function="getPlayerGroup" 			type="server" />
+	<export function="getAccountGroup"			type="server" />
+	<export function="invitePlayer"				type="server" />
+	<export function="isPlayerInGroup" 			type="server" />
+	<export function="outputGroupChat"			type="server" />
+	
+	<!-- Permissions -->
+	<export function="getAllGroupPermissions" 	type="server" />
+	<export function="getAllRankPermissions" 	type="server" />
+	<export function="getDefaultPermissionSet" 	type="server" />
+	<export function="hasMemberPermissionTo" 	type="server" />
+	<export function="hasGroupPermissionTo" 	type="server" />
+	<export function="setAllGroupPermissions" 	type="server" />
+	<export function="setAllRankPermissions" 	type="server" />
+	
+	<!-- Ranks -->
+	<export function="addGroupRank" 		type="server" />
+	<export function="deleteGroupRank" 		type="server" />
+	<export function="getDefaultRank" 		type="server" />
+	<export function="getGroupRanks" 		type="server" />
+	<export function="getGroupRankIDByName" type="server" />
+	<export function="getPlayerGroupRank" 	type="server" />
+	<export function="getRankGroup" 		type="server" />
+	<export function="getRankName" 			type="server" />
+	<export function="getSeniorRank"		type="server" />
+	<export function="setPlayerGroupRank" 	type="server" />
+	<export function="setRankName" 			type="server" />
+	<export function="sortGroupRanks"		type="server" />
+	
+	<!-- Stats -->
+	<export function="getGroupExperience" 				type="server" />
+	<export function="modifyGroupExperience"			type="server" />
+	<export function="getGroupLevel" 					type="server" />
+	<export function="getGroupLevelXPRequirement"		type="server" />
+	<export function="getGroupLevelPlaytimeRequirement"	type="server" />
+	<export function="getGroupLevelExistenceRequirement"type="server" />
+	<export function="getGroupStat" 					type="server" />
+	<export function="modifyGroupStat" 					type="server" />
+	<export function="setGroupStat" 					type="server" />
+	
+	<!-- Misc -->
+	<export function="canPlayerSpawnInBase" 					type="server" />
+	<!--<export function="addGroupBlip" 	type="server" />
+    <export function="takeGroupBlip" 	type="server" />-->
+	<min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+</meta>

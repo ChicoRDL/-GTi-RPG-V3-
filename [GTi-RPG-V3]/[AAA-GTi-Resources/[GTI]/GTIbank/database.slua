@@ -1,0 +1,145 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 29 Aug 2014
+-- Resource: GTIbank/database.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local SERVER_PORT = 22003	-- Only Save Data on Dev Server
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `banking`(`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))")
+
+local database_online	-- Is banking Database Online?
+local banking = {}			-- 'banking' Database Cache
+
+addEvent("onDatabaseLoad", true)	-- Triggers when gti database is ready
+addEvent("onLogDatabaseLoad", true)	-- Triggers when log database is ready
+
+-- Database Cache
+------------------>>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cacheDatabase, db, "SELECT * FROM `banking`")
+end)
+
+function cacheDatabase(qh)
+	local result = dbPoll(qh, 0)
+	banking["Console"] = {}
+	for i,row in ipairs(result) do
+		banking[row.name] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id" or column ~= "name") then
+				banking["Console"][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				banking[row.name][column] = value
+			end
+		end
+	end
+	database_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "banking")
+end
+
+-- Banking Data Exports
+------------------------>>
+
+function setBankData(account, key, value)
+	if (not database_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	local account = getAccountName(account)
+	
+	if (type(banking[account]) ~= "table") then
+		banking[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `banking`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (banking["Console"][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `banking` ADD `??` text", key)
+		end
+		banking["Console"][key] = true
+	end
+	
+	banking[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `banking` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `banking` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function getBankData(account, key)
+	if (not database_online) then return end
+	if (not account or not key) then return end
+	if (isGuestAccount(account) or type(key) ~= "string") then return end
+	
+	local account = getAccountName(account)
+	if (banking[account] == nil) then return end
+	if (banking[account][key] == nil or banking[account][key] == "nil") then return end
+	
+	if (key == "pin" or key == "acc_number") then
+		return banking[account][key]
+	end
+	return tonumber(banking[account][key]) or banking[account][key]
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(db, "DELETE FROM `banking` WHERE name=?", account)
+	banking[account] = nil
+end)
+
+-- Transaction Log
+------------------->>
+
+local dbLogs = dbConnect("mysql", "dbname=gti_logs;host=127.0.0.1", "GTILogs", "")
+
+function addLogToDatabase(category, timestamp, text, cash, balance, player, account)
+	dbExec(dbLogs, "CREATE TABLE IF NOT EXISTS `log_"..category.."`(id INT NOT NULL AUTO_INCREMENT, timestamp INT, text TEXT, cash INT, balance INT, player TEXT, account TEXT, ip TEXT, serial TEXT, PRIMARY KEY(id))")
+	
+	local serial, ip
+	if (isElement(player)) then
+		serial = getPlayerSerial(player)
+		ip = getPlayerIP(player)
+		player = getPlayerName(player)
+	end
+	dbExec(dbLogs, "INSERT INTO `log_"..category.."`(timestamp, text, cash, balance, player, account, ip, serial) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", timestamp, text, cash, balance, player, account, ip, serial)
+	return true
+end
+
+function getAccountLogs(player, account, data_table, recovery)
+	if (not player or not account or not data_table) then return false end
+	if (data_table ~= "bank" and data_table ~= "cash" and data_table ~= "groupbank") then return false end
+	if ( recovery ) then
+		dbQuery(recoveryCallback, {player, data_table}, dbLogs, "SELECT * FROM `log_"..data_table.."` WHERE `account`=? ORDER BY `timestamp` DESC LIMIT 500", account)
+	else
+		dbQuery(returnDatabase, {player, data_table}, dbLogs, "SELECT * FROM `log_"..data_table.."` WHERE `account`=? ORDER BY `timestamp` DESC LIMIT 250", account)
+	end
+end
+
+function returnDatabase(qh, player, data_table)
+	local result = dbPoll(qh, 0)
+	triggerEvent("onLogDatabaseLoad", player, data_table, result)
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(dbLogs, "DELETE FROM `log_bank` WHERE account=?", account)
+	dbExec(dbLogs, "DELETE FROM `log_cash` WHERE account=?", account)
+end)
+
+function getDatabaseLogs()
+	return dbLogs
+end

@@ -1,0 +1,31 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(459, 135, 456, 494, "GTI Stats Panel", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.83)
+        guiSetProperty(GUIEditor.window[1], "CaptionColour", "FFFFFEFE")
+
+        GUIEditor.gridlist[1] = guiCreateGridList(9, 74, 201, 369, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Players", 0.9)
+        GUIEditor.edit[1] = guiCreateEdit(9, 40, 200, 29, "", false, GUIEditor.window[1])
+        GUIEditor.button[1] = guiCreateButton(9, 445, 201, 40, "Refresh", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[1], "default-bold-small")
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFFFFFFF")
+        GUIEditor.gridlist[2] = guiCreateGridList(213, 41, 234, 444, false, GUIEditor.window[1])
+        GUIEditor.label[1] = guiCreateLabel(214, 25, 231, 15, "Jack's Statistics", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 254, 17, 17)
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        GUIEditor.button[2] = guiCreateButton(9, 21, 23, 15, "X", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[2], "default-bold-small")
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFFD0000")    
+    end
+)

@@ -1,0 +1,23 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    edit = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(545, 295, 286, 156, "GTI Banking — Account Login", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(11, 26, 153, 15, "Your Account Password:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+GUIEditor.label[2] = guiCreateLabel(254, 22, 24, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-small")
+GUIEditor.edit[1] = guiCreateEdit(9, 45, 269, 24, "", false, GUIEditor.window[1])
+guiEditSetMasked(GUIEditor.edit[1], true)
+GUIEditor.label[3] = guiCreateLabel(103, 76, 77, 15, "Pin Number:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+GUIEditor.edit[2] = guiCreateEdit(97, 92, 90, 24, "", false, GUIEditor.window[1])
+guiEditSetMasked(GUIEditor.edit[2], true)
+GUIEditor.button[1] = guiCreateButton(87, 126, 114, 22, "Login", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")

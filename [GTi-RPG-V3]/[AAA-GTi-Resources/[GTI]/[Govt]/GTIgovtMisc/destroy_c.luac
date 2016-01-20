@@ -1,0 +1,118 @@
+local inUse = false
+local moveElem = nil
+local refreshPos = 0.2
+
+function moveACar()
+    if (inUse == false) then
+        showCursor(true)
+        addEventHandler("onClientClick", root, startMoveElement)
+        inUse = true
+    else
+        showCursor(false)
+        removeEventHandler("onClientClick", root, startMoveElement)
+        inUse = false
+    end
+end
+addEvent("GTIstaffutil.moveACar", true)
+addEventHandler("GTIstaffutil.moveACar", root, moveACar)
+
+
+function startMoveElement(button, state, absoluteX, absoluteY, worldX, worldY, worldZ, clickedElement)
+    if (inUse == true) then
+    if (not clickedElement) then return end
+    if (clickedElement == localPlayer) then return end
+    if (not (getElementType(clickedElement) == "vehicle" or getElementType(clickedElement) == "player")) then return end
+    if ( isElementFrozen(clickedElement) ) then return end
+    selectedElement = clickedElement
+    triggerServerEvent("GTIstaffutil.startMovingElement", localPlayer, clickedElement)
+    addEventHandler("onClientRender", root, attachToMouse)
+    removeEventHandler("onClientClick", root, startMoveElement)
+    addEventHandler("onClientClick", root, stopMoveElement)
+    addEventHandler("onClientElementDestroy", clickedElement, stopMoveElement)
+    refreshTimer = setTimer(updateMovement, refreshPos * 1000, 0, clickedElement)
+    end
+end
+
+function updateMovement(selectedElement)
+    if (inUse == true) then
+    local x, y, z = getElementPosition(selectedElement)
+    triggerServerEvent("GTIstaffutil.onMovementUpdate", localPlayer, selectedElement, x, y, z)
+    end
+end
+
+function moveTheElement(button, state, absoluteX, absoluteY, worldX, worldY, worldZ)
+    if (inUse == true) then
+    triggerServerEvent("GTIstaffutil.moveCar", localPlayer, moveElem, worldX, worldY, worldZ+5)
+    moveElem = nil
+    removeEventHandler("onClientClick", root, moveTheElement)
+    setTimer(stopMoveElement, 50, 1)
+    exports.GTIhud:dm("You successfully moved the vehicle.", 50, 255, 0)
+    end
+end
+
+function attachToMouse()
+    if (inUse == true) then
+    local screenx, screeny, worldx, worldy, worldz = getCursorPosition()
+    local px, py, pz = getCameraMatrix()
+    local hit, x, y, z, elementHit = processLineOfSight(px, py, pz, worldx, worldy, worldz)
+    local x0, y0, z0, x1, y1, z1 = getElementBoundingBox(selectedElement)
+    if (hit) then
+        setElementPosition(selectedElement, x, y, z + (z1-z0))
+    else
+        setElementPosition(selectedElement, worldx, worldy, worldz + (z1-z0))
+    end end
+end
+
+function stopMoveElement()
+    if (inUse == true) then
+    killTimer(refreshTimer)
+    removeEventHandler("onClientRender", root, attachToMouse)
+    removeEventHandler("onClientClick", root, stopMoveElement)
+    removeEventHandler("onClientElementDestroy", selectedElement, stopMoveElement)
+    updateMovement(selectedElement)
+    triggerServerEvent("GTIstaffutil.stopMovingElement", localPlayer, selectedElement)
+    selectedElement = false
+    showCursor(false)
+    isMoving = false
+    end
+end
+--[[
+local isUsed = false
+
+function calledByCommand()
+    if (isUsed == false) then
+        showCursor(true)
+        addEventHandler("onClientClick", root, destroyTheElement)
+        isUsed = true
+    else
+        showCursor(false)
+        removeEventHandler("onClientClick", root, destroyTheElement)
+        isUsed = false
+    end
+end
+addEvent("GTIstaffutil.calledByCommand", true)
+addEventHandler("GTIstaffutil.calledByCommand", root, calledByCommand)
+
+
+function destroyTheElement(button, state, absoluteX, absoluteY, worldX, worldY, worldZ, clickedElement)
+    if (not clickedElement) then return end
+    if (clickedElement == localPlayer) then return end
+    if (not (getElementType(clickedElement) == "vehicle")) then return end
+	if ( isElementFrozen(clickedElement) ) then return end
+	if ( getElementData(clickedElement, "rental") ) then
+		triggerServerEvent("GTIrentals.destroyRental_", root, clickedElement)
+	return end
+    triggerServerEvent("GTIstaffutil.destroyCar", localPlayer, clickedElement)
+    removeEventHandler("onClientClick", root, destroyTheElement)
+    setTimer(stopDestroying, 50, 1)
+    exports.GTIhud:dm("You successfully destroyed the vehicle.", 50, 255, 0)
+end
+
+
+function stopDestroying()
+    removeEventHandler("onClientClick", root, destroyTheElement)
+    triggerServerEvent("GTIstaffutil.stopMovingElement", localPlayer, selectedElement)
+    selectedElement = false
+    showCursor(false)
+    isUsed = false
+end]]

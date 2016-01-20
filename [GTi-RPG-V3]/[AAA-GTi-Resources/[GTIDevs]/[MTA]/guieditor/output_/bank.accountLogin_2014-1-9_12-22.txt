@@ -1,0 +1,22 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    edit = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(543, 299, 286, 142, "GTI Banking — Account Login", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(11, 26, 153, 15, "Your Account Password:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+GUIEditor.label[2] = guiCreateLabel(254, 22, 24, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-small")
+GUIEditor.edit[1] = guiCreateEdit(9, 45, 268, 24, "", false, GUIEditor.window[1])
+guiEditSetMasked(GUIEditor.edit[1], true)
+GUIEditor.button[1] = guiCreateButton(87, 113, 114, 21, "Login", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[3] = guiCreateLabel(10, 75, 265, 33, "Please enter your account password (the password that you use to login to the server)", false, GUIEditor.window[1])
+guiLabelSetColor(GUIEditor.label[3], 75, 200, 75)
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", true)

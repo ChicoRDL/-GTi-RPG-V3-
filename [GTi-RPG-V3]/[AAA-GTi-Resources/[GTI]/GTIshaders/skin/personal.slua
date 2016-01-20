@@ -1,0 +1,84 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Ares
+-- Date: 7 Jul 2015
+----------------------------------------->>
+
+local personal_skin_shaderTable = { 
+	{ account = "RedBand", model = 286, textureName = "fbi", texturePath = "/groups/CIA1.jpeg" },
+	{ account = "TomasitoCaram", model = 286, textureName = "fbi", texturePath = "/groups/CIA1.jpeg" },
+	{ account = "TomasitoCaram", model = 212, textureName = "V Tramp2", texturePath = "/groups/Dem1.jpg" },
+}
+
+local shadedPlayers = {}
+
+function doesAccountHaveShader ( account )
+	for _, value in pairs ( personal_skin_shaderTable ) do
+		if ( value.account == account ) then
+			return true
+		end
+	end
+		return false
+end
+
+function getAccountShaderInfo ( account, id )
+	for _, value in pairs ( personal_skin_shaderTable ) do
+		if ( value.account == account and value.model == id) then
+			return { value.model, value.textureName, value.texturePath }
+		end
+	end
+		return false
+end
+
+function isPlayerWearingShader ( player )
+	return shadedPlayers[player]
+end
+
+function shadePlayersOnLogin ( )
+	for player, value in pairs (shadedPlayers) do
+		triggerClientEvent( source, "GTIshaders.applyShader", source, player, getAccountShaderInfo ( getAccountName ( getPlayerAccount ( player ) ), tonumber(value[1]) ), "skin" )
+	end
+end
+addEventHandler("onPlayerLogin", root, shadePlayersOnLogin)
+
+addEventHandler("onPlayerQuit", root,
+	function ()
+		if ( isPlayerWearingShader(source) ) then
+			shadedPlayers[source] = nil
+		end
+	end
+)
+
+addEventHandler("onResourceStart", resourceRoot,
+	function ()
+	setTimer( 
+		function ( )
+			for index, players in ipairs ( getElementsByType("player") ) do
+				if ( exports.GTIutil:isPlayerLoggedIn(players) ) then
+					local accountName = getAccountName(getPlayerAccount(players))
+					for _, value in pairs (personal_skin_shaderTable) do
+						if ( value.account == accountName ) then
+							triggerClientEvent( root, "GTIshaders.applyShader", root, players, getAccountShaderInfo ( accountName, value.model ), "skin")
+							shadedPlayers[players] = {value.model, "personal"}			
+						end
+					end
+				end
+			end
+		end, 5000, 1)
+	end
+)
+
+addEventHandler("onPlayerLogin", root,
+	function ( _, account )
+		for _, value in pairs (personal_skin_shaderTable) do
+			if ( value.account == getAccountName(account) ) then
+				triggerClientEvent( root, "GTIshaders.applyShader", root, source, getAccountShaderInfo ( getAccountName (account), value.model ), "skin")
+				shadedPlayers[source] = {value.model, "personal"}
+			end
+		end
+	end
+)
+
+function getShadersTable()
+	return personal_skin_shaderTable
+end

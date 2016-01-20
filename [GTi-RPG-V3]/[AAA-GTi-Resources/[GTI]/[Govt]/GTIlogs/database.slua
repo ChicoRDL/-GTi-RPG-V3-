@@ -1,0 +1,38 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 12 Jan 2014
+-- Resource: GTIlogs/database.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local db = dbConnect("mysql", "dbname=gti_logs;host=127.0.0.1", "GTILogs", "")
+
+addEvent("onDatabaseLoad", true)	-- Triggers when the database is ready
+
+-- Database Exports
+-------------------->>
+
+function addLogToDatabase(category, timestamp, text, player, account, ip, serial)
+	if (not category or not timestamp or not text or not player or not account or not ip or not serial) then return false end
+	
+	dbExec(db, "CREATE TABLE IF NOT EXISTS `log_"..category.."`(id INT NOT NULL AUTO_INCREMENT, timestamp INT, text TEXT, player TEXT, account TEXT, ip TEXT, serial TEXT, PRIMARY KEY(id))")
+	dbExec(db, "INSERT INTO `log_"..category.."`(timestamp, text, player, account, ip, serial) VALUES(?, ?, ?, ?, ?, ?)", timestamp, text, player, account, ip, serial)
+	return true
+end
+
+-- Cache By Account
+-------------------->>
+
+function getPlayerLogs(player, data_table)
+	if (not isElement(player) or getElementType(player) ~= "player") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	local account = getAccountName(account)
+	dbQuery(cacheDatabaseByPlayer, {player, data_table}, db, "SELECT * FROM `log_"..data_table.."` WHERE `account`=? ORDER BY timestamp DESC", account)
+end
+
+function returnDatabase(qh, player, data_table)
+	local result = dbPoll(qh, 0)
+	triggerEvent("onDatabaseLoad", player, data_table, result)
+end

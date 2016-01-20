@@ -1,0 +1,174 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Jack Johnson (Jack)
+-- Date: 05 April 2015
+-- Resource: GTImisc/money.slua
+-- Version: 1.0
+----------------------------------------->>
+
+--[[
+	NAME 	::	MONEY DROPPER
+	VER 	::	V1.3
+	DEV		::	Jack
+]]
+local MONEY_CAP = 50000
+local MONEY_MIN = 5000
+local moneydrop = {}
+local cooldown = {}
+
+local excludedJobs = {
+	["Gangster"] = true,
+	["SWAT Division"] = true
+}
+
+local excludedTeams = {
+	["General Population"] = true,
+	["Civilian Workforce"] = true,
+--	["Law Enforcements"] = true,
+	["Emergency Services"] = true
+}
+
+function onPlayerWasted(_,killer)
+	if not source or not isElement(source) then return false end
+	if not killer or not isElement(killer) or getElementType(killer) ~= "player" then return false end --No killer = no money
+	
+	if isPlayerExcluded(source) then return false end --Don't drop money if the player is excluded.
+	if isPlayerExcluded(killer) then return false end --Don't drop money if the killer is excluded.
+	
+	--Do some money checking.
+	local dropCash --The amount of cash we're dropping
+	local money = getPlayerMoney(source)
+	if (money < MONEY_MIN) then return false end
+	if (money >= MONEY_CAP) then dropCash = MONEY_CAP else dropCash = money end
+	
+	--Only remove 5% of his cash
+	dropCash = dropCash * (5/100)
+	
+	--Spawn cash for players to pick up
+	local x,y,z = getElementPosition(source)
+	local int,dim = getElementInterior(source),getElementDimension(source)
+	
+	--Take player's money before we spawn pickups
+	if not exports.GTIbank:TPM(source,dropCash,"Drop Money: Player died.") then return false end --Don't drop cash if we got access denied!
+	
+	--Split the cash into random wads
+	local dropAmount = math.random(5)
+	local dropCash = math.floor(dropCash / dropAmount)
+	for i=1,dropAmount do
+		local moneyPickup = createPickup(x+math.random(-1,1),y+math.random(-1,1),z,3,1212,60000*60)
+		moneydrop[moneyPickup] = {amount = dropCash}
+		addEventHandler("onPickupUse",moneyPickup,onPlayerPickupMoney)
+	end
+	cooldown[source] = setTimer(function(player) cooldown[player] = nil end, 15000, 1, source)
+end
+addEventHandler("onPlayerWasted",root,onPlayerWasted)
+
+function isPlayerExcluded(player)
+	if not player or not isElement(player) then return false end
+	
+	--Check for excluded job
+	for k,v in pairs(excludedJobs) do
+		if (getElementData(source,"job") == k) then
+			return true
+		end
+	end
+	
+	--Check for excluded team
+	for k,v in pairs(excludedTeams) do
+		if (getTeamName(getPlayerTeam(source)) == k) then
+			return true
+		end
+	end
+	
+	if (cooldown[player] and isTimer(cooldown[player])) then return true end
+	
+	return false
+end
+
+function onPlayerPickupMoney(player)
+	if isPedDead(player) then return false end --Player who dropped money
+	
+	if (moneydrop[source]) then
+		exports.GTIhud:dm("You picked up $"..moneydrop[source].amount.." dollars off the floor.",player,0,255,0)
+		exports.GTIbank:GPM(player,moneydrop[source].amount,"Drop Money: Cash found on floor")
+		destroyElement(source) --get rid of the pickup
+	end
+end
+
+--[[
+	NAME 	::	Hourly benefits
+	VER 	::	V2
+	DEV		::	Jack
+]]
+
+--[[
+local lastPay = {}
+
+function onTick()
+	for k,v in ipairs(getElementsByType("player")) do
+		if not lastPay[v] then
+			--outputDebugString("Player: "..getPlayerName(v))
+			lastPay[v] = getTickCount()
+		end
+		
+		if (getTickCount() - lastPay[v] >= 1000 * 60 * 60) then
+			exports.GTIbank:GPM(v,25000,"hour play bonus")
+			exports.GTIhud:dm("You have been given $25,000 for good behavior. Keep it up!",v,0,255,0)
+			lastPay[v] = getTickCount()
+		end
+	end
+	
+	--Remove quitted players
+	for k,v in ipairs(lastPay) do
+		if not isElement(v) then
+			lastPay[v] = nil
+		end
+	end
+end
+setTimer(onTick,60000,0)
+
+local TEST = true
+
+function onTick()
+	for k,v in ipairs(getElementsByType("player")) do
+		if not exports.GTIpremium:isAccountPremium(getPlayerAccount(v),"hourly_benefit") then
+			exports.GTIaccounts:SAD(getPlayerAccount(v),"hourly_benefit",0) --set it back to 0, he has no premium.
+		else
+			if not lastPay[v] then
+				--outputDebugString("Player returned. Getting last session...")
+				--Player has logged back in. get his previous duration
+				local prevDuration = exports.GTIaccounts:GAD(getPlayerAccount(v),"hourly_benefit") or 0
+				--outputDebugString("Last session: "..prevDuration)
+				
+				--outputDebugString("Tick (offset): "..getTickCount() - prevDuration)
+				
+				--Offset the new tick
+				lastPay[v] = {tick = getTickCount() - prevDuration, account = getPlayerAccount(v)}
+			end
+			
+			if (getTickCount() - lastPay[v].tick >= 1000 * 60 * 60) then
+				exports.GTIbank:GPM(v,40000,"Hourly benefit")
+				exports.GTIhud:dm("You have received your hourly benefits of $40,000.",v,0,255,0)
+				lastPay[v].tick = getTickCount()
+				--outputDebugString("Player received hourly benefit, tick resetted.")
+			end
+		end
+	end
+	
+	for k,v in pairs(lastPay) do
+		if not isElement(k) then
+			--outputDebugString("Player quit. Saving last session...")
+			--Calculate how long he was on the server
+			local lastDuration = getTickCount() - lastPay[k].tick
+			--outputDebugString("Last session duration: "..lastDuration)
+			
+			--Save the current duration
+			exports.GTIaccounts:SAD(lastPay[k].account,"hourly_benefit",lastDuration)
+			
+			--Clear cache
+			lastPay[k] = nil
+		end
+	end
+end
+setTimer(onTick,60000,0)
+]]

@@ -1,0 +1,56 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Central Employment System" autostart="true" />
+    <script src="employment/employment_gui.lua" type="client" />
+    <script src="employment/emp_panel.lua" type="client" />
+    <script src="employment/emp_panel.slua" />
+    
+    <script src="progress/progress_gui.lua" type="client" />
+    <script src="progress/prog_panel.lua" type="client" />
+    <script src="progress/prog_panel.slua" />
+    
+    <script src="database.slua" />
+    <script src="employment.slua" />
+    <script src="progress.slua" />
+    
+    <!--Database Exports-->
+    <export function="SJD" type="server" />
+    <export function="GJD" type="server" />
+    
+    <!--Employment Exports-->
+    <export function="getPlayerJob" 		type="shared" />
+    <export function="getJobDataTable" 		type="server" />
+    <export function="setPlayerJob" 		type="server" />
+    <export function="getPlayerJobDivision" type="server" />
+    <export function="setPlayerJobDivision" type="server" />
+    <export function="setPlayerJobUniform" 	type="server" />
+    <export function="togglePlayerShift" 	type="server" />
+    <export function="resign" 				type="server" />
+    
+    <!--Job Progress Exports-->
+    <export function="getJobRanks" 				type="server" />
+    <export function="getJobRankFromLevel" 		type="server" />
+    <export function="getJobMaxLevel"			type="server" />
+    <export function="getJobLevelFromProgress" 	type="server" />
+    <export function="getJobLevelRequirement" 	type="server" />
+    <export function="getJobUnitName"			type="server" />
+    <!--Player Progress Exports-->
+    <export function="getPaymentMethod" 		type="server" />
+    <export function="getPlayerJobLevel" 		type="server" />
+    <export function="getPlayerJobRank" 		type="server" />
+    <export function="getPlayerJobProgress" 	type="server" />
+    <export function="getPlayerJobMoney" 		type="server" />
+    <export function="modifyPlayerJobProgress" 	type="server" />
+    <export function="givePlayerJobMoney" 		type="server" />
+	<export function="getPlayerOutstandingPay" 	type="server" />
+	<export function="getPlayerJobTime"			type="server" />
+    <!--Experience Exports-->
+    <export function="getEmploymentLevelFromExp" 		type="server" />
+    <export function="getEmploymentLevelRequirement"	type="server" />
+    <export function="getHourlyExperience"				type="server" />
+    <export function="getPlayerJobPayment"				type="server" />
+    <export function="getPlayerHourlyPay"				type="server" />
+    <export function="getPlayerEmploymentLevel"			type="server" />
+    <export function="getPlayerEmploymentExp"			type="server" />
+    <export function="modifyPlayerEmploymentExp"		type="server" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

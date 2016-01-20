@@ -1,0 +1,43 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    edit = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(549, 200, 287, 365, "GTI Account Settings", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(76, 23, 134, 15, "Change E-mail Address:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(10, 41, 152, 15, "New E-mail Address:", false, GUIEditor.window[1])
+GUIEditor.edit[1] = guiCreateEdit(9, 59, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(104, 324, 75, 32, "Update Settings", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[3] = guiCreateLabel(6, 79, 275, 15, "_________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[4] = guiCreateLabel(76, 98, 134, 15, "Change Password:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "center", false)
+GUIEditor.label[5] = guiCreateLabel(11, 159, 152, 15, "Confirm Password:", false, GUIEditor.window[1])
+GUIEditor.label[6] = guiCreateLabel(11, 116, 152, 15, "New Password:", false, GUIEditor.window[1])
+GUIEditor.label[7] = guiCreateLabel(11, 278, 152, 15, "Current Password:", false, GUIEditor.window[1])
+GUIEditor.edit[2] = guiCreateEdit(9, 176, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.edit[3] = guiCreateEdit(9, 134, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.edit[4] = guiCreateEdit(9, 296, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(253, 23, 24, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "default-small")
+GUIEditor.label[9] = guiCreateLabel(6, 215, 275, 15, "_________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[10] = guiCreateLabel(7, 232, 273, 43, "For security reasons, you must enter you current password before changing any of your account settings.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[10], "center", true)
+guiLabelSetVerticalAlign(GUIEditor.label[10], "center")
+GUIEditor.label[11] = guiCreateLabel(9, 204, 268, 20, "Password Strength: Weak", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "clear-normal")
+guiLabelSetColor(GUIEditor.label[11], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[11], "center", false)

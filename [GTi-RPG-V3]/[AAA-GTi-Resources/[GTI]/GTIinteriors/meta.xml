@@ -1,0 +1,9 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Interiors System" autostart="true" />
+    <script src="interiorMarkers.luac" type="client"/>
+    <script src="interiorWarps.slua" />
+	
+	<export function="getPlayerLastPosition" type="server"/>
+	
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

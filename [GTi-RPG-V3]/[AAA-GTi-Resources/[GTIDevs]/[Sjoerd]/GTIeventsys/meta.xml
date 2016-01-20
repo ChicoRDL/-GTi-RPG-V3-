@@ -1,0 +1,27 @@
+<meta>
+    <info author="Sjoerd" name="Events System" autostart="true" />
+    <script src="jerClientSide.lua" type="client" />
+    <script src="vehPlace_c.lua" type="client" />
+    
+    <script src="jerServerSide.lua" type="server" />
+    <script src="vehPlace_s.lua" type="server" />
+    
+    <script src="object_c.luac" type="client" />
+    <script src="object_s.lua" type="server" />
+    <script src="saving_c.luac" type="client" />
+    <script src="saving_s.lua" type="server" />
+    <script src="races/race_c.luac" type="client" />
+    <script src="races/race_s.lua" type="server" />
+    
+    <script src="pickups_s.lua" type="server" />
+    
+    <file src="pickups/nitro.dff" type="client" />
+    <file src="pickups/nitro.txd" type="client" />
+    <file src="pickups/repair.dff" type="client" />
+    <file src="pickups/repair.txd" type="client" />
+    <file src="pickups/vehiclechange.dff" type="client" />
+    <file src="pickups/vehiclechange.txd" type="client" />
+	
+	<export function="isPlayerInEvent" type="server" />
+	
+</meta>

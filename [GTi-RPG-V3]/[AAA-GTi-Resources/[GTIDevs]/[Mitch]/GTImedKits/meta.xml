@@ -1,0 +1,8 @@
+<meta>
+	<info author="Mitch" name="Med-kits" autostart="true" />
+	<script src="medkit_c.luac" type="client" />
+	<script src="medkit_s.lua" type="server" />
+
+	<export function="getPlayerMedKits" type="server"/>
+	<export function="setPlayerMedKits" type="server"/>
+</meta>

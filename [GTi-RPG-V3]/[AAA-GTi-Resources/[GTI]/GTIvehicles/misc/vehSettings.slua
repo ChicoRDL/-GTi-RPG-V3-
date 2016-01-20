@@ -1,0 +1,212 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 03 Jan 2014
+-- Resource: GTIvehicles/vehSettings.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+ 
+local AT_400 = 577
+
+addEvent("onVehicleEngineStart", true)
+addEvent("onVehicleEngineBreakDown", true)
+
+-- Remove Player From Vehicle
+------------------------------>>
+ 
+function kickPlayerFromVehicle(player, cmd, seat)
+	if (not isPedInVehicle(player)) then return end
+	local vehicle = getPedOccupiedVehicle(player)
+	if (getVehicleOccupant(vehicle) ~= player) then return end
+       
+	local maxPass = getVehicleMaxPassengers(vehicle)
+	if (seat == "*") then
+		for i=1,maxPass do
+			local pass = getVehicleOccupant(vehicle, i)
+			if (pass) then
+				removePedFromVehicle(pass)
+			end
+		end
+	else
+		if (not tonumber(seat)) then
+			outputChatBox("Syntax: /eject <seat ID>", player, 255, 125, 0)
+			return
+		end
+		seat = tonumber(seat)
+		if (seat <= 0 or seat > maxPass) then
+			outputChatBox("Invalid Seat ID.", player, 255, 125, 0)
+			return
+		end
+		local pass = getVehicleOccupant(vehicle, seat)
+		if ( isElement(pass) ) then
+			removePedFromVehicle(pass)
+		end
+	end
+end
+addCommandHandler("eject", kickPlayerFromVehicle)
+ 
+-- Make AT-400 Enterable
+------------------------->>
+ 
+function enterAT400(player, seat, jacked)
+	if (jacked or isElement(jacked)) then return end
+	if (getElementModel(source) ~= AT_400) then return end
+	if (getElementData(source, "rental")) then
+		if (exports.GTIemployment:getPlayerJob(player, true) == "Pilot" and seat == 0 ) then 
+			if (exports.GTIemployment:getPlayerJobLevel(player, "Pilot") >= 3) then
+				warpPedIntoVehicle(player, source, 1)
+				return warpPedIntoVehicle(player, source, 0)
+			end
+		return end
+	else
+		if (seat == 0) then
+			warpPedIntoVehicle(player, source, 1)
+			warpPedIntoVehicle(player, source, 0)
+		else
+			warpPedIntoVehicle(player, source, seat)
+		end
+	end
+end
+addEventHandler("onVehicleStartEnter", root, enterAT400)
+ 
+-- Disable Engine
+------------------>>
+local glichedVehicles = {
+["nevada"] = true,
+["dune"] = true,
+["monster"] = true,
+["monster 2"] = true,
+["monster 3"] = true
+}
+
+local engineOff = {}
+
+function toggleEngine(player)
+	if (not isPedInVehicle(player)) then return end
+	if (getPedOccupiedVehicleSeat(player) ~= 0) then return end
+	local vehicle = getPedOccupiedVehicle(player)
+	local speed = exports.GTIutil:getElementSpeed(vehicle, "mph")
+	if not getVehicleController ( getPedOccupiedVehicle ( player ) ) == player then return end
+	if (speed > 5) then
+		outputChatBox("You cannot turn off your engine when your vehicle is moving", player, 255, 25, 25)
+		return
+	end
+	
+	if (isElementFrozen(vehicle) and not engineOff[player]) then
+		outputChatBox("You cannot turn off your engine when your vehicle is frozen", player, 255, 25, 25)
+		return
+	end
+	
+	if (not glichedVehicles[getVehicleNameFromID(getElementModel(vehicle)):lower()]) and (not isVehicleOnGround(vehicle)) then
+		outputChatBox("You cannot turn off your engine when your vehicle isn't on the ground", player, 255, 25, 25)
+		return
+	end
+       
+	if (getElementData(vehicle,"engine") == "broken") then
+		exports.GTIhud:dm("You attempt to start the engine but notice it's broken. Better call a mechanic!", player, 255, 125, 0)
+		return
+	end
+       
+	local engine = getVehicleEngineState(vehicle)
+	if (engine) then
+		setVehicleEngineState(vehicle, false)
+		setElementData(vehicle, "engine", "off", false)
+		setElementFrozen(vehicle, true)
+		engineOff[player] = true
+	else
+		triggerEvent("onVehicleEngineStart", vehicle)
+		if (wasEventCancelled()) then return end
+		local state = getElementData(vehicle, "engine")
+		if (state ~= "broken") then
+			setVehicleEngineState(vehicle, true)
+		end
+		setElementData(vehicle, "engine", "on", false)
+		setElementFrozen(vehicle, false)
+		engineOff[player] = nil
+	end
+end
+addCommandHandler("engine", toggleEngine)
+
+function nevada(vehicle)
+	local engine = getVehicleEngineState(vehicle)
+	if (engine) then
+		setVehicleEngineState(vehicle, false)
+		setElementData(vehicle, "engine", "off", false)
+		setElementFrozen(vehicle, true)
+	else
+		triggerEvent("onVehicleEngineStart", vehicle)
+		if (wasEventCancelled()) then return end
+		local state = getElementData(vehicle, "engine")
+		if (state ~= "broken") then
+			setVehicleEngineState(vehicle, true)
+		end
+		setElementData(vehicle, "engine", "on", false)
+		setElementFrozen(vehicle, false)
+	end
+end
+ 
+function disableEngineOnEnter()
+	local state = getElementData(source, "engine")
+	if (state == "off" or state == "broken") then
+		setVehicleEngineState(source, false)
+	end
+end
+addEventHandler("onVehicleEnter", root, disableEngineOnEnter)
+
+-- Break Engine
+---------------->>
+ 
+function breakDownEngine(vehicle, player)
+	if (not getElementData(vehicle, "owner")) then return end
+	setElementHealth(vehicle, 300)
+	setVehicleDamageProof(vehicle, true)
+	setVehicleEngineState(vehicle, false)
+	setElementData(vehicle, "engine", "broken", false)
+	triggerEvent("onVehicleEngineBreakDown", vehicle)
+	if (player and isElement(player)) then
+		exports.GTIhud:dm("This vehicle is broken down, a mechanic needs to fix it.", player, 255, 125, 0)
+	end
+end
+ 
+function breakEngineOnDamage(loss)
+	--if (not getVehicleOccupant(source)) then return end
+	setTimer(function(vehicle)
+		if (not isElement(vehicle)) then return end
+		local health = getElementHealth(vehicle)
+		if (health <= 300) then
+			breakDownEngine(vehicle, getVehicleOccupant(vehicle) or false)
+		end
+	end, 100, 1, source)
+end
+addEventHandler("onVehicleDamage", root, breakEngineOnDamage)
+ 
+function breakEngineOnEnter(player)
+	local health = getElementHealth(source)
+	if (health <= 300) then
+		breakDownEngine(source, player)
+	elseif (getElementData(source, "engine") == "broken") then
+		setVehicleDamageProof(source, false)
+		setVehicleEngineState(source, true)
+		--setElementData(source, "engine", "on", false)
+	end
+end
+addEventHandler("onVehicleEnter", root, breakEngineOnEnter)
+
+addEventHandler("onVehicleExit", root, 
+	function (player)
+		if ( getVehicleType(source) == "Bike" ) then
+			toggleControl(player, "accelerate", true)
+			toggleControl(player, "brake_reverse", true)
+		end
+	end
+)
+
+addEventHandler("onVehicleEnter", root, 
+	function (player, seat)
+		if ( getVehicleType(source) == "Bike" and seat == 0 and getElementHealth(source) <= 300 ) then
+			toggleControl(player, "brake_reverse", false)
+			toggleControl(player, "accelerate", false)
+		end
+	end
+)
+

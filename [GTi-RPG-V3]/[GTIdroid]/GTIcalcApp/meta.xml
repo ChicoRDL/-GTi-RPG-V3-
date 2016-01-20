@@ -1,0 +1,7 @@
+<meta>
+	<info author="Nerox" version="0.1" type="script" name="GTIdroid Calculator App" autostart="true" />
+	<file src="button.png"/>
+	<file src="scroll_icon.png"/>
+	<file src="bold.ttf"/>
+	<script src="calc_c.lua" type="client" cache="false" />
+</meta>

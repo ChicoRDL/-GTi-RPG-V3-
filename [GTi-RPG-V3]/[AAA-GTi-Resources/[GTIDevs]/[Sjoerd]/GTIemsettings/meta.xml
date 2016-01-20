@@ -1,0 +1,6 @@
+<meta>
+	<script src="emSettings_c.lua" type="client"/>
+	<script src="emSettings_s.lua" type="server"/>
+	
+	<export function="getSetting" type="server"/>
+</meta>

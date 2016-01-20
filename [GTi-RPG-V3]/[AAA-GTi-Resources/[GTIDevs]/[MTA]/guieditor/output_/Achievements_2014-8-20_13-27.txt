@@ -1,0 +1,33 @@
+
+GUIEditor = {
+    gridlist = {},
+    tabpanel = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        panel = guiCreateWindow(526, 230, 308, 415, "GTI Achievements", false)
+        guiWindowSetSizable(panel, false)
+
+        reB = guiCreateButton(10, 379, 119, 26, "Get Reward", false, panel)
+        guiSetProperty(reB, "NormalTextColour", "FFAAAAAA")
+        pL = guiCreateLabel(10, 350, 41, 30, "Points:", false, panel)
+        guiSetFont(pL, "default-bold-small")
+        guiLabelSetVerticalAlign(pL, "center")
+        cB = guiCreateButton(179, 379, 119, 26, "Close", false, panel)
+        guiSetProperty(cB, "NormalTextColour", "FFAAAAAA")
+        npL = guiCreateLabel(51, 351, 247, 28, "0", false, panel)
+        guiLabelSetVerticalAlign(npL, "center")
+        dxT = guiCreateLabel(10, 350, 41, 30, "", false, panel)
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 24, 289, 326, false, panel)
+
+        achedT = guiCreateTab("Achieved", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[1] = guiCreateGridList(10, 10, 269, 282, false, achedT)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Achieved", 0.9)
+
+        achsT = guiCreateTab("Achievements", GUIEditor.tabpanel[1])
+
+        achsG = guiCreateGridList(10, 10, 269, 282, false, achsT)
+        guiGridListAddColumn(achsG, "Achievements", 0.9)    
+    end
+)

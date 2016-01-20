@@ -1,0 +1,189 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 09 Jan 2014
+-- Resource: GTIbank/locations.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local icons = {}
+local atmBlips = {}
+
+addEvent("GTImapsApp.markATMs", true)
+
+local bankCounters = {
+	{358.678, 162.317, 1007.383},
+	{358.678, 164.527, 1007.383},
+	{358.678, 166.675, 1007.383},
+	{358.678, 169.021, 1007.383},
+	{358.678, 178.125, 1007.383},
+	{358.678, 180.357, 1007.383},
+	{358.678, 182.537, 1007.383},
+	{358.678, 184.822, 1007.383},
+}
+
+local bankATMs = {
+	-- SF Bank
+{379.873, 170.735, 1007.383, int=3, dim=143},
+{381.627, 170.788, 1007.383, int=3, dim=143},
+{383.097, 170.814, 1007.383, int=3, dim=143},
+{383.290, 176.960, 1007.383, int=3, dim=143},
+{381.574, 176.896, 1007.383, int=3, dim=143},
+{379.926, 176.875, 1007.383, int=3, dim=143},
+	-- LS Bank
+{379.873, 170.735, 1007.383, int=3, dim=150},
+{381.627, 170.788, 1007.383, int=3, dim=150},
+{383.097, 170.814, 1007.383, int=3, dim=150},
+{383.290, 176.960, 1007.383, int=3, dim=150},
+{381.574, 176.896, 1007.383, int=3, dim=150},
+{379.926, 176.875, 1007.383, int=3, dim=150},
+	-- LV Bank
+{379.873, 170.735, 1007.383, int=3, dim=151},
+{381.627, 170.788, 1007.383, int=3, dim=151},
+{383.097, 170.814, 1007.383, int=3, dim=151},
+{383.290, 176.960, 1007.383, int=3, dim=151},
+{381.574, 176.896, 1007.383, int=3, dim=151},
+{379.926, 176.875, 1007.383, int=3, dim=151},
+	-- Bayside Marina ATMs (Moved to LS)
+{33.548, -45.368, 175.033, int=1, dim=30011},
+{33.527, -46.207, 175.033, int=1, dim=30011},
+{35.708, -49.057, 175.033, int=1, dim=30011},
+{36.618, -49.061, 175.033, int=1, dim=30011},
+{37.547, -49.062, 175.033, int=1, dim=30011},
+{39.691, -46.188, 175.033, int=1, dim=30011},
+{39.688, -45.270, 175.033, int=1, dim=30011},
+{2072.3999, -1825.6, 12.5, 0},
+{1367.1, -1275.5, 12.5},
+{1030, -1030.4, 31},
+{2334.8999, 67.9, 25.4},
+{-304.5, 1054.4, 18.7},
+{1268.1, 346.9, 18.6},
+{-1505.1, 2612.1001, 54.8},
+{-824, 1502.1, 18.5},
+{-79.3, -1170.8, 1.1},
+{-2475.3, 2312.6001, 4},
+{-2101, -2434.8, 29.6},
+{2667.1001, -2514.3, 12.6},
+{1663.9, -1171.3, 23},
+{1837.7, -1449.9, 12.6},
+{2235.3999, -1149.8, 24.8},
+{485.5, -1733.2, 10},
+{1938.3, 2292.3, 9.8},
+{2660.7, -1440, 29.5},
+{2024, 1017.6, 9.7},
+{2043.4, 1733.1, 9.8},
+{1626.6, 1815, 9.8},
+{2548.8, 1972.1, 9.8},
+{2383.1001, 1543.3, 9.8},
+{-1473, -266.9, 13.1},
+{1458.5, 2778.1001, 9.8},
+{2141.7, 2734.5, 10.1},
+{-2282, 582.6, 34},
+{-2269.1001, -51.9, 34.3},
+{-1908.9, 276.6, 40},
+{-2354, 1001.3, 49.7},
+{-1570.8, 687, 6.1},
+{2299.630, 2431.838, 9.820},
+{1090.999, -1479.166, 14.781},
+{1093.998, -1480.066, 14.781},
+{1096.189, -1464.734, 14.796},
+{1098.710, -1465.536, 14.800},
+{550.306, -1259.066, 15.891},
+{224.074, -176.774, 0.578},
+}
+
+bDimensions = {
+	[143] = "San Fierro Bank", 
+	[150] = "L.S. Financial & Co.", 
+	[151] = "Bank of Venturas",
+}
+
+pedsByCol = {}	-- Peds by ColShape
+
+local ped_skins = {9, 17, 57, 76, 141, 148, 150, 169, 186, 187, 219, 227, 228, 263}
+
+-- Counter Pickups
+------------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	for i,v in ipairs(bankCounters) do
+		for dim in pairs(bDimensions) do
+			local marker = createMarker(v[1], v[2], v[3], "cylinder", 1, 25, 255, 25, 10)
+			setElementInterior(marker, 3)
+			setElementDimension(marker, dim)
+			local col = createColTube(v[1], v[2], v[3], 0.5, 2)
+			setElementInterior(col, 3)
+			setElementDimension(col, dim)
+			addEventHandler("onColShapeHit", col, bankAccountLogin)
+			addEventHandler("onColShapeHit", col, startBankPedAnim)
+			addEventHandler("onColShapeLeave", col, stopBankPedAnim)
+			local ped = createPed(ped_skins[math.random(#ped_skins)], v[1]-2.38, v[2], v[3] + 1, 270)
+			setElementInterior(ped, 3)
+			setElementDimension(ped, dim)
+			setElementFrozen(ped, true)
+			pedsByCol[col] = ped
+		end
+	end
+end)
+
+-- Bank ATMs
+------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	for i,v in ipairs(bankATMs) do
+		local marker = createMarker(v[1], v[2], v[3], "cylinder", 1, 25, 255, 25, 10)
+		local col = createColTube(v[1], v[2], v[3], 0.5, 2)
+
+		if (v.int) then
+			setElementInterior(marker, v.int)
+			setElementInterior(col, v.int)
+		end
+		if (v.dim) then
+			setElementDimension(marker, v.dim)
+			setElementDimension(col, v.dim)
+		end
+		
+		addEventHandler("onColShapeHit", col, atmLogin)
+	end
+end)
+
+
+
+function toggleatmBlip(player)
+    if ( atmBlips[player] ) then
+        for i, blips in ipairs ( atmBlips[player] ) do
+            if (isElement(blips)) then
+                destroyElement(blips)
+            end
+        end
+		atmBlips[player] = nil
+    else
+        for i, atmTableData2 in ipairs ( bankATMs ) do
+            local x = atmTableData2[1]
+            local y = atmTableData2[2]
+            local z = atmTableData2[3]
+	    local int = atmTableData2.int
+	    local dim = atmTableData2.dim
+
+            atmBlip = createBlip ( x, y, z, 52, 1, 0, 0, 0, 0, 0, 1000 )
+	    setElementVisibleTo( atmBlip, root, false)
+	    setElementVisibleTo( atmBlip, player, true)
+	    if ( int ) then 
+		setElementInterior(atmBlip, int)
+	    end
+	    if ( dim ) then
+		setElementDimension(atmBlip, dim)
+	    end
+
+            if not ( atmBlips[player] ) then atmBlips[player] = {} end
+	    table.insert(atmBlips[player], atmBlip)
+
+        end     
+    end
+end
+addCommandHandler ("markatm", toggleatmBlip)
+addEventHandler("GTImapsApp.markATMs", root, toggleatmBlip)
+
+function getATMsTable()
+	return bankATMs
+end

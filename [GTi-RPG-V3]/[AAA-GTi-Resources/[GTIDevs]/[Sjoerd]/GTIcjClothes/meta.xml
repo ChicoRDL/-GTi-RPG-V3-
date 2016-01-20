@@ -1,0 +1,8 @@
+<meta>
+    <info author="Sjoerd" name="CJ Clothes" autostart="true" type="script"/>
+		
+    <script src="Clothes_C.lua" type="client"/>
+	<script src="CJ_C.lua" type="client"/>
+	<script src="Clothes_S.lua" type="server"/>
+	
+</meta>

@@ -1,0 +1,61 @@
+
+GUIEditor = {
+    tab = {},
+    scrollpane = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(548, 257, 512, 391, "GTI Employment System", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.label[1] = guiCreateLabel(179, 24, 155, 15, "Job Name || Employer", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 43, 494, 339, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Employer", GUIEditor.tabpanel[1])
+
+GUIEditor.label[2] = guiCreateLabel(67, 7, 169, 15, "Job Description", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.gridlist[1] = guiCreateGridList(14, 27, 275, 215, false, GUIEditor.tab[1])
+
+GUIEditor.scrollpane[1] = guiCreateScrollPane(6, 6, 262, 200, false, GUIEditor.gridlist[1])
+
+GUIEditor.label[3] = guiCreateLabel(3, 4, 242, 15, "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMN", false, GUIEditor.scrollpane[1])
+
+
+GUIEditor.label[4] = guiCreateLabel(295, 7, 15, 231, "|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  ", false, GUIEditor.tab[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+GUIEditor.label[5] = guiCreateLabel(295, 16, 15, 226, "|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  ", false, GUIEditor.tab[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "left", true)
+GUIEditor.gridlist[2] = guiCreateGridList(304, 27, 179, 95, false, GUIEditor.tab[1])
+GUIEditor.gridlist[3] = guiCreateGridList(304, 146, 179, 95, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[3], "ID", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[3], "Uniform Name", 0.5)
+GUIEditor.label[6] = guiCreateLabel(326, 8, 138, 15, "Department/Division", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[6], "center", false)
+GUIEditor.label[7] = guiCreateLabel(326, 128, 138, 15, "Job Uniform", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+GUIEditor.label[8] = guiCreateLabel(118, 247, 80, 55, "Now Hiring!\n99 More Slots Open", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[8], "clear-normal")
+guiLabelSetColor(GUIEditor.label[8], 25, 255, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[8], "center", true)
+guiLabelSetVerticalAlign(GUIEditor.label[8], "center")
+GUIEditor.button[1] = guiCreateButton(204, 253, 89, 51, "Apply For\nJob", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(306, 249, 177, 24, "Update Division", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(306, 280, 177, 24, "Update Uniform", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[4] = guiCreateButton(15, 265, 99, 24, "Resign", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.tab[2] = guiCreateTab("Progress", GUIEditor.tabpanel[1])

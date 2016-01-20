@@ -1,0 +1,6 @@
+function testLOL()
+	if (getServerPort() == 22020) then
+		outputConsole("Lol")
+	end
+end
+addEventHandler("onPlayerLogin", root, testLOL)

@@ -1,0 +1,24 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    edit = {},
+    memo = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(599, 260, 270, 389, ":GTIMessagingApp/images/bckgrnd.png", false)
+
+        GUIEditor.edit[1] = guiCreateEdit(0, 354, 270, 35, "", false, GUIEditor.staticimage[1])
+        GUIEditor.memo[1] = guiCreateMemo(0, 0, 270, 356, "", false, GUIEditor.staticimage[1])
+
+
+        GUIEditor.staticimage[2] = guiCreateStaticImage(599, 224, 270, 36, ":GTIMessagingApp/images/bckgrnd3.png", false)    
+    end
+)

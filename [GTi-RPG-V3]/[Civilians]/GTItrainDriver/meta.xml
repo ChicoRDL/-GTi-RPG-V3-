@@ -1,0 +1,5 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Train Driver" autostart="false" />
+    <script src="train_driver.lua" type="client" />
+    <script src="train_driver.slua" />
+</meta>

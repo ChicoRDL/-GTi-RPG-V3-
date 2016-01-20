@@ -1,0 +1,98 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 19 Dec 2013
+-- Resource: GTIcriminals/database.slua
+-- Version: 2.5
+----------------------------------------->>
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `criminals`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+
+local database1_online	-- Is 'criminals' Database Online?
+local criminals = {}		-- 'criminals' Database Cache
+
+local SERVER_PORT = 22003
+
+addEvent("onDatabaseLoad", true)	-- Triggers when the database is ready
+
+-- Database Cache
+------------------>>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cachecriminalsbase, {}, db, "SELECT * FROM `criminals`")
+end)
+
+function cachecriminalsbase(qh)
+	local result = dbPoll(qh, 0)
+	criminals["Console"] = {}
+	for i,row in ipairs(result) do
+		criminals[row.name] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id" or column ~= "name") then
+				criminals["Console"][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				criminals[row.name][column] = value
+			end
+		end
+	end
+	database1_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "criminals")
+end
+
+-- Database Exports
+-------------------->>
+
+function setCriminalData(account, key, value)
+	if (not database1_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	
+	local account = getAccountName(account)
+	if (type(criminals[account]) ~= "table") then
+		criminals[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `criminals`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (criminals["Console"][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `criminals` ADD `??` text", key)
+		end
+		criminals["Console"][key] = true
+	end
+	
+	criminals[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `criminals` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `criminals` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function getCriminalData(account, key)
+	if (not database1_online) then return false end
+	if (not account or not key) then return nil end
+	if (isGuestAccount(account) or type(key) ~= "string") then return nil end
+	
+	local account = getAccountName(account)
+	if (criminals[account] == nil) then return nil end
+	if (criminals[account][key] == nil) then return nil end
+	
+	return tonumber(criminals[account][key]) or criminals[account][key]
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(db, "DELETE FROM `criminals` WHERE name=?", account)
+	criminals[account] = nil
+end)

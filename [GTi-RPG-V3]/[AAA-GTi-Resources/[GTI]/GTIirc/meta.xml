@@ -1,0 +1,139 @@
+﻿<meta>
+    <settings>
+        <!-- Activate ingame irc client? -->
+        <setting name="*irc-client" value="false" friendlyname="Ingame irc client" examples="true,false" desc="Activate ingame irc client?" />
+        
+        <!-- Notice users about the irc channel? -->
+        <setting name="*irc-notice" value="true" friendlyname="IRC info popup" examples="true,false" desc="Notice users about the irc channel?" />
+        
+        <!-- How many seconds should there be between the notices in seconds? (use 0 if it should always be visible) -->
+        <setting name="*irc-notice-timeout" value="300" friendlyname="IRC info popup timeout" examples="1-inf" desc="How many seconds should there be between the notices in seconds? (use 0 if it should always be visible)" />
+        
+        <!-- How long should these notices stay on the screen? -->
+        <setting name="*irc-notice-duration" value="20" friendlyname="IRC info popup duration" examples="1-inf" desc="How long should these notices stay on the screen?" />
+        
+        <!-- What's the maximum irc logsize? (in MB) (0 = no logging) -->
+        <setting name="*irc-log-maxsize" value="10" friendlyname="Maximum IRC log size" examples="0-inf" desc="What&apos;s the maximum irc logsize? (in MB) (0 = no logging)" />
+        
+        <!-- Should irc stuff be outputted to the console (server log)? -->
+        <setting name="*irc-logconsole" value="true" friendlyname="Log to console" examples="true,false" desc="Should irc stuff be outputted to the console (server log)?" />
+        
+        <!-- Should team messages be sent to the echo channel? -->
+        <setting name="*irc-logteammessages" value="*" friendlyname="Log team messages" examples="*,+,%,@,&amp;,/" desc="Who should see the teammessages?" />
+        
+        <!-- Should all messages be sent ingame? -->
+        <setting name="*irc-sendallmessages" value="false" friendlyname="Send all messages" examples="true,false" desc="Should all irc messages be sent to the server?" />
+        
+        <!-- Event logging -->
+        <setting name="*irc-onResourceStart" value="true" friendlyname="output onResourceStart event" examples="true,false" />
+        <setting name="*irc-onResourceStop" value="true" friendlyname="output onResourceStop event" examples="true,false" />
+        <setting name="*irc-onPlayerJoin" value="true" friendlyname="output onPlayerJoin event" examples="true,false" />
+        <setting name="*irc-onPlayerQuit" value="true" friendlyname="output onPlayerQuit event" examples="true,false" />
+        <setting name="*irc-onPlayerChangeNick" value="true" friendlyname="output onPlayerChangeNick event" examples="true,false" />
+        <setting name="*irc-onPlayerMute" value="true" friendlyname="output onPlayerMute event" examples="true,false" />
+        <setting name="*irc-onPlayerUnmute" value="true" friendlyname="output onPlayerUnmute event" examples="true,false" />
+        <setting name="*irc-onPlayerChat" value="true" friendlyname="output onPlayerChat event" examples="true,false" />
+        <setting name="*irc-onSettingChange" value="true" friendlyname="output onSettingChange event" examples="true,false" />
+        <setting name="*irc-onPlayerWasted" value="true" friendlyname="output onPlayerWasted event" examples="true,false" />
+        <setting name="*irc-onPlayerFinish" value="true" friendlyname="output onPlayerFinish event" examples="true,false" />
+        <setting name="*irc-onGamemodeMapStart" value="true" friendlyname="output onGamemodeMapStart event" examples="true,false" />
+        <setting name="*irc-onPlayerToptimeImprovement" value="true" friendlyname="output onPlayerToptimeImprovement event" examples="true,false" />
+        <setting name="*irc-onBan" value="true" friendlyname="output onBan event" examples="true,false" />
+        <setting name="*irc-onUnban" value="true" friendlyname="output onUnban event" examples="true,false" />
+        <setting name="*irc-onPlayerFreeze" value="true" friendlyname="output onPlayerFreeze event" examples="true,false" />
+        <setting name="*irc-adminMessage" value="true" friendlyname="output adminMessage event" examples="true,false" />
+        <setting name="*irc-onPollStuff" value="true" friendlyname="output onPollStuff events" examples="true,false" />
+    </settings>
+    
+    <!-- Don't touch anything below! -->
+    <info author="MCvarial" version="1.0.5" type="misc" name='Internet Relay Chat &quot;Kayla&quot; Bot' description="Echobot to be used on irc" autostart="true" />
+    
+    <export function="ircGetChannelFromName" type="server" http="true" />
+    <export function="ircGetEchoChannels" type="server" http="true" />
+    <export function="ircGetChannelServer" type="server" http="true" />
+    <export function="ircGetChannels" type="server" http="true" />
+    <export function="ircSetChannelMode" type="server" http="true" />
+    <export function="ircGetChannelName" type="server" http="true" />
+    <export function="ircGetChannelMode" type="server" http="true" />
+    <export function="ircGetChannelUsers" type="server" http="true" />
+    <export function="ircGetChannelTopic" type="server" http="true" />
+    <export function="ircIsEchoChannel" type="server" http="true" />
+    <export function="ircRaw" type="server" http="true" />
+    <export function="ircHop" type="server" http="true" />
+    <export function="ircSay" type="server" http="true" />
+    <export function="ircPart" type="server" http="true" />
+    <export function="ircJoin" type="server" http="true" />
+    <export function="ircAction" type="server" http="true" />
+    <export function="ircNotice" type="server" http="true" />
+    <export function="outputIRC" type="server" http="true" />
+    <export function="ircIdentify" type="server" http="true" />
+    <export function="ircConnect" type="server" http="true" />
+    <export function="ircReconnect" type="server" http="true" />
+    <export function="ircDisconnect" type="server" http="true" />
+    <export function="ircChangeNick" type="server" http="true" />
+    <export function="ircGetServerName" type="server" http="true" />
+    <export function="ircGetServerHost" type="server" http="true" />
+    <export function="ircGetServerPort" type="server" http="true" />
+    <export function="ircGetServerPass" type="server" http="true" />
+    <export function="ircGetServerNick" type="server" http="true" />
+    <export function="ircIsServerSecure" type="server" http="true" />
+    <export function="ircGetServerChannels" type="server" http="true" />
+    <export function="ircSetUserMode" type="server" http="true" />
+    <export function="ircGetUserMode" type="server" http="true" />
+    <export function="ircGetUserChannels" type="server" http="true" />
+    <export function="ircGetUserNick" type="server" http="true" />
+    <export function="ircGetUserServer" type="server" http="true" />
+    <export function="ircGetUsers" type="server" http="true" />
+    <export function="ircGetUserFromNick" type="server" http="true" />
+    <export function="ircGetUserVhost" type="server" http="true" />
+    <export function="ircGetUserLevel" type="server" http="true" />
+    <export function="addIRCCommandHandler" type="server" http="true" />
+    <export function="ircGetCommands" type="server" http="true" />
+    <export function="ircGetCommandLevel" type="server" http="true" />
+    <export function="ircIsCommandEchoChannelOnly" type="server" http="true" />
+    <export function="setPlayerMuted" type="server" http="true" />
+    
+    <!-- Don't touch this, you might break it. -->
+    <script src="scripts/loading.lua" type="server" />
+    <script src="scripts/utility.lua" type="server" />
+    <script src="scripts/channels.lua" type="server" />
+    <script src="scripts/logging.lua" type="server" />
+    <script src="scripts/servers.lua" type="server" />
+    <script src="scripts/users.lua" type="server" />
+    <script src="scripts/handling.lua" type="server" />
+    <script src="scripts/commands.lua" type="server" />
+    <script src="scripts/levels.lua" type="server" />
+    <script src="scripts/acl.lua" type="server" />
+    <script src="scripts/ads.lua" type="client" />
+    <script src="scripts/echo.lua" type="server" />
+    <script src="scripts/irccommands.lua" type="server" />
+    <script src="scripts/mutes.lua" type="server" />
+    <script src="scripts/ircclient_server.lua" type="server" />
+    <script src="scripts/ircclient_client.lua" type="client" />
+    
+    <script src="scripts/runcode/server.lua" type="server" />
+    <script src="scripts/runcode/server_util.lua" type="server" />
+    <script src="scripts/runcode/client.lua" type="client" />
+    <script src="scripts/runcode/client_util.lua" type="client" />
+    <html src="logs.html" />
+    
+    <!-- ACL -->
+    <aclrequest>
+        <right name="function.kickPlayer" access="true" />
+        <right name="function.addBan" access="true" />
+        <right name="function.removeBan" access="true" />
+        <right name="function.getPlayerIP" access="true" />
+        <right name="function.getPlayerSerial" access="true" />
+        <right name="function.setPlayerFrozen" access="true" />
+        <right name="function.setPlayerMuted" access="true" />
+        <right name="function.killPed" access="true" />
+        <right name="function.startResource" access="true" />
+        <right name="function.stopResource" access="true" />
+        <right name="function.restartResource" access="true" />
+        <right name="function.callRemote" access="true" />
+        <right name="function.fileOpen" access="true" />
+        <right name="function.fileRead" access="true" />
+    </aclrequest>
+	
+	<OOP>true</OOP>
+</meta>

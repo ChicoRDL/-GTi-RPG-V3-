@@ -1,0 +1,29 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: JT Pennington (JTPenn)
+-- Date: 13 Feb 2015
+-- Resource: GTIstats/settings.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local stat_settings = {}	-- Stat Settings by Player
+
+-- Sync Stats From Clients
+--------------------------->>
+
+addEvent("GTIstats.syncSettingsWithServer", true)
+addEventHandler("GTIstats.syncSettingsWithServer", root, function(stats)
+	stat_settings[client] = stats
+end)
+
+-- Get Stat Setting
+-------------------->>
+
+function getStatSetting(player, setting)
+	if (not stat_settings[player] or type(stat_settings[player]) ~= "table") then return false end
+	return stat_settings[player][setting] or false
+end
+
+function getAllStatSettings(player)
+	return stat_settings[player] or false
+end

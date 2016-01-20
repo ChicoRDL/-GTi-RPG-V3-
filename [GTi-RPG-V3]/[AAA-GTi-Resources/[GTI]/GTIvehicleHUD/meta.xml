@@ -1,0 +1,6 @@
+<meta>
+    <info name="Heads Up Display - Vehicles" author="LilDolla" autostart="true" />
+    <!--<script src="vehicle_locks.lua" type="server" />-->
+    <script src="vehhud_c.luac" type="client"/>
+	<script src="vehhud_s.lua" type="server"/>
+</meta>

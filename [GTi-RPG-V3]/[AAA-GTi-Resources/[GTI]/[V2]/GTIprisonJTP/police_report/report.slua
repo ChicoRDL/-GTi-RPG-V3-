@@ -1,0 +1,36 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 11 Mar 2015
+-- Resource: GTIprison/report.slua
+-- Version: 2.0
+----------------------------------------->>
+
+function showPoliceReport(player, wl, sentence)
+		-- List of Charges
+	local wT = {}
+	for i=1,exports.GTIpoliceWanted:getHighestCrimeID() do
+		local crimes = exports.GTIpoliceWanted:getWantedCacheData(getPlayerAccount(player), "crimeID"..i) or 0
+		if (crimes > 0) then
+			table.insert(wT, exports.GTIutil:tocomma(crimes).." "..(crimes == 1 and "Count" or "Counts").." of "..exports.GTIpoliceWanted:getCrimeName(i))
+		end
+	end
+		-- Wanted Time
+	local wTime = exports.GTIpoliceWanted:getPlayerWantedTime(player)
+	if (wTime >= 3600) then
+		wTime = math.floor(wTime/3600).." hours, "..( math.floor(wTime/60) % 60 ).." minutes"
+	else
+		wTime = math.floor(wTime/60).." minutes, "..( wTime % 60 ).." seconds"
+	end
+		-- Wanted Level
+	local wanted = (wl/10).." stars"
+		-- Value
+	local value = "$"..exports.GTIutil:tocomma(wl * 30)
+		-- Prison Sentence
+	if (sentence >= 3600) then
+		sentence = math.floor(sentence/3600).." hours, "..( math.floor(sentence/60) % 60 ).." minutes"
+	else
+		sentence = math.floor(sentence/60).." minutes, "..( sentence % 60 ).." seconds"
+	end
+	triggerClientEvent(player, "GTIprison.showPoliceReport", resourceRoot, wT, wTime, wanted, value, sentence)
+end

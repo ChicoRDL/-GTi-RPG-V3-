@@ -1,0 +1,72 @@
+----------------------------------------->>
+-- GTI: Grand Theft International Server
+-- Date: 12 August 2013
+-- Resource: GTIlogs/logging.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+function outputLog(text, category, player)
+	if (type(text) ~= "string" or type(category) ~= "string") then return false end
+
+	local timestamp = getRealTime().timestamp
+
+	local ip, serial, account
+	if (isElement(player) and getElementType(player) == "player") then
+		ip = getPlayerIP(player)
+		serial = getPlayerSerial(player)
+		account = getPlayerAccount(player)
+		player = getPlayerName(player)
+		if (isGuestAccount(account)) then account = nil end
+		account = getAccountName(account)
+	elseif (getAccount(tostring(player))) then
+		account = player
+		local player = getAccountPlayer(getAccount(account))
+		if (player) then
+			ip = getPlayerIP(player)
+			serial = getPlayerSerial(player)
+			player = getPlayerName(player)
+		else
+			acc = getAccount(account)
+			ip = exports.GTIaccounts:GAD(acc, "lastip")
+			serial = exports.GTIaccounts:GAD(acc, "lastserial")
+			player = exports.GTIaccounts:GAD(acc, "lastname")
+		end
+	end
+
+	local success = addLogToDatabase(category, timestamp, text, player, account, ip, serial)
+	return success
+end
+
+local last_admin_log = ""
+
+function outputWebLog(text, adminUpdate)
+	local time = getRealTime()
+	local date = time.timestamp
+	--
+	local sec, min, hr = time.second, time.minute, time.hour
+	if (hr < 10) then hr = "0"..hr end
+	if (min < 10) then min = "0"..min end
+	if (sec < 10) then sec = "0"..sec end
+
+	local day, month, year = exports.GTIutil:todate(date)
+	if (day < 10) then day = "0"..day end
+	if (month < 10) then month = "0"..month end
+	callRemote("http://gtirpg.net/MTA/adminlog.php", function() end, "["..year.."-"..month.."-"..day.."] ("..hr..":"..min..":"..sec..") "..text)
+	
+	if (getResourceFromName("GTIirc") and getResourceState(getResourceFromName("GTIirc")) == "running") then
+		local services = exports.GTIirc:ircGetChannelFromName("#echoservices")
+		if adminUpdate then
+			if text ~= last_admin_log then
+				last_admin_log = text
+			end
+		else
+			exports.GTIirc:ircSay(services, "06"..text)
+		end
+	end
+end
+
+function outputAdminLog(text, admin)
+	outputWebLog(text, true)
+	outputServerLog("ADMIN: "..text, "admin", admin)
+end

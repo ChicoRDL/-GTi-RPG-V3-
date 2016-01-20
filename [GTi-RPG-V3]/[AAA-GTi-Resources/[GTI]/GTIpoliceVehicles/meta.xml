@@ -1,0 +1,19 @@
+<meta>
+    <info author="JTPenn" name="[EXP] Police Vehicle Improvements" autostart="true" />
+    <script src="inventory/inventory_gui.luac" type="client" />
+    <script src="inventory/inventory.luac" type="client" />
+    <script src="inventory/inventory.slua" />
+    <script src="inventory/inventory_table.slua" />
+    
+    <script src="sirens/police_sirens.slua" />
+    <script src="sirens/emergency_lights.slua" />
+    
+    <!--<script src="stingers/stingers.luac" type="client" />
+    <script src="stingers/stingers.slua" /> -->
+    
+    <!-- Police Light Bar -->
+    <script src="c_objects.luac" type="client" />
+    <file src="PoliceLight1.col" />
+    <file src="PoliceLight1.dff" />
+    <file src="MatColours.txd" />
+</meta>

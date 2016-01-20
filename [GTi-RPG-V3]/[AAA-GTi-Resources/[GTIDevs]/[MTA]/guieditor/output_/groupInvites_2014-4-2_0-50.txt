@@ -1,0 +1,27 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(660, 299, 278, 284, "GTI Group Invites", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.label[1] = guiCreateLabel(29, 27, 209, 15, "Pending Group Invites", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+guiLabelSetColor(GUIEditor.label[1], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.gridlist[1] = guiCreateGridList(18, 50, 237, 132, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Pending Group Invites", 0.9)
+GUIEditor.button[1] = guiCreateButton(19, 191, 74, 30, "Accept", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(100, 191, 74, 30, "Deny", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(181, 191, 74, 30, "Deny All", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[4] = guiCreateButton(20, 231, 236, 33, "Create My Own Group", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[4], "default-bold-small")
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFFF6464")

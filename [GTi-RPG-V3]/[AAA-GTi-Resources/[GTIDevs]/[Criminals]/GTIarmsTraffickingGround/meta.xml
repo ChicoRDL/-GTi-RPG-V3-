@@ -1,0 +1,5 @@
+<meta>
+<info author="Mitch" name="Arms Trafficking (Ground)" autostart="true" />
+<script src="armsTrafficking_c.lua" type="client" cache="false"/>
+<script src="armsTrafficking_s.lua" type="server" />
+</meta>

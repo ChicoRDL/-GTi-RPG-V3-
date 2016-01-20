@@ -1,0 +1,293 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 28 Dec 2013
+-- Resource: GTIvehicles/util.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local vehicleRecovery = {
+	-- Land Vehicles
+{ 	{-1917.357, 285.238, 40.047, 180},
+	{-2079.946, 1379.284, 6.102, 180},
+	{-1266.959, 2701.175, 49.063, 120},
+	{-84.015, 1122.879, 18.742, 180},
+	{2220.064, 1392.748, 9.813, 270},
+	{1956.067, 2166.219, 9.820, 180},
+	{736.723, -460.547, 15.336, 180},
+	{1666.981, -1107.095, 22.906, 0},
+	{2058.505, -1873.214, 12.547, 270},
+	{-2381.521, 2370.408, 6.928, 0},	},
+	-- Sea Vehicles
+{	{92.489, -1968.396, -0.481, 90},
+	{-1445.816, 793.124, -0.962, 270},
+	{2330.091, 525.925, -1.651, 180},	},
+	-- Air Vehicles
+{	{1527.688, -2544.322, 12.547, 280},
+	{-1576.077, -610.384, 13.148, 290},
+	{1574.921, 1335.963, 10.146, 90},
+	{379.203, 2534.111, 16.496, 180},
+	{-2381.521, 2370.408, 6.928, 0},	},
+	-- Big Air Vehicles
+{	{1340.766, 1403.927, 13.987, 270},
+	{1349.873, 1457.315, 13.996, 270},
+	{-1330.824, -209.751, 17.321, 317},
+	{1729.394, -2462.091, 16.728, 180},	},
+}
+
+local sea = { ["Boat"] = true }
+local air = { ["Plane"] = true, ["Helicopter"] = true }
+local bigAir = { ["AT-400"] = true, ["Andromada"] = true }
+DRIVE_OFF_LOT_DEVALUE = 0.05 -- Amount value decreases by on purchase
+MILES_PER_DAY = 75
+DEFAULT_COST = 20000
+
+-- Database
+------------>>
+
+function getMaximumVehicleID()
+	return maxVehicleID
+end
+
+function getNextAvailibleVehicleIDSlot(player)
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return 1 end
+	local account = getAccountName(account)
+	if (not vehicleOwnerData[account]) then return 1 end
+		-- Calculate Total Number of Columns
+	local totalCol = 0
+	for col,val in pairs(vehicleOwnerData["Console"]) do
+		totalCol = totalCol + 1
+	end
+		-- Find Next Available Slot
+	for i=1,totalCol do
+		if (not vehicleOwnerData[account]["vehicle"..(i+1)]) then
+			return i+1
+		end
+	end
+	return 1
+end
+
+-- Vehicle Exports
+------------------->>
+
+function doesPlayerOwnVehicleModel(player, vehModel)
+	if (not isElement(player) or not vehModel) then return end
+	local account = getPlayerAccount(player)
+	local vehData = getAllVehicleOwnerData(account)
+	if (vehData) then
+		local vehTable = {}
+		for vehKey,vehID in pairs(vehData) do
+			vehID = tonumber(vehID)
+			local model = getVehicleData(vehID, "vehicleID")
+			if (model == vehModel) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+function getAllVehicleData(vehID)
+	local vehData = {}
+	vehData["owner"] = 			getVehicleData(vehID, "owner")
+	vehData["vehicleID"] = 		getVehicleData(vehID, "vehicleID")
+	vehData["color"] = 			getVehicleData(vehID, "color")
+	vehData["color"] = 			split(vehData["color"],",")
+	vehData["position"] = 		getVehicleData(vehID, "position")
+	vehData["position"] = 		split(vehData["position"],",")
+	vehData["health"] = 		getVehicleData(vehID, "health")
+	vehData["fuel"] = 			getVehicleData(vehID, "fuel")
+	vehData["mileage"] = 		getVehicleData(vehID, "mileage")
+	vehData["variant"] = 		getVehicleData(vehID, "variant")
+	vehData["originalPrice"] = 	getVehicleData(vehID, "originalPrice")
+	vehData["purchaseDate"] = 	getVehicleData(vehID, "purchaseDate")
+	vehData["active"] = 		getVehicleData(vehID, "active")
+	return vehData
+end
+
+function getVehicleByID(ID)
+	for i,vehicle in ipairs(getElementsByType("vehicle", resourceRoot)) do
+		local vehID = getElementData(vehicle, "vehicleID")
+		if (vehID == ID) then return vehicle end
+	end
+	return false
+end
+
+function getVehicleIDFromSlot(player, slot)
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	local vehID = getVehicleOwnerData(account, "vehicle"..slot) or false
+	return vehID
+end
+
+function getVehicleOwner(vehicle)
+	if (not isElement(vehicle)) then return false end
+	local owner = getElementData(vehicle, "owner")
+	if (owner) then
+		owner = getAccountPlayer(getAccount(owner))
+		if (owner) then
+			return owner
+		end
+	end
+	return false
+end
+
+function getVehicleSlotFromID(account, vehID)
+	local vehData = getAllVehicleOwnerData(account)
+	for vehKey,vehicleID in pairs(vehData) do
+		if (tonumber(vehicleID) == vehID) then
+			return vehKey
+		end
+	end
+	return nil
+end
+
+function isVehicleInCategory(vehID, category)
+	local vehPrices = getVehiclePriceTable()
+	for i,v in ipairs(vehPrices[category]) do
+		if (v.id == vehID) then
+			return true
+		end
+	end
+	return false
+end
+
+function isVehicleMarkedOnRadar(vehicle)
+	if (isElement(vehicleBlips[vehicle])) then
+		return true
+	end
+	return false
+end
+
+function isVehicleSpawned(vehID)
+	return activeVehicleIDs[vehID] or false
+end
+
+-- Cost-Related Exports
+------------------------>>
+
+function getVehicleCost(ID)
+	local vehPrices = getVehiclePriceTable()
+	for category,v in pairs(vehPrices) do
+		for i,v in ipairs(vehPrices[category]) do
+			if (v.id == ID) then
+				return v.cost
+			end
+		end
+	end
+	return DEFAULT_COST
+end
+
+function getVehicleSaleValue(vehID)
+	local value = getVehicleValue(vehID)
+	local health = getVehicleData(vehID, "health")
+	if (activeVehicleIDs[vehID]) then
+		local vehicle = getVehicleByID(vehID)
+		health = getElementHealth(vehicle)
+	end
+	if (health > 1000) then health = 1000 end
+	value = math.floor( value * ( ( (health-300) /1400)+0.5 ) )
+	return value
+end
+
+function getVehicleValue(vehID)
+	local originalCost = getVehicleData(vehID, "originalPrice")
+	if (not originalCost) then
+		local model = getVehicleData(vehID, "vehicleID")
+		originalCost = getVehicleCost(model)
+	end
+	local value = originalCost*(1-DRIVE_OFF_LOT_DEVALUE)
+
+	local mileage = getVehicleData(vehID, "mileage") or 0
+	local miles = tonumber( string.format("%.3f", (mileage*0.000621371)) )
+	local value = value * ( 0.85 ^ (miles/(MILES_PER_DAY*7)) )
+	return math.floor(value)
+end
+
+-- Recovery
+------------>>
+
+function getNearestRecoveryPoint(vehicle)
+	local x,y = getElementPosition(vehicle)
+	local index = 1
+	local lowestDistance
+	local cat = 1
+	if (sea[getVehicleType(vehicle)]) then cat = 2 end
+	if (air[getVehicleType(vehicle)]) then cat = 3 end
+	if (bigAir[getVehicleName(vehicle)]) then cat = 4 end
+	for i,v in ipairs(vehicleRecovery[cat]) do
+		local distance = getDistanceBetweenPoints2D(x,y, v[1],v[2])
+		if (not lowestDistance or lowestDistance >= distance) then
+			lowestDistance = distance
+			index = i
+		end
+	end
+	local vTable = vehicleRecovery[cat][index]
+	return vTable[1], vTable[2], vTable[3], vTable[4], getZoneName(vTable[1], vTable[2], vTable[3]), lowestDistance
+end
+
+-- Vehicle Value
+----------------->>
+
+function getAccountVehicleWorth(account)
+	if (isGuestAccount(account)) then return false end
+	
+	local vehicles = getAllVehicleOwnerData(account) or {}
+	local worth = 0
+	for slot,vehID in pairs(vehicles) do
+		worth = worth + getVehicleValue(vehID)
+	end
+	return worth
+end
+
+addEventHandler("onVehicleEnter", root, 
+	function ( thePlayer )
+		if ( getElementModel ( source ) == 520 and getElementData(source,"vehicleID") ) then
+			toggleControl ( thePlayer, "vehicle_fire", false)
+			toggleControl ( thePlayer, "vehicle_secondary_fire", false)
+		end
+	end
+)
+
+setAircraftMaxVelocity(2.5)
+
+-- Open door
+-------------------->>
+
+addCommandHandler ( "od",
+function ( player, _, door )
+    if ( door ) then
+        if ( isPedInVehicle ( player ) ) then
+            if ( getVehicleController ( getPedOccupiedVehicle ( player ) ) == player ) then
+                if ( string.match ( door, '^%d+$' ) ) then
+                    if ( tonumber ( door ) < 6 ) then
+                        if ( getVehicleDoorOpenRatio ( getPedOccupiedVehicle ( player ), tonumber ( door ) ) == 0 ) then
+                            setVehicleDoorOpenRatio ( getPedOccupiedVehicle ( player ), tonumber ( door ), 1, 1000 )
+                        else
+                            setVehicleDoorOpenRatio ( getPedOccupiedVehicle ( player ), tonumber ( door ), 0, 1000 )
+                        end
+                    end
+                else
+                    if ( door == "*" ) then
+                        for i = 0, 5 do
+                            if ( getVehicleDoorOpenRatio ( getPedOccupiedVehicle ( player ), i ) == 0 ) then
+                                setVehicleDoorOpenRatio ( getPedOccupiedVehicle ( player ), i, 1, 1000)
+                            else
+                                setVehicleDoorOpenRatio ( getPedOccupiedVehicle ( player ), i, 0, 1000)
+                            end
+                        end
+                    end
+                end
+            else
+                exports.GTIhud:dm("You can NOT use this command as a passenger!", player, 255, 0, 0)
+            end
+        else
+            exports.GTIhud:dm("You must be in a vehicle to use this command!", player, 255, 0, 0)
+        end
+    else
+        outputChatBox("Server: Wrong syntax, use /od [0-5|*]", player, 255, 0, 0)
+     end
+end
+)
+

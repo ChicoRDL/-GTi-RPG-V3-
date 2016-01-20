@@ -1,0 +1,31 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 17 Dec 2014
+-- Resource: GTIdamage/vehicle_damage.slua
+-- Version: 1.0
+----------------------------------------->>
+
+addEvent("GTIdamage.killPed", true)
+addEventHandler("GTIdamage.killPed", root, function(player, killer, weapon)
+	killPed(player, killer, weapon, 3)
+end)
+
+addEvent("GTIdamage.takeVehAP", true)
+addEventHandler("GTIdamage.takeVehAP", root, function(player, ap)
+	setPedArmor(player, ap)
+end)
+
+addEvent("GTIdamage:onPlayerAttackedVehicle",true)
+addEventHandler("GTIdamage:onPlayerAttackedVehicle",root,
+function(vehicle)
+	if not vehicle or not isElement(vehicle) then return false end
+	
+	setElementData(vehicle,"attacker",client,true)
+end)
+
+function getLastVehicleAttacker(vehicle)
+	if not vehicle or not isElement(vehicle) or (getElementType(vehicle) ~= "vehicle") then return false end
+	
+	return getElementData(vehicle,"attacker")
+end

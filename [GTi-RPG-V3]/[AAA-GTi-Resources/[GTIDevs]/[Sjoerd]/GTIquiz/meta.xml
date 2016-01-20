@@ -1,0 +1,5 @@
+<meta>
+    <info author="Sjoerd" type="script" name="Quiz Event" autostart="true" />
+    <script src="quiz_c.luac" type="client" />
+    <script src="quiz_s.lua" type="server" />
+</meta>

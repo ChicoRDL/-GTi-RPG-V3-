@@ -1,0 +1,61 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 30 Nov 2013
+-- Resource: GTIaccounts/encryption.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local encryption = {
+["A"]="H", ["B"]="O", ["C"]="d", ["D"]="6", ["E"]="{", ["F"]="i", ["G"]=":", ["H"]="a", ["I"]=">", 
+["J"]="V", ["K"]="D", ["L"]="w", ["M"]="u", ["N"]="k", ["O"]="G", ["P"]="+", ["Q"]="<", ["R"]="q", 
+["S"]="J", ["T"]="I", ["U"]="0", ["V"]="o", ["W"]="Z", ["X"]="/", ["Y"]="A", ["Z"]="7", ["a"]="K", 
+["b"]="m", ["c"]="e", ["d"]="'", ["e"]="z", ["f"]="b", ["g"]="F", ["h"]="l", ["i"]="P", ["j"]="S", 
+["k"]="2", ["l"]="N", ["m"]="1", ["n"]="M", ["o"]="x", ["p"]="h", ["q"]="]", ["r"]="_", ["s"]=".", 
+["t"]="?", ["u"]="^", ["v"]="E", ["w"]=",", ["x"]="4", ["y"]="n", ["z"]="r", ["1"]="c", ["2"]="y", 
+["3"]="g", ["4"]="$", ["5"]="R", ["6"]="s", ["7"]="T", ["8"]="@", ["9"]="#", ["0"]="=", ["!"]="j", 
+["@"]="!", ["#"]="Q", ["$"]="B", ["%"]="C", ["^"]="5", ["&"]="X", ["*"]=")", ["("]="t", [")"]="-", 
+["-"]="f", ["="]="W", ["_"]="(", ["+"]="8", ["["]="Y", ["]"]="3", ["{"]="P", ["}"]="*", ["|"]="}", 
+[";"]="[", ["'"]="%", [":"]="9", [","]="&", ["."]="L", ["/"]="v", ["<"]="|", [">"]=";", ["?"]="U", 
+["`"]="~", ["~"]="`", ["€"]="€",
+}
+
+function encryptPassword(pWord)
+	local password = {}
+	local i = 0
+	for c in pWord:gmatch"." do 
+		i = i+1
+		table.insert(password, i, c)
+	end
+	local newPassword = {}
+	for i,v in ipairs(password) do
+		for k2,v2 in pairs(encryption) do
+			if v == k2 then
+				table.insert(newPassword, i, v2)
+				break
+			end
+		end
+	end
+	local newPassword = table.concat(newPassword, "")
+	return newPassword
+end
+
+function decryptPassword(pWord)
+	local password = {}
+	local i = 0
+	for c in pWord:gmatch"." do 
+		i = i+1
+		table.insert(password, i, c)
+	end
+	local newPassword = {}
+	for i,v in ipairs(password) do
+		for k2,v2 in pairs(encryption) do
+			if v == v2 then
+				table.insert(newPassword, i, k2)
+				break
+			end
+		end
+	end
+	local newPassword = table.concat(newPassword, "")
+	return newPassword
+end

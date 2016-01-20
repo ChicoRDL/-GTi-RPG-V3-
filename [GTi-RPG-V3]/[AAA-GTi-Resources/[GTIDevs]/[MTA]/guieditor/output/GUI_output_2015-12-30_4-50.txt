@@ -1,0 +1,145 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    label = {},
+    gridlist = {},
+    window = {},
+    memo = {}
+}
+donationsGUI = {
+    tab = {},
+    tabpanel = {},
+    label = {},
+    gridlist = {},
+    window = {},
+    memo = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+local screenW, screenH = guiGetScreenSize()
+        GUIEditor.window[1] = guiCreateWindow(screenW, screenH, 564, 405, "GTI Employment System Panel", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.95)
+
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 24, 546, 92, false, GUIEditor.window[1])
+
+        GUIEditor.tab[1] = guiCreateTab("All Jobs", GUIEditor.tabpanel[1])
+
+        GUIEditor.label[1] = guiCreateLabel(10, 2-15, 70, 45, "Employment Level:", false, GUIEditor.tab[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.label[2] = guiCreateLabel(198, 2, 64, 15, "Experience:", false, GUIEditor.tab[1])
+        GUIEditor.label[3] = guiCreateLabel(7, 46, 511, 15, "_______________________________________________________________________________________", false, GUIEditor.tab[1])
+        GUIEditor.label[4] = guiCreateLabel(70-50, 115, 204, 15, "Employment Jobs List", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[4], "clear-normal")
+        GUIEditor.label[5] = guiCreateLabel(7, 93, 511, 15, "_______________________________________________________________________________________", false, GUIEditor.tab[1])
+        GUIEditor.label[6] = guiCreateLabel(6, 139, 79, 15, "Current Rank:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[6], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[6], 12, 200, 0)
+        GUIEditor.label[7] = guiCreateLabel(6, 170, 99, 15, "Current Progress:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[7], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[7], 12, 200, 0)
+        GUIEditor.label[8] = guiCreateLabel(6, 201, 114, 15, "Progress for Promo:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[8], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[8], 12, 200, 0)
+        GUIEditor.label[9] = guiCreateLabel(118, 21, 89, 15, "Job Description", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[9], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[9], 12, 200, 0)
+        GUIEditor.label[10] = guiCreateLabel(488, 115, 50, 15, "Level XX", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[10], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[10], 12, 200, 0)
+        GUIEditor.label[11] = guiCreateLabel(110, 139, 196, 15, "<Insert Rank Name Here>", false, GUIEditor.tab[1])
+        GUIEditor.label[12] = guiCreateLabel(98, 201, 160, 15, "<Insert Prog. 4 Promo Here>", false, GUIEditor.tab[1])
+        GUIEditor.label[13] = guiCreateLabel(132, 170, 177, 15, "<Insert Current Progress Here>", false, GUIEditor.tab[1])
+        GUIEditor.gridlist[1] = guiCreateGridList(7, 112, 220, 205, false, GUIEditor.tab[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Employment Jobs List", 0.9)
+        GUIEditor.memo[1] = guiCreateMemo(6, 30, 69, 90, "", false, GUIEditor.tab[1])
+        guiMemoSetReadOnly(GUIEditor.memo[1], true)
+
+
+        GUIEditor.window[2] = guiCreateWindow(screenW, screenH, 564, 405, "GTI Employment System Panel", false)
+        guiWindowSetSizable(GUIEditor.window[2], false)
+        guiSetAlpha(GUIEditor.window[2], 0.95)
+
+        GUIEditor.tabpanel[2] = guiCreateTabPanel(9, 24, 546, 92, false, GUIEditor.window[2])
+
+        GUIEditor.tab[2] = guiCreateTab("All Jobs", GUIEditor.tabpanel[2])
+
+        donationsGUI.label[1] = guiCreateLabel(10, 2-15, 70, 45, "Employment Level:", false, GUIEditor.tab[2])
+        guiLabelSetHorizontalAlign(donationsGUI.label[1], "center", true)
+        guiLabelSetVerticalAlign(donationsGUI.label[1], "center")
+        donationsGUI.label[2] = guiCreateLabel(198, 2, 64, 15, "Experience:", false, GUIEditor.tab[2])
+        GUIEditor.label[14] = guiCreateLabel(7, 46, 511, 15, "_______________________________________________________________________________________", false, GUIEditor.tab[2])
+        donationsGUI.label[4] = guiCreateLabel(70-50, 115, 204, 15, "Employment Jobs List", false, GUIEditor.tab[2])
+        guiSetFont(donationsGUI.label[4], "clear-normal")
+        GUIEditor.label[15] = guiCreateLabel(7, 93, 511, 15, "_______________________________________________________________________________________", false, GUIEditor.tab[2])
+        GUIEditor.label[16] = guiCreateLabel(6, 139, 79, 15, "Current Rank:", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[16], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[16], 12, 200, 0)
+        GUIEditor.label[17] = guiCreateLabel(6, 170, 99, 15, "Current Progress:", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[17], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[17], 12, 200, 0)
+        GUIEditor.label[18] = guiCreateLabel(6, 201, 114, 15, "Progress for Promo:", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[18], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[18], 12, 200, 0)
+        donationsGUI.label[9] = guiCreateLabel(118, 21, 89, 15, "Job Description", false, GUIEditor.tab[2])
+        guiSetFont(donationsGUI.label[9], "default-bold-small")
+        guiLabelSetColor(donationsGUI.label[9], 12, 200, 0)
+        GUIEditor.label[19] = guiCreateLabel(488, 115, 50, 15, "Level XX", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[19], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[19], 12, 200, 0)
+        GUIEditor.label[20] = guiCreateLabel(110, 139, 196, 15, "<Insert Rank Name Here>", false, GUIEditor.tab[2])
+        GUIEditor.label[21] = guiCreateLabel(98, 201, 160, 15, "<Insert Prog. 4 Promo Here>", false, GUIEditor.tab[2])
+        GUIEditor.label[22] = guiCreateLabel(132, 170, 177, 15, "<Insert Current Progress Here>", false, GUIEditor.tab[2])
+        donationsGUI.gridlist[1] = guiCreateGridList(7, 112, 220, 205, false, GUIEditor.tab[2])
+        guiGridListAddColumn(donationsGUI.gridlist[1], "Employment Jobs List", 0.9)
+        donationsGUI.memo[1] = guiCreateMemo(6, 30, 69, 90, "", false, GUIEditor.tab[2])
+        guiMemoSetReadOnly(donationsGUI.memo[1], true)
+
+
+        donationsGUI.window[1] = guiCreateWindow(399, 195, 564, 405, "GTI Server Finances and Heroes", false)
+        guiWindowSetSizable(donationsGUI.window[1], false)
+        guiSetAlpha(donationsGUI.window[1], 0.95)
+
+        donationsGUI.tabpanel[1] = guiCreateTabPanel(9, 24, 545, 371, false, donationsGUI.window[1])
+
+        donationsGUI.tab[1] = guiCreateTab("All Jobs", donationsGUI.tabpanel[1])
+
+        donationsGUI.label[3] = guiCreateLabel(7, 46, 511, 15, "_______________________________________________________________________________________", false, donationsGUI.tab[1])
+        donationsGUI.label[5] = guiCreateLabel(7, 93, 511, 15, "_______________________________________________________________________________________", false, donationsGUI.tab[1])
+        donationsGUI.label[6] = guiCreateLabel(6, 139, 94, 15, "Server's funds:", false, donationsGUI.tab[1])
+        guiSetFont(donationsGUI.label[6], "default-bold-small")
+        guiLabelSetColor(donationsGUI.label[6], 12, 200, 0)
+        donationsGUI.label[7] = guiCreateLabel(6, 170, 99, 15, "Covered until:", false, donationsGUI.tab[1])
+        guiSetFont(donationsGUI.label[7], "default-bold-small")
+        guiLabelSetColor(donationsGUI.label[7], 12, 200, 0)
+        donationsGUI.label[8] = guiCreateLabel(6, 201, 176, 15, "Needed to cover next month:", false, donationsGUI.tab[1])
+        guiSetFont(donationsGUI.label[8], "default-bold-small")
+        guiLabelSetColor(donationsGUI.label[8], 12, 200, 0)
+        donationsGUI.label[10] = guiCreateLabel(435, 114, 100, 104, "Each month we must pay for the servers that hosts our network, IRC, TeamSpeak, and the MTA Servers.", false, donationsGUI.tab[1])
+        guiSetFont(donationsGUI.label[10], "default-bold-small")
+        guiLabelSetColor(donationsGUI.label[10], 0, 54, 254)
+        guiLabelSetHorizontalAlign(donationsGUI.label[10], "left", true)
+        donationsGUI.label[11] = guiCreateLabel(110, 139, 196, 15, "<Insert Server's Funds Here>", false, donationsGUI.tab[1])
+        donationsGUI.label[12] = guiCreateLabel(182, 201, 191, 15, "<Insert Needed for Next Month>", false, donationsGUI.tab[1])
+        donationsGUI.label[13] = guiCreateLabel(110, 170, 192, 15, "<Insert Covered Until Date Here>", false, donationsGUI.tab[1])
+        GUIEditor.memo[2] = guiCreateMemo(8, 228, 527, 87, "tt", false, donationsGUI.tab[1])
+        guiMemoSetReadOnly(GUIEditor.memo[2], true)
+        GUIEditor.label[23] = guiCreateLabel(8, 321, 527, 16, "www.gtirpg.net/donate", false, donationsGUI.tab[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[23], "center", false)
+
+        GUIEditor.tab[3] = guiCreateTab("Heroes", donationsGUI.tabpanel[1])
+
+        GUIEditor.gridlist[2] = guiCreateGridList(6, 6, 529, 331, false, GUIEditor.tab[3])
+        guiGridListAddColumn(GUIEditor.gridlist[2], "#", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Name", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Total", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Last Donation", 0.2)
+        guiGridListAddRow(GUIEditor.gridlist[2])
+        guiGridListSetItemText(GUIEditor.gridlist[2], 0, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[2], 0, 2, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[2], 0, 3, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[2], 0, 4, "-", false, false)    
+    end
+)

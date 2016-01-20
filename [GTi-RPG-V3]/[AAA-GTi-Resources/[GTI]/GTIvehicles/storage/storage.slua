@@ -1,0 +1,226 @@
+-- Author: JT Pennington (JTPenn) & Emile
+-- Get Player, car Inventory
+------------------------------->>
+
+local tip = {}
+
+addEvent("GTICarStorage.getCarStorage", true)
+addEventHandler("GTICarStorage.getCarStorage", root, function(car)
+	if (not client) then client = source end
+	if not isElement(car) or getVehicleOwner(car) ~= client then return end
+	if (exports.GTIrentals:getPlayerRentalVehicle(client) == car) then return end
+	if exports.GTIpoliceArrest:isPlayerInPoliceCustody(client) then return end
+	setVehicleDoorOpenRatio(car,1,1,2000)
+	local vehID = getElementData(car, "vehicleID")
+	local plrInv = getPlayerInventory(client)
+	local carInv = getCarInventory(vehID)
+	triggerClientEvent(client, "GTICarStorage.getCarStorage", resourceRoot, plrInv, carInv)
+end)
+
+addEvent("GTICarStorage.closeDoor", true)
+addEventHandler("GTICarStorage.closeDoor", root, function(car)
+	if not isElement(car) or getVehicleOwner(car) ~= client then return end
+	setVehicleDoorOpenRatio(car,1,0,2000)
+end)
+
+-- Transfer Between
+-------------------->>
+
+addEvent("GTICarStorage.transferTocar", true)
+addEventHandler("GTICarStorage.transferTocar", root, function(veh, item, amount)
+	if (tip[client]) then return end
+	tip[client] = true
+	setTimer(function(client) tip[client] = nil end, 3000, 1, client)
+	-- Weapon Storage
+	if exports.GTIpoliceArrest:isPlayerInPoliceCustody(client) then return end
+	if (isItemWeapon(item)) then
+		local car = getElementData(veh, "vehicleID")
+		local slot = getSlotFromWeapon(item)
+		local amount = amount or getPedTotalAmmo(client, slot)
+		local carInv = getCarInventory(car)
+		local exists
+
+			-- Is Rental Check
+		if (wasWeaponRented(client, item)) then
+			exports.GTIhud:dm("You cannot store a weapon you rented.", client, 255, 125, 0)
+			return
+		end
+
+			-- Reset to what you actually have
+		if (amount > getPedTotalAmmo(client, slot)) then
+			amount = getPedTotalAmmo(client, slot)
+		end
+
+		-- Add Weapon to car
+		for i,v in ipairs(carInv) do	-- Check if Exists
+			if (v[1] == item) then
+				exists = true
+				overL = ( v[2] + amount ) - 10000 or 'nil'
+				if overL == 1 then
+					word = "bullet"
+				else
+					word = "bullets"
+				end
+
+				if v[2] + amount > 10000 then outputChatBox("You are " .. exports.GTIutil:tocomma ( overL ).. " " .. word .. " over of the limit ( 10,000 ).",client,255,0,0) return end
+				v[2] = v[2] + amount
+				break
+			end
+		end
+		if (not exists) then
+			table.insert(carInv, {item, amount})
+		end
+		setCarInventory(car, carInv)
+
+		-- Take Ammo
+		if (amount == getPedTotalAmmo(client, slot)) then
+			takeWeapon(client, item)
+		else
+			takeWeapon(client, item, amount)
+		end
+		exports.GTIweapons:updateWeaponInInventory(client, item, getPedTotalAmmo(client, slot))
+	end
+	triggerEvent("GTICarStorage.getCarStorage", client, veh)
+end)
+
+addEvent("GTICarStorage.transferToPlayer", true)
+addEventHandler("GTICarStorage.transferToPlayer", root, function(veh, item, amount)
+	if (tip[client]) then return end
+	tip[client] = true
+	setTimer(function(client) tip[client] = nil end, 3000, 1, client)
+	-- Weapon Storage
+	if exports.GTIpoliceArrest:isPlayerInPoliceCustody(client) then return end
+	if (isItemWeapon(item)) then
+		local car = getElementData(veh, "vehicleID")
+		local carInv = getCarInventory(car)
+		local max_ammo = exports.GTIweapons:getWeaponMaxAmmo(client, item)
+		if (type(max_ammo) ~= "number") then max_ammo = 1 end
+		local slot = getSlotFromWeapon(item)
+		local weapon = getPedWeapon(client, slot)
+		local ammo = getPedTotalAmmo(client, slot)
+		local exists
+
+		-- Weapon Conflict Check
+		if (isItemWeapon(weapon) and ammo > 0 and weapon ~= item) then
+			exports.GTIhud:dm("You must add your current "..getWeaponNameFromID(weapon).." to your storage before removing your "..getWeaponNameFromID(item).." to avoid losing it.", client, 255, 125, 0)
+			return
+		end
+
+		-- Remove Weapon from car
+		for i,v in ipairs(carInv) do	-- Check if Exists
+			if (v[1] == item) then
+					-- Ammo Verification Process -->>
+				amount = amount or v[2]
+				if (amount > v[2]) then amount = v[2] end				-- Make sure you don't take out more than you have
+				if (amount + ammo > max_ammo) then
+					lost = ( amount + ammo ) - max_ammo
+					if lost == 1 then
+						word = "bullet"
+					else
+						word = "bullets"
+					end
+					outputChatBox("You are " .. exports.GTIutil:tocomma ( lost ).. " " .. word .. " over of the limit ( "..max_ammo.." ).", client, 255, 0, 0)
+					return
+				end
+
+				if (weapon == item and (ammo + amount) > max_ammo) then -- ...even if you already have the weapon
+					amount = max_ammo-ammo
+					v[2] = max_ammo-ammo
+				end
+
+				v[2] = v[2] - amount
+				exists = true
+				if (v[2] == 0) then
+					table.remove(carInv, i)
+				end
+				break
+			end
+		end
+		if (not exists) then
+			exports.GTIhud:dm("Error: Item not found. Cannot transfer.", client, 255, 25, 25)
+			return
+		end
+		setCarInventory(car, carInv)
+
+		-- Give Ammo
+		exports.GTIweapons:giveWeapon(client, item, amount, true)
+		exports.GTIweapons:updateWeaponInInventory(client, item, getPedTotalAmmo(client, slot))
+	end
+	triggerEvent("GTICarStorage.getCarStorage", client, veh)
+end)
+
+-- Player Inventory
+-------------------->>
+
+function getPlayerInventory(player)
+	if (not isElement(player)) then return false end
+		-- Weapons
+	local weapons = {}
+	for i=0,11 do
+		local weapon = getPedWeapon(player, i)
+		local ammo = getPedTotalAmmo(player, i)
+		if (weapon ~= 0 and ammo > 0) then
+			table.insert(weapons, {weapon, ammo})
+		end
+	end
+	return weapons
+end
+-- car Inventory
+------------------->>
+
+function getCarInventory(car)
+	if (not car or type(car) ~= "number") then return {} end
+		-- Weapons
+	local weapons = getVehicleData(car, "inv.weapons") or ""
+	if (#weapons == 0) then return {} end
+	local weapons = split(weapons, ";")
+	for i,v in ipairs(weapons) do
+		weapons[i] = split(v, ",")
+		weapons[i] = {tonumber(weapons[i][1]), tonumber(weapons[i][2])}
+	end
+	return weapons
+end
+
+function isCarInventoryEmpty(car)
+	if (not car or type(car) ~= "number") then return false end
+		-- Weapons
+	local weapons = getVehicleData(car, "inv.weapons") or ""
+	if (#weapons == 0) then
+		return true
+	else
+		return false
+	end
+end
+
+function setCarInventory(car, inventory)
+	if (not car or type(car) ~= "number") then return false end
+		-- Weapons
+	for i,v in ipairs(inventory) do
+		inventory[i] = table.concat(v, ",")
+	end
+	inventory = table.concat(inventory, ";")
+	setVehicleData(car, "inv.weapons", inventory)
+	return true
+end
+
+function clearCarInventory(car)
+	if (not car or type(car) ~= "number") then return false end
+	setVehicleData(car, "inv.weapons", nil)
+	return true
+end
+
+-- Is Item...
+-------------->>
+
+function isItemWeapon(item)
+	return getWeaponNameFromID(item) ~= "Fist"
+end
+
+function wasWeaponRented(player, weapon)
+	if (not isElement(player) or not weapon or type(weapon) ~= "number") then return false end
+	local rentals = exports.GTIrentals:getRentedWeapons(player)
+	for i,weap in ipairs(rentals) do
+		if (weap == weapon) then return true end
+	end
+	return false
+end

@@ -1,0 +1,22 @@
+<meta>
+    <info author="LilDolla" version="1.0" name="Server Security/Anti-cheat" autostart="true" />
+    <!--<script src="cbug.luac" type="client" />-->
+	
+	<script src="cbug/anti-fast.luac" 	type="client" />
+	<script src="cbug/anti-cbug.luac" 	type="client" />
+	
+	<script src="anti_tap.luac" 	type="client" />
+	<script src="anti_dmg.luac" 	type="client" />
+	<script src="anti_water.lua" 	type="client" />
+	
+    <script src="ac_detected.slua" />
+    <script src="scripts.slua" />
+    <script src="anti_water.slua" />
+    <script src="govt_acc_sec.slua" type="server" />    
+    <aclrequest>
+        <right name="function.redirectPlayer" 	access="true" />
+		<right name="function.addBan"			access="true" />
+		<right name="function.banPlayer"		access="true" />
+    </aclrequest>
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

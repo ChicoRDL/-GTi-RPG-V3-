@@ -1,0 +1,40 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    scrollbar = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(599, 260, 270, 389, ":GTIMessagingApp/images/bckgrnd2.png", false)
+
+        GUIEditor.scrollbar[1] = guiCreateScrollBar(251, -4, 22, 397, false, false, GUIEditor.staticimage[1])
+        guiScrollBarSetScrollPosition(GUIEditor.scrollbar[1], 100.0)
+
+
+        GUIEditor.staticimage[2] = guiCreateStaticImage(599, 224, 270, 36, ":GTIMessagingApp/images/bckgrnd.png", false)
+
+        GUIEditor.staticimage[3] = guiCreateStaticImage(231, 6, 25, 25, ":GTIMessagingApp/images/friend.png", false, GUIEditor.staticimage[2])
+        GUIEditor.staticimage[4] = guiCreateStaticImage(7, 5, 33, 26, ":GTIMessagingApp/images/msg.png", false, GUIEditor.staticimage[2])
+        GUIEditor.label[3] = guiCreateLabel(50, 10, 158, 16, "GTIdroid SMS Application", false, GUIEditor.staticimage[2])
+        local font_0 = guiCreateFont(":GTIMessagingApp/images/font4.ttf")
+        guiSetFont(GUIEditor.label[3], font_0)
+        guiLabelSetColor(GUIEditor.label[3], 195, 248, 255)    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawLine(818, 228, 818, 255, tocolor(254, 182, 123, 255), 1, true)
+        dxDrawLine(818, 228, 818, 255, tocolor(254, 182, 123, 255), 1, true)
+    end
+)

@@ -1,0 +1,3 @@
+﻿<meta>	<info author="Mitch" name="Help Pickups" autostart="true" />
+	<script src="client.luac" type="client" />
+</meta>

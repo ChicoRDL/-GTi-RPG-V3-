@@ -1,0 +1,163 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 04 Mar 2014
+-- Resource: GTIgroups/permissions.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local mem_permissions = {
+[1] = 	{"add_member",			"Invite a Member"},
+[2] = 	{"del_member",			"Kick a Member"},
+[3] = 	{"modify_ranks",		"Add/Remove Ranks and Permissions"},
+[4] = 	{"mod_group_info",		"Modify Group Info (MOTD)"},
+[5] = 	{"mod_application",		"Modify In game Application Format"},
+[6] = 	{"change_member_rank",	"Promote/Demote Members"},
+[7] = 	{"view_history",		"View Group History"},
+[8] = 	{"view_applications",	"View Pending Applications"},
+[9] = 	{"mod_group_tags",		"Modify Automatic Tagging System"},
+[10] = 	{"moderate_chat",		"Moderate Group Chat"},
+[11] = 	{"mod_group_color",		"Change the Group Color"},
+[12] = 	{"deposit_cash",		"Deposit Money into the Group Bank"},
+[13] = 	{"withdraw_cash",		"Withdraw Money from the Group Bank"},
+[14] = 	{"edit_reminders",		"Add/Remove Group Reminders"},
+[15] = 	{"friendly_fire",		"Toggle Group Friendly Fire"},
+[16] = 	{"group_blips",			"Toggle Group Blips"},
+[17] = 	{"group_note",			"Access to /groupnote"},
+	-- Leader-Only Permissions
+[18] = 	{"change_group_name", 	"Change the Group's Name",	true},
+[19] = 	{"delete_group",		"Delete the Group", 		true},
+}
+
+local group_permissions = {
+[1] = 	{"invite_members",		"Add Members to the Group"},
+[2] = 	{"change_name",			"Change the Group's Name"},
+[3] = 	{"have_group_bank",		"Have/Use a Group Bank"},
+[4] = 	{"have_group_storage",	"Have/Use a Group Storage"},
+[5] = 	{"have_group_bonus",	"Have Payment Bonuses (e.g. 10%, 25%, etc.)"},
+[6] = 	{"buy_properties",		"Own Group Properties"},
+[7] = 	{"group_deplomacy",		"Form Alliances & Agreements with other groups"},
+[8] = 	{"own_groups",			"Combine Groups as child groups"},
+[9] = 	{"combine_groups",		"Combine Groups into one, central group"},
+[10] = 	{"have_whitelist",		"Have a group whitelist"},
+[11] = 	{"have_blacklist",		"Have a group blacklist"},
+[12] = 	{"have_vehicles",		"Have Vehicle Spawns"},
+[13] = 	{"have_health",			"Have Health Pickup"},
+[14] = 	{"have_armor",			"Have Armor Pickup"},
+[15] = 	{"have_weapons",		"Have Weapon Pickups"},
+}
+
+-- Get Permissions
+------------------->>
+
+function hasMemberPermissionTo(member, action)
+	if (not member or not action) then return false end
+	if (not isElement(member) or getElementType(member) ~= "player" or type(action) ~= "string") then return false end
+	
+	local rankID = getPlayerGroupRank(member)
+	if (getGroupRankData(rankID, "isLeader") == 1) then return true end
+	local perm = getGroupRankData(rankID, "permissions") or ""
+	local perProfile = split(perm, ",")
+	for i,v in ipairs(perProfile) do
+		v = tonumber(v)
+		if (mem_permissions[v][1] == action) then
+			return true
+		end
+	end
+	return false
+end
+
+function hasGroupPermissionTo(groupID, action)
+	if (not groupID or not action) then return false end
+	if (type(groupID) ~= "number" or type(action) ~= "string") then return false end
+	
+	local perm = getGroupData(groupID, "permissions") or ""
+	local perProfile = split(perm, ",")
+	for i,v in ipairs(perProfile) do
+		if (group_permissions[v][1] == action) then
+			return true
+		end
+	end
+	return false
+end
+
+-- Get Permissions Table
+------------------------->>
+
+function getAllRankPermissions(rankID, ignoreLeader)
+	if (not rankID or type(rankID) ~= "number") then 
+		return mem_permissions
+	end
+	
+	local isLeader = getGroupRankData(rankID, "isLeader")
+	if (isLeader == 1) then
+		local perms = {}
+		for i,perm in ipairs(mem_permissions) do
+			if (ignoreLeader and not perm[3]) then
+				table.insert(perms, i)
+			elseif (not ignoreLeader) then
+				table.insert(perms, i)
+			end
+		end
+		return perms
+	end
+	
+	local perm = getGroupRankData(rankID, "permissions") or ""
+	local perProfile = split(perm, ",")
+	for i,v in ipairs(perProfile) do
+		perProfile[i] = tonumber(v)
+	end
+	return perProfile
+end
+
+function getAllGroupPermissions(groupID)
+	if (not groupID or type(groupID) ~= "number") then 
+		return group_permissions
+	end
+	
+	local perm = getGroupData(groupID, "permissions") or ""
+	local perProfile = split(perm, ",")
+	return perProfile
+end
+
+-- Get Default Permissions
+--------------------------->>
+
+function getDefaultPermissionSet(permissions)
+	if (not permissions or type(permissions) ~= "string") then return false end
+	
+	local permTable = {}
+	if (permissions == "*") then		-- Founder/Leader Permissions
+		for i=1,#mem_permissions do
+			table.insert(permTable, i)
+		end
+		return permTable
+	elseif (permissions == "New Member") then
+		return {}
+	end
+end
+
+-- Set Permissions
+------------------->>
+
+function setAllRankPermissions(rankID, permTable)
+	if (not rankID or not permTable) then return false end
+	if (type(rankID) ~= "number" or type(permTable) ~= "table") then return false end
+	
+	table.sort(permTable)
+	permTable = table.concat(permTable, ",")
+	
+	setGroupRankData(rankID, "permissions", permTable)
+	return true
+end
+
+function setAllGroupPermissions(groupID, permTable)
+	if (not groupID or not permTable) then return false end
+	if (type(groupID) ~= "number" or type(permTable) ~= "table") then return false end
+	
+	table.sort(permTable)
+	permTable = table.concat(permTable, ",")
+	
+	setGroupData(groupID, "permissions", permTable)
+	return true
+end

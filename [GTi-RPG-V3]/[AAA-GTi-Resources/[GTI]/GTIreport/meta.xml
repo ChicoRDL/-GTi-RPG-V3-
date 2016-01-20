@@ -1,0 +1,12 @@
+<meta>
+	<info author="Emile" name="Player Report System" autostart="true" />
+	<script src="report.luac" type="client" />
+	<script src="view.luac" type="client" />
+	<script src="s.lua" type="server" />
+
+	<!-- <html src="html/index.html" default="true" /> -->
+
+	<export function="getReports" type="server" http="true" />
+	<export function="getTableReports" type="server" http="true" />
+	<export function="deleteByIndex" type="server" http="true" />
+</meta>

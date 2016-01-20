@@ -1,0 +1,40 @@
+<meta>
+	<info name="Housing System" 	author="JTPenn"	autostart="true" />
+	
+	<script src="creation/creation_gui.luac" 	type="client" />
+	<script src="creation/creation.luac" 		type="client" />
+	<script src="creation/creation.slua"		/>
+	
+	<script src="main/main_gui.luac"	type="client" />
+	
+	<script src="housing/housing_gui.luac"	type="client" />
+	<script src="housing/housing.luac"		type="client" />
+	<script src="housing/housing.slua"		/>
+	
+	<script src="manage/manage_gui.luac"	type="client" />
+	<script src="manage/manage.luac"		type="client" />
+	<script src="manage/manage.slua"		/>
+	
+	<script src="storage/storage.luac"	type="client"/>
+	<script src="storage/storage.slua"	/>
+	
+	<script src="vehicles/vehicles.luac"	type="client" />
+	<script src="vehicles/vehicles.slua"	/>
+	
+	<script src="database.slua" />
+	<script src="housing.slua" />
+	<script src="interiors.slua" />
+	
+	<file src="files/housing.png" />
+	
+	<export function="getHouseData"	type="server" />
+	<export function="setHouseData"	type="server" />
+	<export function="setHouseOwner"		type="server" />
+		
+	<export function="warpIntoHouseInterior"	type="server" />
+	<export function="removeFromHouseInterior"	type="server" />
+	
+	<export function="getPlayerTotalHouses"		type="server" />
+	<export function="getAccountTotalHouses"	type="server" />
+	<export function="getPlayerHousingNetWorth"	type="server" />
+</meta>

@@ -1,0 +1,16 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(1065, 334, 290, 419, "GTI Car Dealership", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(6, 23, 276, 31, "Select a Vehicle from the list below. Cars you cannot afford are in red. Right click to close.", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.gridlist[1] = guiCreateGridList(9, 59, 272, 322, false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(108, 385, 73, 25, "Purchase", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")

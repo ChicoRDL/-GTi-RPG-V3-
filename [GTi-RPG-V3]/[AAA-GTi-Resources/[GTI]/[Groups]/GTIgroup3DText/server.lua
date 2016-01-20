@@ -1,0 +1,2 @@
+exports.MitchMisc:create3DText  ( "GHoST Don't Die, We Multiply.", {1496.076, 722.004, 13.225}, { 255, 125, 0 }, { nil, true } )
+exports.MitchMisc:create3DText  ( "Respect is earned, Honesty is required Trust is gained, Loyalty is returned", {2554.842, 623.131, 18.247}, { 85, 10, 95 }, { nil, true } )

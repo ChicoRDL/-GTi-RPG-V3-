@@ -1,0 +1,5 @@
+<meta>
+    <info author="Nathan" description="Notifies users of updates" name="GTI Updates" autostart="true" />
+	<export function="notifyUpdate" http="true" />
+    <script src="server.lua" type="server" />
+</meta>

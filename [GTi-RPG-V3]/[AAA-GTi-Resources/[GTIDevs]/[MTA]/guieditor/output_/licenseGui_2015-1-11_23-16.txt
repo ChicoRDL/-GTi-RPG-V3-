@@ -1,0 +1,50 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        win = guiCreateWindow(483, 253, 375, 211, "GTI - Driving License", false)
+        guiWindowSetSizable(win, false)
+
+        GUIEditor.label[1] = guiCreateLabel(5, 27, 68, 27, " Name :", false, win)
+        local font0_Roboto = guiCreateFont(":GTIdroid/fonts/Roboto.ttf", 10)
+        guiSetFont(GUIEditor.label[1], font0_Roboto)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.label[2] = guiCreateLabel(5, 54, 68, 27, " Age :", false, win)
+        guiSetFont(GUIEditor.label[2], font0_Roboto)
+        guiLabelSetVerticalAlign(GUIEditor.label[2], "center")
+        GUIEditor.label[3] = guiCreateLabel(5, 81, 68, 27, " Eyes :", false, win)
+        guiSetFont(GUIEditor.label[3], font0_Roboto)
+        guiLabelSetVerticalAlign(GUIEditor.label[3], "center")
+        GUIEditor.label[4] = guiCreateLabel(5, 108, 68, 27, " Class :", false, win)
+        guiSetFont(GUIEditor.label[4], font0_Roboto)
+        guiLabelSetVerticalAlign(GUIEditor.label[4], "center")
+        GUIEditor.label[5] = guiCreateLabel(5, 135, 68, 27, " Sex :", false, win)
+        guiSetFont(GUIEditor.label[5], font0_Roboto)
+        guiLabelSetVerticalAlign(GUIEditor.label[5], "center")
+        nameE = guiCreateEdit(73, 27, 292, 27, "", false, win)
+        ageE = guiCreateEdit(73, 54, 292, 27, "", false, win)
+        eyesE = guiCreateEdit(73, 81, 292, 27, "", false, win)
+        cA = guiCreateRadioButton(74, 108, 87, 27, "A", false, win)
+        cB = guiCreateRadioButton(161, 108, 87, 27, "B", false, win)
+        guiRadioButtonSetSelected(cB, true)
+        cC = guiCreateRadioButton(248, 108, 87, 27, "C", false, win)
+        sexM = guiCreateRadioButton(74, 135, 87, 27, "Male", false, win)
+        sexF = guiCreateRadioButton(161, 135, 87, 27, "Female", false, win)
+        submit = guiCreateButton(9, 175, 152, 26, "Submit ($2,000)", false, win)
+        local font1_Roboto-Bold = guiCreateFont(":GTIdroid/fonts/Roboto-Bold.ttf", 10)
+        guiSetFont(submit, font1_Roboto-Bold)
+        guiSetProperty(submit, "NormalTextColour", "FFAAAAAA")
+        cancel = guiCreateButton(213, 175, 152, 26, "Cancel", false, win)
+        guiSetFont(cancel, font1_Roboto-Bold)
+        guiSetProperty(cancel, "NormalTextColour", "FFAAAAAA")    
+    end
+)

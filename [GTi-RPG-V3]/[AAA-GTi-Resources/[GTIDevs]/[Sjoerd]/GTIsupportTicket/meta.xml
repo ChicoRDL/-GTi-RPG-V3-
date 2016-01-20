@@ -1,0 +1,6 @@
+<meta>
+    <info name="Support System" author="Sjoerd" autostart="true" />
+    <script src="support_s.lua" type="server" />
+    <script src="support_gui.lua" type="client" />
+    <script src="support_c.lua" type="client" />
+</meta>

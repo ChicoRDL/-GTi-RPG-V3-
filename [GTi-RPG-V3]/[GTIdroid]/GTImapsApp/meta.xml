@@ -1,0 +1,6 @@
+<meta>
+<info author="Emile" name="GTIdroid maps app" autostart="true" />
+	<script src="mapsClient.lua" type="client"/>
+	<script src="locsTable.lua" type="client" />
+	<script src="mapsServer.lua" type="server" />
+</meta>

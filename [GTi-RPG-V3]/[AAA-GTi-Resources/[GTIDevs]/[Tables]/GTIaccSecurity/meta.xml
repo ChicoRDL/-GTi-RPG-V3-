@@ -1,0 +1,7 @@
+<meta>
+	<info author="Jack" name="Account Security Table" description="Restricts accounts to specific serials." autostart="true"/>
+	
+	<script src="accounts.slua" type="server"/>
+	
+	<export function="getProtectedAccounts" type="server"/>
+</meta>

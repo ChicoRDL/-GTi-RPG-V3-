@@ -1,0 +1,26 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 06 Feb 2014
+-- Resource: GTIsecurity/ac_detected.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local BAN_TIME = 10	-- Ban time (mins)
+
+addEventHandler("onPlayerQuit", root, function(theType, reason)
+	local name = getPlayerName(source)
+	local serial = getPlayerSerial(source)
+	if (theType == "Kicked" and reason and (string.find(reason, "AC #") or string.find(reason, "VF #"))
+		and not exports.GTIgovt:isPlayerBanned(source)) then
+		-- AC #1 has false positives so ignore
+		if (reason == "AC #1") then return end
+		
+		local name = getPlayerName(source)
+		local serial = getPlayerSerial(source)
+		exports.GTIgovt:addBan(nil, serial, nil, nil, 60*BAN_TIME, "MTA AC: "..reason.." detected | Rule 2 — Cheating", source)
+		
+		exports.GTIgovt:outputAdminNotice(name.." has been banned by Console for "..BAN_TIME.." minutes ("..reason..")")
+		exports.GTIlogs:outputAdminLog("BAN: "..name.." has been banned by Console for "..BAN_TIME.." minutes (MTA AC: "..reason.." detected | Rule 2 — Cheating)")
+	end
+end)

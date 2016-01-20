@@ -1,0 +1,110 @@
+----------------------------------------->>
+-- GTI: Grand Theft International Network
+-- Author: JT Pennington (JTPenn)
+-- Date: 21 Dec 2013
+-- Resource: GTIpilot/pilot.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local vehIDs = {
+	[593] = 1.000,	-- Dodo
+		-- 119,865 meters per hour (74.481 miles)
+	[511] = 1.079,	-- Beagle
+		-- 111,124 meters per hour (69.049 miles)
+	[553] = 1.286,	-- Nevada
+		-- 93,224 meters per hour (57.925 miles)
+		-- 108,295 meters per hour (67.291 miles) [Idle Time Adjusted (1.107)]
+	[519] = 0.908,	-- Shamal
+		-- 131,965 meters per hour (81.999 miles)
+		-- 163,963 meters per hour (101.882 miles) [Idle Time Adjusted (0.731)]
+	[577] = 0.809,	-- AT-400
+		-- 148,242 meters per hour (92.113 miles)
+	[592] = 0.704,	-- Andromada
+		-- 170,369 meters per hour (105.862 miles)
+}
+
+local METERS_TO_MI = 1609
+local TIME_BTWN_CHAT = 1000	-- How often a person can use the radio
+
+local dist = {}			-- Table of Player Distances (Debug Only)
+local radioSpam = {}	-- Table of Last Radio Chat
+
+-- Complete Pilot Mission
+-------------------------->>
+
+function completeMission(distance, pay_offset)
+	local vehicle = getPedOccupiedVehicle(client)
+	local vehOffset = vehIDs[getElementModel(vehicle)]
+	local payOffset = exports.GTIemployment:getPlayerJobPayment(client, "Pilot")
+	local hrPay = exports.GTIemployment:getPlayerHourlyPay(client)
+	local hrExp = exports.GTIemployment:getHourlyExperience()
+	
+	local progress = distance / METERS_TO_MI
+	local progress = tonumber(string.format("%.3f", progress ))
+	local pay = math.ceil( distance*payOffset	* vehOffset )
+	local Exp = math.ceil( (pay/hrPay)*hrExp 	* vehOffset )
+	
+	exports.GTIemployment:modifyPlayerJobProgress(client, "Pilot", progress)
+	exports.GTIemployment:modifyPlayerEmploymentExp(client, Exp, "Pilot")
+	exports.GTIemployment:givePlayerJobMoney(client, "Pilot", pay * (pay_offset or 1))
+	
+	--[[if (getElementModel(vehicle) == 553) then
+		exports.GTIhud:dm("Cargo Delivered!", client, 255, 200, 0)
+	else
+		exports.GTIhud:dm("Passenger Dropped Off!", client, 255, 200, 0)
+	end--]]
+	
+	--[[if (not dist[client]) then dist[client] = 0 end
+	dist[client] = dist[client] + distance
+	outputConsole("* Total Distance: "..dist[client].." meters ("..string.format("%.3f", (dist[client]/1609)).." miles)", client, 25, 255, 25)--]]
+end
+addEvent("GTIpilot.completeMission", true)
+addEventHandler("GTIpilot.completeMission", root, completeMission)
+
+-- Pilot Radio
+--------------->>
+
+function pilotRadio(player, cmd, ...)
+	if (exports.GTIemployment:getPlayerJob(player, true) ~= "Pilot") then return end
+	if (radioSpam[player]) then 
+		outputChatBox("You can only use the radio once every second.", player, 255, 25, 25)
+	return end
+	
+	local message = table.concat({...}, " ")
+	if (string.gsub(message, "%s", "") == "") then return end
+	
+	radioSpam[player] = true
+	setTimer(function(player) radioSpam[player] = nil end, TIME_BTWN_CHAT, 1, player)
+	
+	for i,plr in ipairs(getElementsByType("player")) do
+		if (exports.GTIemployment:getPlayerJob(plr, true) == "Pilot") then
+			outputChatBox("* (RADIO) "..getPlayerName(player)..": #FFFFFF"..message..", over.", plr, 255, 175, 0, true)
+		end
+	end
+end
+addCommandHandler("r", pilotRadio)
+
+-- MFC Extreme
+--------------->>
+
+addEvent("GTIpilot.blowVehicle", true)
+addEventHandler("GTIpilot.blowVehicle", root, function()
+	blowVehicle(source)
+end)
+
+-- Repair Plane
+---------------->>
+
+addEvent("GTIpilot.repairPlane", true)
+addEventHandler("GTIpilot.repairPlane", root, function()
+	fixVehicle(source)
+	setElementData(source, "fuel", 100)
+end)
+
+-- Com Extreme
+--------------->>
+
+addEvent("GTIpilot.damagePanels", true)
+addEventHandler("GTIpilot.damagePanels", root, function(panel)
+	setVehiclePanelState(source, panel, 3)
+end)

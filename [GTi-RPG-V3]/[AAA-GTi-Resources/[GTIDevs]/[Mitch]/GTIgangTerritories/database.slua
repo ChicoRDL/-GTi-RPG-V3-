@@ -1,0 +1,110 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 29 Jul 2014
+-- Resource: GTIturfing/database.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Database Functions
+---------------------->>
+
+local SERVER_PORT = 22003	-- Only Save Data on Main Server
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `turfs`(`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))")
+
+local database_online	-- Is Database Online?
+local turf_data = {}	-- Turf Data Cache
+
+addEvent("onDatabaseLoad", true)	-- Triggers when the database is ready
+
+local highest_turf_id = 0
+
+-- Cache Database
+------------------>>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(function(qh)
+		local result = dbPoll(qh, 0)
+		turf_data[0] = {}
+		for i,row in ipairs(result) do
+			turf_data[row.id] = {}
+			for column,value in pairs(row) do
+				if (column ~= "id") then
+					turf_data[0][column] = true
+					if (value == "true") then value = true end
+					if (value == "false") then value = false end
+					turf_data[row.id][column] = value
+					if (row.id > highest_turf_id) then highest_turf_id = row.id end
+				end
+			end
+		end
+		database_online = true
+		loadAllTurfs(turf_data)
+		triggerEvent("onDatabaseLoad", resourceRoot, "turfs")
+	end, {}, db, "SELECT * FROM `turfs`")
+end)
+
+-- Database Exports
+-------------------->>
+
+function setTurfData(id, key, value)
+	if (not database_online) then return false end
+	if (not id or not key) then return false end
+	if (type(id) ~= "number" or type(key) ~= "string") then return false end
+	
+	if (not turf_data[id]) then
+		turf_data[id] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `turfs`(id) VALUES(?)", id)
+		end
+	end
+	
+	if (turf_data[0][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `turfs` ADD `??` text", key)
+		end
+		turf_data[0][key] = true
+	end
+	
+	turf_data[id][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `turfs` SET `??`=? WHERE id=?", key, tostring(value), id)
+		else
+			dbExec(db, "UPDATE `turfs` SET `??`=NULL WHERE id=?", key, id)
+		end
+	end
+	if (id > highest_turf_id) then highest_turf_id = id end
+	return true
+end
+
+function getTurfData(id, key)
+	if (not database_online) then return nil end
+	if (not id or not key) then return nil end
+	if (type(id) ~= "number" or type(key) ~= "string") then return nil end
+	
+	if (turf_data[id] == nil) then return nil end
+	if (turf_data[id][key] == nil) then return nil end
+	
+	return tonumber(turf_data[id][key]) or turf_data[id][key]
+end
+
+function deleteTurfData(id)
+	if (not database_online) then return nil end
+	if (not id or type(id) ~= "number") then return nil end
+	turf_data[id] = nil
+	if (getServerPort() == SERVER_PORT) then
+		dbExec(db, "DELETE FROM `turfs` WHERE id=?", id)
+	end
+	return true
+end	
+
+function getNextTurfID()
+	return highest_turf_id + 1
+end

@@ -1,0 +1,5 @@
+<meta>
+    <info author="Mitch" name="Arms Trafficking (Air)" autostart="true" />
+    <script src="armsTraffickingAir_c.luac" type="client" />
+    <script src="armsTraffickingAir_s.lua" type="server" />
+</meta>

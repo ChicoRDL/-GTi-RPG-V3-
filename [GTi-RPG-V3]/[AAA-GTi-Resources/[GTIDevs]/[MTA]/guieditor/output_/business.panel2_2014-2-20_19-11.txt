@@ -1,0 +1,72 @@
+
+GUIEditor = {
+    tab = {},
+    scrollpane = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {}
+}
+GUIEditor.window[1] = guiCreateWindow(453, 236, 685, 452, "J.T. Penn & Co. — Business Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 24, 667, 418, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Home", GUIEditor.tabpanel[1])
+
+GUIEditor.label[1] = guiCreateLabel(13, 10, 88, 15, "Business Name:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 200, 0)
+GUIEditor.label[2] = guiCreateLabel(19, 34, 82, 15, "Creation Date:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 255, 200, 0)
+GUIEditor.label[3] = guiCreateLabel(13, 10, 88, 15, "Business Name:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 255, 200, 0)
+GUIEditor.label[4] = guiCreateLabel(334, 10, 79, 15, "Classification:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 255, 200, 0)
+GUIEditor.label[5] = guiCreateLabel(108, 10, 216, 15, "J.T. Penn & Company", false, GUIEditor.tab[1])
+GUIEditor.label[6] = guiCreateLabel(108, 34, 216, 15, "31 May 2014 (1 yr, 2 mo, 13 days)", false, GUIEditor.tab[1])
+GUIEditor.label[7] = guiCreateLabel(419, 10, 216, 15, "Small Business", false, GUIEditor.tab[1])
+GUIEditor.label[8] = guiCreateLabel(7, 47, 652, 15, "____________________________________________________________________________________________________________", false, GUIEditor.tab[1])
+GUIEditor.scrollpane[1] = guiCreateScrollPane(7, 66, 652, 295, false, GUIEditor.tab[1])
+
+GUIEditor.label[9] = guiCreateLabel(3, 3, 629, 15, "QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm QWERTYUIOPASDFGHJKLZXCVBNM qwertyuiopasdfghjklzxcvbnm ", false, GUIEditor.scrollpane[1])
+
+GUIEditor.button[1] = guiCreateButton(278, 366, 124, 19, "Modify", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[10] = guiCreateLabel(334, 34, 92, 15, "Business Status:", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 255, 200, 0)
+GUIEditor.label[11] = guiCreateLabel(433, 34, 216, 15, "In Good Standing", false, GUIEditor.tab[1])
+
+GUIEditor.tab[2] = guiCreateTab("Members", GUIEditor.tabpanel[1])
+
+GUIEditor.label[12] = guiCreateLabel(13, 11, 90, 15, "Total Members:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[12], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[12], 255, 200, 0)
+GUIEditor.label[13] = guiCreateLabel(109, 11, 37, 15, "123", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[13], "clear-normal")
+GUIEditor.label[14] = guiCreateLabel(13, 36, 87, 15, "Business Rank:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[14], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[14], 255, 200, 0)
+GUIEditor.label[15] = guiCreateLabel(109, 36, 184, 15, "President and C.E.O.", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[15], "clear-normal")
+GUIEditor.label[16] = guiCreateLabel(326, 11, 84, 15, "Member Since:", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[16], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[16], 255, 200, 0)
+GUIEditor.label[17] = guiCreateLabel(418, 10, 217, 15, "31 May 2014 (2 yrs, 13 mo, 32 d)", false, GUIEditor.tab[2])
+guiSetFont(GUIEditor.label[17], "clear-normal")
+GUIEditor.label[18] = guiCreateLabel(7, 49, 653, 15, "_____________________________________________________________________________________________________", false, GUIEditor.tab[2])
+GUIEditor.button[2] = guiCreateButton(7, 365, 125, 20, "Add Member...", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(535, 365, 125, 20, "Resign From Business", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[4] = guiCreateButton(403, 365, 125, 20, "Remove Member", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[5] = guiCreateButton(271, 365, 125, 20, "View Stats", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[6] = guiCreateButton(139, 365, 125, 20, "Change Rank", false, GUIEditor.tab[2])
+guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")

@@ -1,0 +1,54 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Ares
+-- Date: 7 Jul 2015
+----------------------------------------->>
+
+local group_skin_shaderTable = { 
+	{ group = 618, model = 124, textureName = "vmaff1", texturePath = "/groups/PM1.jpeg" },
+	{ group = 618, model = 171, textureName = "vwmybjd", texturePath = "/groups/PM2.jpeg" },
+	{ group = 618, model = 102, textureName = "ballas1", texturePath = "/groups/Q1.jpg" },
+	{ group = 14, model = 286, textureName = "fbi", texturePath = "/groups/CIA1.jpeg" },
+	{ group = 14, model = 285, textureName = "swat", texturePath = "/groups/CIA2.jpg" },
+	{ group = 14, model = 71, textureName = "wmysgrd", texturePath = "/groups/CIA3.jpg" },
+	{ group = 14, model = 284, textureName = "lapdm1", texturePath = "/groups/CIA4.jpg" },
+	{ group = 2, model = 21, textureName = "bmycr", texturePath = "/groups/GHoST1.jpeg" },
+	{ group = 2, model = 212, textureName = "V Tramp2", texturePath = "/groups/GHoST2.png" },
+	{ group = 2, model = 180, textureName = "tattoo", texturePath = "/groups/GHoST3.png" },
+	{ group = 2, model = 107, textureName = "fam3", texturePath = "/groups/GHoST4.png" },
+	{ group = 7, model = 212, textureName = "V Tramp2", texturePath = "/groups/RP1.jpeg" },
+	{ group = 3018, model = 212, textureName = "V Tramp2", texturePath = "/groups/Dem1.jpg" },
+}
+
+function groupShader (event)
+	for index, value in ipairs ( getElementsByType("player") ) do
+		for _, shaderInfo in pairs ( group_skin_shaderTable ) do
+			if ( exports.GTIgroups:getPlayerGroup(value) == shaderInfo.group ) then
+				local group, model, textureName, texturePath = shaderInfo.group, shaderInfo.model, shaderInfo.textureName, shaderInfo.texturePath
+				if ( event == "onResourceStart") then
+					triggerClientEvent( root, "GTIshaders.applyShader", root, value, {model, textureName, texturePath}, "skin" )
+				else
+					triggerClientEvent( source, "GTIshaders.applyShader", source, value, {model, textureName, texturePath}, "skin" )
+				end
+			end
+		end
+	end
+end
+addEventHandler("onPlayerLogin", root, groupShader)
+
+addEventHandler("onPlayerLogin", root, 
+	function ( )
+		for _, shaderInfo in pairs ( group_skin_shaderTable ) do
+			if ( exports.GTIgroups:getPlayerGroup(source) == shaderInfo.group ) then
+				local group, model, textureName, texturePath = shaderInfo.group, shaderInfo.model, shaderInfo.textureName, shaderInfo.texturePath
+				triggerClientEvent( root, "GTIshaders.applyShader", root, source, {model, textureName, texturePath}, "skin" )
+			end
+		end
+	end
+)
+
+addEventHandler("onResourceStart", resourceRoot, 
+	function ()
+		setTimer(groupShader, 5000, 1, "onResourceStart") 
+	end
+)

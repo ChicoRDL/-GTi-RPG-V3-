@@ -1,0 +1,7 @@
+[GTI]/GTIirc/irc.log:[2015-12-23 19:23:14] :Ares!Ares@development.gtirpg.net PRIVMSG #Gov't :Nathan, could u grap 'onPlayerLogout', ty
+[GTI]/GTIirc/irc.log:[2015-12-23 19:43:44] :Ares!Ares@development.gtirpg.net PRIVMSG #Gov't :can u grap for 'onPlayerLogout'
+[GTI]/GTIaccounts/login2/login.slua:addEventHandler("onPlayerLogout", root, function()
+[GTI]/GTIaccounts/login/login.slua:addEventHandler("onPlayerLogout", root, function()
+[GTI]/[Civilians]/GTIfarmer/farmer_s.lua:addEventHandler("onPlayerLogout", root, destroyVehicle)
+[GTI]/[GTIdroid]/[Govt]/GTIlogs/logs/admin/2015-12/23.log:2015-12-23 18:23:14 (GTI) Ares: Nathan, could u grap 'onPlayerLogout', ty
+[GTI]/[GTIdroid]/[Govt]/GTIlogs/logs/admin/2015-12/23.log:2015-12-23 18:43:44 (GTI) Ares: can u grap for 'onPlayerLogout'

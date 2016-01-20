@@ -1,0 +1,79 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 24 Sept 2014
+-- Resource: GTIbank/atm.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- ATM Login
+------------->>
+
+function atmLogin(player, dim)
+	if (not isElement(player) or not dim) then return end
+	if (getElementType(player) ~= "player" or not isPedOnGround(player)) then return end
+	if (isPedInVehicle(player)) then return end
+	
+	bindKey(player, "z", "down", atmLoginBind)
+	exports.GTIhud:drawNote("atmLogin", "Press Z to access this ATM", player, 25, 255, 25, 8000)
+	addEventHandler("onColShapeLeave", source, atmLoginUnbind)
+	setTimer(function(source)
+		removeEventHandler("onColShapeLeave", source, atmLoginUnbind)
+	end, 8000, 1, source)
+end
+
+function atmLoginUnbind(player)
+	if (not isElement(player) or getElementType(player) ~= "player") then return end
+	unbindKey(player, "z", "down", atmLoginBind)
+	exports.GTIhud:drawNote("atmLogin", nil, player)
+	removeEventHandler("onColShapeLeave", source, atmLoginUnbind)
+end
+
+function atmLoginBind(player)
+	local account = getPlayerAccount(player)
+	local pin = getBankData(account, "secure") == 1
+	if (not pin) then
+		exports.GTIhud:dm("You must have a PIN to access an ATM. Go to the bank to get one.", player, 255, 125, 25)
+		return
+	end
+	
+	triggerClientEvent(player, "GTIbank.atmLogin", resourceRoot)
+	unbindKey(player, "z", "down", atmLoginBind)
+	exports.GTIhud:drawNote("atmLogin", nil, player)
+end
+
+addEvent("GTIbank.atmLogin", true)
+addEventHandler("GTIbank.atmLogin", root, function(entered_pin)
+	local account = getPlayerAccount(client)
+	local pin = getBankData(account, "pin")
+	if (pin ~= entered_pin) then
+		triggerClientEvent(client, "GTIbank.displayATMMenu", resourceRoot)
+		return
+	end
+	
+	local acc_name = getAccountName(getPlayerAccount(client)).."'s Main Account"
+	local balance = getPlayerBankBalance(client)
+	setPedAnimation(client, "ped", "ATM", -1, false, true, true, false)
+	triggerClientEvent(client, "GTIbank.displayATMMenu", resourceRoot, acc_name, balance)
+end)
+
+-- Make Withdrawal
+------------------->>
+
+addEvent("GTIbank.makeATMWithdrawal", true)
+addEventHandler("GTIbank.makeATMWithdrawal", root, function(amount)
+	local money = getPlayerBankBalance(client)
+	if (money < amount) then
+		exports.GTIhud:dm("Error: Insufficient Funds.", client, 255, 25, 25)
+		return
+	end
+	modifyPlayerBankBalance(client, -amount, "ATM Withdrawal")
+	GPM(client, amount, "ATM Withdrawal from Main Account")
+	
+	exports.GTIhud:dm("Withdrawal Successful", client, 25, 255, 25)
+	
+	local acc_name = getAccountName(getPlayerAccount(client)).."'s Main Account"
+	local balance = getPlayerBankBalance(client)
+	setPedAnimation(client, "ped", "ATM", -1, false, true, true, false)
+	triggerClientEvent(client, "GTIbank.displayATMMenu", resourceRoot, acc_name, balance)
+end)

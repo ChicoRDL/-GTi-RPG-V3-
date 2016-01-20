@@ -1,0 +1,42 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(53, 182, 432, 400, "GTI Apartments Editor", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(19, 78, 182, 303, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Item", 0.9)
+        GUIEditor.label[1] = guiCreateLabel(221, 149, 91, 15, "Textures", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[1], 255, 37, 37)
+        GUIEditor.label[2] = guiCreateLabel(332, 99, 86, 15, "$1,000", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[2], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[2], 255, 37, 37)
+        GUIEditor.label[3] = guiCreateLabel(221, 99, 91, 15, "Price", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[3], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[3], 255, 37, 37)
+        GUIEditor.label[4] = guiCreateLabel(332, 149, 86, 15, "0", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[4], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[4], 255, 37, 37)
+        GUIEditor.button[1] = guiCreateButton(217, 353, 161, 28, "Buy", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[1], "default-bold-small")
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FF000BF3")
+        GUIEditor.button[2] = guiCreateButton(396, 352, 22, 29, "X", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[2], "default-bold-small")
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFFF0000")
+        GUIEditor.label[5] = guiCreateLabel(221, 124, 91, 15, "Model", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[5], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[5], 255, 37, 37)
+        GUIEditor.label[6] = guiCreateLabel(332, 124, 86, 15, "690", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[6], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[6], 255, 37, 37)
+        GUIEditor.label[7] = guiCreateLabel(36, 28, 351, 50, "Double-click the item you wish to purchase and you'll have a preview of it, use arrows to rotate it.", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", true)    
+    end
+)

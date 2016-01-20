@@ -1,0 +1,32 @@
+
+GUIEditor = {
+    checkbox = {},
+    label = {},
+    button = {},
+    window = {},
+    combobox = {}
+}
+GUIEditor.window[1] = guiCreateWindow(662, 287, 281, 291, "GTI Global Stats — Settings", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.checkbox[1] = guiCreateCheckBox(15, 30, 250, 15, "Hide Account Name from Others", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[2] = guiCreateCheckBox(15, 55, 250, 15, "Hide Basic Finance Stats from Others", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[3] = guiCreateCheckBox(15, 80, 250, 15, "Hide \"Finances\" Tab from Others", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[4] = guiCreateCheckBox(15, 105, 250, 15, "Hide \"Weapons\" Tab from Others", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[5] = guiCreateCheckBox(15, 130, 250, 15, "Hide \"Crimes\" Tab from Others", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[6] = guiCreateCheckBox(15, 155, 250, 15, "Hide \"Missions\" Tab from Others", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[7] = guiCreateCheckBox(15, 180, 250, 15, "Hide \"Misc\" Tab from Others", false, false, GUIEditor.window[1])
+GUIEditor.label[1] = guiCreateLabel(6, 192, 270, 15, "_______________________________________", false, GUIEditor.window[1])
+GUIEditor.label[2] = guiCreateLabel(39, 218, 88, 15, "Distance Unit:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+GUIEditor.combobox[1] = guiCreateComboBox(135, 214, 103, 25, "", false, GUIEditor.window[1])
+guiComboBoxAddItem(GUIEditor.combobox[1], "Meters")
+guiComboBoxAddItem(GUIEditor.combobox[1], "Feet")
+guiComboBoxAddItem(GUIEditor.combobox[1], "Kilometers")
+guiComboBoxAddItem(GUIEditor.combobox[1], "Miles")
+GUIEditor.label[3] = guiCreateLabel(6, 233, 270, 15, "_______________________________________", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(42, 256, 93, 21, "Save Settings", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(143, 256, 93, 21, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

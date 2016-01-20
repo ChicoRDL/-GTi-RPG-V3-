@@ -1,0 +1,12 @@
+<meta>
+    <info author="Sjoerd" name="CnR: Caligula's Casino Robbery" autostart="false" />
+    
+    <script src="casino_c.luac" type="client"/>
+    <script src="casino_s.lua" type="server"/>
+	
+	<script src="settings_s.lua" type="server"/>
+    <export function="getEventDetails" type="server"/>
+	
+    <export function="preStartCCR" type="server"/>
+    <export function="startCCR" type="server"/>    
+</meta>

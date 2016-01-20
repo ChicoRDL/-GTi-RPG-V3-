@@ -1,0 +1,682 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 29 Jul 2014
+-- Resource: GTIturfing/turfs.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local acl = {
+	["JTPenn814"] = true,			-- JTPenn
+	["Mitch"] = true,				-- Mitch
+	["RedBand"] = true,				-- RedBand
+	["TomasitoCaram"] = true,				-- Arse
+	--["LilDolla"] = true,			-- LilDolla
+	--["LilDollaTechZone"] = true,	-- LilDolla
+	--["pillow"] = true,			-- Gus
+}
+
+local turf_modes = {
+	["Kill Points (LS)"] = 1,
+}
+
+local turfs = {}			-- Table of Radar Areas
+local turfcols = {}			-- Table of ColShapes
+local colsByTurf = {}		-- Table of Cols by Turfs
+local turfsByCols = {}		-- Table of Turfs by Cols
+local turfsByPlayer = {}	-- Table of Turfs by Player
+
+local turf_respawn = {}		-- Turf Respawn Point by Player
+
+local DEF_R, DEF_G, DEF_B = 255, 255, 255	-- Default Turf Color
+local DEF_A = 150							-- Default Turf Alpha
+
+local TURFING_ACTIVE = true		-- Is Turf System Active
+
+local TURFING_INTERIOR = 0
+-- Load All Turfs
+------------------>>
+
+function loadAllTurfs(turfData)
+	if (not TURFING_ACTIVE and getServerPort() == 22003) then return end
+	for id,v in pairs(turfData) do
+		if (id ~= 0) then
+			local pos = getTurfData(id, "position")
+			pos = split(pos, ",")
+			for i,v in ipairs(pos) do
+				pos[i] = tonumber(v)
+			end
+
+			local turf = createRadarArea(pos[1], pos[2], pos[3], pos[4], DEF_R, DEF_G, DEF_B, DEF_A, root)
+			local col = createColRectangle(pos[1], pos[2], pos[3], pos[4])
+			setElementData(turf, "id", id)
+			local type_ = getTurfData(id, "type")
+			setElementData(turf, "type", type_)
+
+			table.insert(turfs, turf)
+			table.insert(turfcols, col)
+			colsByTurf[turf] = col
+			turfsByCols[col] = turf
+
+			local owner = getTurfData(id, "owner")
+			if (owner and exports.GTIgroups:getGroupName(owner)) then
+				local r,g,b = exports.GTIgroups:getGroupColor(owner)
+				setRadarAreaColor(turf, r, g, b, DEF_A)
+				setElementData(turf, "owner", owner)
+			end
+		end
+	end
+
+	updateTurfColsByPlayer()
+end
+
+-- Create Turf
+--------------->>
+
+function showTurfCreatePanel(player)
+	if (not acl[getAccountName(getPlayerAccount(player))]) then return end
+	triggerClientEvent(player, "GTIturfing.showTurfCreatePanel", resourceRoot, turf_modes)
+end
+addCommandHandler("turf-create", showTurfCreatePanel)
+
+function createTurf(x, y, width, height, type, arg1)
+	local turf = createRadarArea(x, y, width, height, DEF_R, DEF_G, DEF_B, DEF_A, root)
+	local col = createColRectangle(x, y, width, height)
+	local type = turf_modes[type]
+	setElementData(turf, "type", type)
+
+	table.insert(turfs, turf)
+	table.insert(turfcols, col)
+	colsByTurf[turf] = col
+	turfsByCols[col] = turf
+
+	local id = getNextTurfID()
+	setElementData(turf, "id", id)
+	setTurfData(id, "owner", nil)
+	setTurfData(id, "type", type)
+	setTurfData(id, "position", table.concat({x, y, width, height}, ","))
+
+	if (type == 1) then
+		setTurfData(id, "arg1", table.concat(arg1, ","))
+	end
+
+	exports.GTIhud:dm("TURF: Turf successfully created!", client, 135, 30, 75)
+end
+addEvent("GTIturfing.createTurf", true)
+addEventHandler("GTIturfing.createTurf", root, createTurf)
+
+function getTurfIDFromCommand(player)
+	if (not acl[getAccountName(getPlayerAccount(player))]) then return end
+	local x,y = getElementPosition(player)
+	local turf = getTurfFromPosition(x, y)
+	if (not isElement(turf)) then return end
+	outputChatBox("TURF ID: "..getTurfID(turf), player, 135, 30, 75)
+end
+addCommandHandler("turf-id", getTurfIDFromCommand)
+
+function deleteTurf(player, command, id)
+	if (not acl[getAccountName(getPlayerAccount(player))]) then return end
+	id = tonumber(id)
+	if (not id or id > getNextTurfID() - 1) then
+		exports.GTIhud:dm("TURF: Enter a valid turf ID that you wish to delete.", player, 135, 30, 75)
+		return
+	end
+
+	for i,turf in ipairs(getAllTurfs()) do
+		if (getTurfID(turf) == id) then
+			local col = getColShapeFromTurf(turf)
+			destroyElement(turf)
+			destroyElement(col)
+			table.remove(turfs, i)
+			table.remove(turfcols, i)
+			colsByTurf[turf] = nil
+			turfsByCols[col] = nil
+			exports.GTIhud:dm("TURF: Turf ID "..id.." deleted.", player, 135, 30, 75)
+			break
+		end
+	end
+	deleteTurfData(id)
+end
+addCommandHandler("turf-delete", deleteTurf)
+
+-- Is Turfer?
+-------------->>
+
+function canPlayerTurf(player, skip_veh)
+	if (not isElement(player) or getElementType(player) ~= "player") then return false end
+	if (isPedDead(player)) then return false end
+	if (not skip_veh and isPedInVehicle(player)) then return false end
+	if (not isGangster(player) and not isSWAT(player)) then return false end
+	return true
+end
+
+function isGangster(player)
+	if (not exports.GTIutil:isPlayerInTeam(player, "Criminals")) then return false end
+	if (exports.GTIemployment:getPlayerJob(player, true) == "Gangster") then
+		return true
+	end
+	return false
+end
+
+function isSWAT(player)
+	if (not exports.GTIutil:isPlayerInTeam(player, "Law Enforcement")) then return false end
+	if (exports.GTIemployment:getPlayerJob(player, true) == "SWAT Division") then
+		return true
+	end
+	return false
+end
+
+function outputSWATChat(message)
+	for i,player in ipairs(getElementsByType("player")) do
+		if (isSWAT(player)) then
+			exports.GTIhud:dm(message, player, 15, 62, 125)
+		end
+	end
+end
+
+-- Become Turfer
+----------------->>
+
+function goGangster(player)
+	if (not TURFING_ACTIVE and getServerPort() == 22003) then return end
+	if (isGangster(player)) then return end
+	if (exports.GTIpoliceWanted:getPlayerWantedLevel(player) > 0) then
+		exports.GTIhud:dm("You must be unwanted in order to use this command.", player, 135, 25, 75)
+		return
+	end
+	if exports.GTIprison:isPlayerInJail( player) then
+		exports.GTIhud:dm("You must not be in jail in order to use this command.", player, 135, 25, 75)
+		return
+	end
+	if (not exports.GTIgroups:getPlayerGroup(player)) then
+		exports.GTIhud:dm("You must be in a group to use this command.", player, 135, 25, 75)
+		return
+	end
+	if (exports.GTIspawn:isPlayerSuiciding(player)) then 
+		return 
+	end
+	if exports.MitchMisc:isPlayerNearGangster(player) then
+		return exports.GTIhud:dm("There's a turfer near you. Move away from him!", player, 135, 25, 75)
+	end
+		if exports.MitchMisc:isPlayerNearSWAT(player) then
+		return exports.GTIhud:dm("There's a SWAT near you. Move away from him!", player, 135, 25, 75)
+	end
+	
+	exports.GTIemployment:setPlayerJob(player, "Gangster", "Criminals", nil, exports.GTIaccounts:GAD(getPlayerAccount(player), "skin") or 0)
+	exports.GTIblips:setPlayerNameColor(player, 135, 25, 75)
+end
+addCommandHandler("turf", goGangster)
+
+function goSWATTeam(olddivision, division)
+	if (not TURFING_ACTIVE and getServerPort() == 22003) then return end
+	if (division ~= "SWAT Division") then return end
+
+	local account = getPlayerAccount(source)
+	exports.GTIaccounts:SAD(account, "job", "SWAT Division")
+	setElementData(source, "job", "SWAT Division")
+	setElementModel(source, 285)
+	exports.GTIaccounts:SAD(account, "jobskin", 285)
+	exports.GTIblips:setPlayerNameColor(source, 15, 62, 125)
+end
+addEvent("onPlayerJobDivisionChange", true)
+addEventHandler("onPlayerJobDivisionChange", root, goSWATTeam)
+
+function resignAsTurfer(player)
+	if (not isGangster(player) and not isSWAT(player)) then return end
+	-- Check if the player is a Gangster and Turfing
+	if (isGangster(player) and isPlayerInTurf(player)) then
+		exports.GTIhud:dm("You cannot resign as a gangster while turfing", player, 255, 0, 0)
+		return false
+	end
+	exports.GTIemployment:resign(player)
+end
+addCommandHandler("resign", resignAsTurfer)
+
+addEvent("onPlayerGetJob", true)
+addEventHandler("onPlayerGetJob", root, function(job, working)
+	if (job == "Gangster" and not exports.GTIgroups:getPlayerGroup(source)) then
+		setTimer(function(source)
+			exports.GTIemployment:resign(source)
+		end, 500, 1, source)
+	end
+end)
+	
+-- Player Occupied Turf Sync
+----------------------------->>
+
+addEventHandler("onColShapeHit", resourceRoot, function(player, dim)
+	if (player and getElementType(player) ~= "player" or not dim) then return end
+	if (getElementInterior(player) ~= TURFING_INTERIOR ) then return end
+	
+	local turf = getTurfFromColShape(source)
+	turfsByPlayer[player] = turf
+	--triggerClientEvent(player,"GTIgangTerritories:onPlayerEnterTurf",player)
+end)
+
+addEventHandler("onColShapeLeave", resourceRoot, function(player, dim)
+	if (player and getElementType(player) ~= "player" or not dim) then return end
+	if (getElementInterior(player) ~= TURFING_INTERIOR ) then return end
+	
+	local turf = getTurfFromColShape(source)
+	if (turfsByPlayer[player] ~= turf) then return end
+	turfsByPlayer[player] = nil
+	--triggerClientEvent(player,"GTIgangTerritories:onPlayerLeaveTurf",player)
+end)
+
+addEventHandler("onPlayerQuit", root, function()
+	if (turfsByPlayer[player]) then
+		turfsByPlayer[player] = nil
+	end
+end)
+
+function updateTurfColsByPlayer()
+	for i,col in ipairs(getAllTurfCols()) do
+		for i,player in ipairs(getElementsWithinColShape(col, "player")) do
+			local turf = getTurfFromColShape(col)
+			turfsByPlayer[player] = turf
+		end
+	end
+end
+
+-- Get Turf Element
+-------------------->>
+
+function getAllTurfs()
+	return turfs
+end
+
+function getAllTurfCols()
+	return turfcols
+end
+
+function getTurfFromID(id)
+	if (not id or type(id) ~= "number") then return false end
+	for _,turf in pairs(getAllTurfs()) do
+		if (getTurfID(turf) == id) then
+			return turf
+		end
+	end
+	return false
+end
+
+function getTurfFromPosition(x, y)
+	if (not x or not y or type(x) ~= "number" or type(y) ~= "number") then return false end
+	for _,turf in pairs(getAllTurfs()) do
+		if (isInsideRadarArea(turf, x, y)) then
+			return turf
+		end
+	end
+	return false
+end
+
+function getTurfsByGroup(groupID)
+	if (not groupID or type(groupID) ~= "number") then return false end
+	local turfs = {}
+	for _,turf in pairs(getAllTurfs()) do
+		if (getTurfOwner(turf) == groupID) then
+			table.insert(turfs, turf)
+		end
+	end
+	return turfs
+end
+
+function getColShapeFromTurf(turf)
+	return colsByTurf[turf] or false
+end
+
+function getTurfFromColShape(col)
+	if (not isElement(col)) then return false end
+	return turfsByCols[col] or false
+end
+
+-- Turf Data Information
+------------------------->>
+
+function getTurfAttacker(turf)
+	local data = getElementData(turf, "attacker")
+	return data or false
+end
+
+function getTurfID(turf)
+	local data = getElementData(turf, "id")
+	return data or false
+end
+
+function getTurfLocation(turf)
+	if (not isElement(turf)) then return false end
+	local x1,y1 = getElementPosition(turf)
+	local x2,y2 = getRadarAreaSize(turf)
+	return x1+x2/2, y1+y2/2
+end
+
+function getTurfOwner(turf)
+	if (not isElement(turf)) then return false end
+	local data = getElementData(turf, "owner")
+	return data or false
+end
+
+function getTurfType(turf)
+	if (not isElement(turf)) then return false end
+	local data = getElementData(turf, "type")
+	return data or false
+end
+
+function isTurfBeingProvoked(turf)
+	if (not isElement(turf)) then return false end
+	return getElementData(turf, "provoke") or false
+end
+
+function isTurfEmpty(turf)
+	if (not isElement(turf)) then return false end
+	if (#getPlayersInTurf(turf) == 0) then return true end
+	return false
+end
+
+function isTurfWarInProgress(turf)
+	if (not isElement(turf)) then return false end
+	return isRadarAreaFlashing(turf)
+end
+
+function isTurfWarPaused(turf)
+	if (not isElement(turf)) then return false end
+	return getElementData(turf, "paused") or false
+end
+
+function setTurfAttacker(turf, attacker)
+	if (not isElement(turf)) then return false end
+	if (attacker) then
+		setElementData(turf, "attacker", attacker)
+	else
+		if (not getTurfAttacker(turf)) then return true end
+		removeElementData(turf, "attacker")
+	end
+	return true
+end
+
+function setTurfBeingProvoked(turf, bool, groupID)
+	if (not isElement(turf)) then return false end
+	if (not bool) then
+		removeElementData(turf, "provoke")
+	else
+		setElementData(turf, "provoke", groupID or 0)
+	end
+	return true
+end
+
+function setTurfOwner(turf, owner)
+	if (not isElement(turf)) then return false end
+	local id = getElementData(turf, "id")
+	if (not owner) then
+		removeElementData(turf, "owner")
+		setTurfData(id, "owner", nil)
+		setRadarAreaColor(turf, DEF_R, DEF_G, DEF_B, DEF_A)
+	else
+		setElementData(turf, "owner", owner)
+		setTurfData(id, "owner", owner)
+		local r,g,b = exports.GTIgroups:getGroupColor(owner)
+		setRadarAreaColor(turf, r, g, b, DEF_A)
+	end
+	return true
+end
+
+function setTurfWarInProgress(turf, state, attacker)
+	if (not isElement(turf)) then return false end
+	local owner = getTurfOwner(turf)
+	if (state and owner == attacker) then return false end
+
+	setRadarAreaFlashing(turf, state)
+	setTurfBeingProvoked(turf, false)
+
+	local x,y = getTurfLocation(turf)
+	if (state and attacker) then
+		setTurfAttacker(turf, attacker)
+		if (owner) then
+			exports.GTIgroups:outputGroupChat("TURF: Our group has declared war on "..exports.GTIgroups:getGroupName(owner).."'s turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true), attacker, true)
+			exports.GTIgroups:outputGroupChat("TURF: Your turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." is under attack by "..exports.GTIgroups:getGroupName(attacker), owner, true)
+		else
+			exports.GTIgroups:outputGroupChat("TURF: Our group has declared war on a turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true), attacker, true)
+			outputSWATChat("TURF: A neutral turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." is under attack by "..exports.GTIgroups:getGroupName(attacker))
+		end
+	elseif (state) then
+		setTurfAttacker(turf, false)
+		exports.GTIgroups:outputGroupChat("TURF: Your turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." is under threat of liberation by Law Enforcement.", owner, true)
+		outputSWATChat("TURF: Law Enforcement is now liberating a turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true))
+	end
+	return true
+end
+
+function setTurfWarPaused(turf, state)
+	if (not isElement(turf)) then return false end
+	if (state) then
+		setElementData(turf, "paused", true)
+	else
+		removeElementData(turf, "paused")
+	end
+	return true
+end
+
+-- Player-Turf Relations
+------------------------->>
+
+function doesPlayerOwnTurfs(player)
+	if (not isElement(player)) then return false end
+	if (not isGangster(player) and not isSWAT(player)) then return false end
+	if (isGangster(player)) then
+		local groupID = exports.GTIgroups:getPlayerGroup(player)
+		for _,turf in pairs(getAllTurfs()) do
+			if (getTurfOwner(turf) == groupID) then
+				return true
+			end
+		end
+	elseif (isSWAT(player)) then
+		for _,turf in pairs(getAllTurfs()) do
+			if (not getTurfOwner(turf)) then
+				return true
+			end
+		end
+	end
+end
+
+function getMajorityGroupInTurf(turf)
+	if (not isElement(turf)) then return false end
+	if (#getPlayersInTurf(turf) == 0) then return false end
+
+	local groups = {}
+	for i,player in ipairs(getPlayersInTurf(turf)) do
+		if (isGangster(player)) then
+			local groupID = exports.GTIgroups:getPlayerGroup(player)
+			if (not groups[groupID]) then groups[groupID] = 0 end
+			groups[groupID] = groups[groupID] + 1
+		elseif (isSWAT(player)) then
+			if (not groups[0]) then groups[0] = 0 end
+			groups[0] = groups[0] + 1
+		end
+	end
+
+	local highestID, highestNum = 0, 0
+	for groupID,num in pairs(groups) do
+		if (num > highestNum) then
+			highestID = groupID
+			highestNum = num
+		end
+	end
+	return highestID
+end
+
+function getPlayersInTurf(turf, ownerOnly)
+	if (not colsByTurf[turf]) then return false end
+	if (#getElementsWithinColShape(colsByTurf[turf], "player") == 0) then return {} end
+	local players = {}
+	for i,player in ipairs(getElementsWithinColShape(colsByTurf[turf], "player")) do
+		if (canPlayerTurf(player)) then
+			if (ownerOnly and isPlayerTurfOwner(player, turf)) then
+				table.insert(players, player)
+			elseif (not ownerOnly) then
+				table.insert(players, player)
+			end
+		end
+	end
+	return players
+end
+
+function getPlayerOccupiedTurf(player)
+	return turfsByPlayer[player] or false
+end
+
+function isPlayerEnemyInTurf(player, turf)
+	if (isGangster(player)) then
+		local group = exports.GTIgroups:getPlayerGroup(player)
+		for i,plr in ipairs(getPlayersInTurf(turf)) do
+			if (isGangster(plr)) then
+				if (group ~= exports.GTIgroups:getPlayerGroup(plr)) then return true end
+			end
+		end
+	elseif (isSWAT(player)) then
+		for i,plr in ipairs(getPlayersInTurf(turf)) do
+			if (isGangster(plr)) then return true end
+		end
+	end
+	return false
+end
+
+function isPlayerInTurf(player)
+	if (turfsByPlayer[player]) then return true end
+	return false
+end
+
+function isPlayerTurfOwner(player, turf, ignoreLaw)
+	if (not isElement(player) or not isElement(turf)) then return false end
+	local owner = getTurfOwner(turf)
+	if (owner) then
+		local group = exports.GTIgroups:getPlayerGroup(player)
+		if (group == owner) then return true end
+	else
+		if (isSWAT(player)) then return true end
+	end
+	return false
+end
+
+function isPlayerTurfAttacker(player, turf)
+	if (not isElement(player) or not isElement(turf)) then return false end
+	if (not isTurfWarInProgress(turf)) then return false end
+	local attacker = getTurfAttacker(turf)
+	if (attacker) then
+		local group = exports.GTIgroups:getPlayerGroup(player)
+		if (group == attacker) then return true end
+	else
+		if (isSWAT(player)) then return true end
+	end
+	return false
+end
+
+-- Turf Respawn System
+----------------------->>
+
+function getTurfRespawnPoint(turf)
+	if (not isElement(turf)) then return false end
+	local id = getTurfID(turf)
+	local pos = getTurfData(id, "arg1")
+	pos = split(pos, ",")
+	if (#pos == 1) then return false end
+	return tonumber(pos[1]), tonumber(pos[2]), tonumber(pos[3])
+end
+
+function getNearestTurfRespawn(player)
+	if (not isElement(player) or not turf_respawn[player]) then return false end
+	local x2,y2,z2 = unpack(turf_respawn[player])
+	local distance = math.huge
+	local closest_turf
+	for i,turf in ipairs(getAllTurfs()) do
+		if (getTurfType(turf) == 1 and isPlayerTurfOwner(player, turf) and not isTurfWarInProgress(turf)) then
+			local x1,y1,z1 = getTurfRespawnPoint(turf)
+			if (x1) then
+				local dist = getDistanceBetweenPoints3D(x1,y1,z1, x2,y2,z2)
+				if (dist < distance) then
+					distance = dist
+					closest_turf = turf
+				end
+			end
+		end
+	end
+	if (not closest_turf) then return false end
+	local x,y,z = getTurfRespawnPoint(closest_turf)
+	return x,y,z
+end
+
+	-- Select Respawn on Wasted -->>
+addEventHandler("onPlayerWasted", root, function()
+	if (not doesPlayerOwnTurfs(source)) then return end
+	local x,y,z = getElementPosition(source)
+	local zone = getZoneName(x,y,z, true)
+	if (zone ~= "Los Santos" and zone ~= "San Fierro" and zone ~= "Las Venturas") then return end
+	if (getElementInterior(source) ~= 0 or getElementDimension(source) ~= 0) then return end
+
+	turf_respawn[source] = {x, y, z}
+	exports.GTIhud:drawNote("turf.respawn2", "Press 2 to respawn at hospital", source, 135, 30, 75)
+	exports.GTIhud:drawNote("turf.respawn", "Press 1 to respawn at nearest turf", source, 135, 30, 75)
+	bindKey(source, "1", "down", setPlayerRespawnPosition)
+	bindKey(source, "num_1", "down", setPlayerRespawnPosition)
+	bindKey(source, "2", "down", setPlayerRespawnPosition)
+	bindKey(source, "num_2", "down", setPlayerRespawnPosition)
+end)
+
+function setPlayerRespawnPosition(player, key, state, arg)
+	exports.GTIhud:drawNote("turf.respawn2", "", player)
+	if (key == "1") then
+		local x,y,z = getElementPosition(player)
+		turf_respawn[player] = {x, y, z}
+		exports.GTIhud:drawNote("turf.respawn", "Respawning at nearest turf...", player, 135, 30, 75)
+	elseif (key == "2") then
+		turf_respawn[player] = nil
+		exports.GTIhud:drawNote("turf.respawn", "Respawning at nearest hospital...", player, 135, 30, 75)
+	end
+end
+
+addEventHandler("onPlayerSpawn", root, function()
+	unbindKey(source, "1", "down", setPlayerRespawnPosition)
+	unbindKey(source, "num_1", "down", setPlayerRespawnPosition)
+	unbindKey(source, "2", "down", setPlayerRespawnPosition)
+	unbindKey(source, "num_2", "down", setPlayerRespawnPosition)
+	exports.GTIhud:drawNote("turf.respawn", "", source)
+	exports.GTIhud:drawNote("turf.respawn2", "", source)
+	if (not isGangster(source) and not isSWAT(source)) then return end
+	local x,y,z = getNearestTurfRespawn(source)
+	if (x) then
+		setElementPosition(source, x, y, z)
+	end
+	turf_respawn[source] = nil
+end)
+
+	-- Clear Memory
+addEventHandler("onPlayerQuit", root, function()
+	turf_respawn[source] = nil
+end)
+
+-- Group Deletion/Color Update
+------------------------------->>
+
+addEvent("onGroupDelete", true)
+addEventHandler("onGroupDelete", root, function(groupID)
+	local turfs = getTurfsByGroup(groupID)
+	--if (not turfs or #turfs == 0) then return end
+	for i,turf in ipairs(turfs) do
+		setTurfOwner(turf)
+		setTurfBeingProvoked(turf, false)
+		setTurfWarInProgress(turf, false)
+		setTurfWarPaused(turf, false)
+	end
+	for _, players in ipairs(getElementsByType("player")) do
+		if ( exports.GTIgroups:getPlayerGroup(players) == tonumber(groupID) and canPlayerTurf(players)) then
+			exports.GTIemployment:resign(players)
+		end
+	end
+end)
+
+addEvent("onGroupColorChange", true)
+addEventHandler("onGroupColorChange", root, function(groupID, r, g, b)
+	local turfs = getTurfsByGroup(groupID)
+	if (not turfs or #turfs == 0) then return end
+	for i,turf in ipairs(turfs) do
+		setRadarAreaColor(turf, r, g, b, DEF_A)
+	end
+end)

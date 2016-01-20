@@ -1,0 +1,136 @@
+
+GUIEditor = {
+    checkbox = {},
+    label = {},
+    edit = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.label[6] = guiCreateLabel(1048, 278, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[6], "default-bold-small")
+
+
+        GUIEditor.label[8] = guiCreateLabel(1048, 307, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[8], "default-bold-small")
+
+
+        GUIEditor.label[10] = guiCreateLabel(1048, 336, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[10], "default-bold-small")
+
+
+        GUIEditor.label[12] = guiCreateLabel(1048, 365, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[12], "default-bold-small")
+
+
+        GUIEditor.label[14] = guiCreateLabel(1048, 394, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[14], "default-bold-small")
+
+
+        GUIEditor.label[16] = guiCreateLabel(1048, 423, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[16], "default-bold-small")
+
+
+        GUIEditor.label[18] = guiCreateLabel(1048, 452, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[18], "default-bold-small")
+
+
+        GUIEditor.label[24] = guiCreateLabel(1048, 481, 255, 15, "Hits:", false)
+        guiSetFont(GUIEditor.label[24], "default-bold-small")
+
+
+        GUIEditor.label[26] = guiCreateLabel(1030, 508, 28, 15, "Info:", false)
+        guiSetFont(GUIEditor.label[26], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[26], 211, 0, 0)
+
+
+        GUIEditor.label[27] = guiCreateLabel(1066, 504, 240, 24, "Select the drugs (e.g. Cocaine & Meth) and\ninsert the number of hits you want take.", false)
+        guiSetFont(GUIEditor.label[27], "default-small")
+        guiLabelSetColor(GUIEditor.label[27], 181, 181, 181)
+        guiLabelSetVerticalAlign(GUIEditor.label[27], "center")
+
+
+        GUIEditor.checkbox[1] = guiCreateCheckBox(1023, 264, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[2] = guiCreateCheckBox(1023, 293, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[3] = guiCreateCheckBox(1023, 322, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[4] = guiCreateCheckBox(1023, 351, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[5] = guiCreateCheckBox(1023, 380, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[6] = guiCreateCheckBox(1023, 409, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[7] = guiCreateCheckBox(1023, 438, 22, 29, "", false, false)
+
+
+        GUIEditor.checkbox[8] = guiCreateCheckBox(1023, 467, 22, 29, "", false, false)
+
+
+        GUIEditor.edit[1] = guiCreateEdit(1033, 538, 90, 26, "", false)    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawLine(1019 - 1, 234 - 1, 1019 - 1, 572, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(1307, 234 - 1, 1019 - 1, 234 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(1019 - 1, 572, 1307, 572, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(1307, 572, 1307, 234 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawRectangle(1019, 234, 288, 338, tocolor(0, 0, 0, 120), false)
+        dxDrawText("", 874, 363, 874, 363, tocolor(255, 255, 255, 255), 1.00, "default", "left", "top", false, false, false, false, false)
+        dxDrawText("Drug Panel", 1019, 234, 1307, 254, tocolor(133, 220, 8, 255), 0.60, "bankgothic", "center", "center", false, false, false, false, false)
+        dxDrawLine(1019, 254, 1306, 254, tocolor(133, 220, 8, 255), 1, false)
+        dxDrawText("Cocaine - Faster movements.", 1045 - 1, 264 - 1, 1283 - 1, 278 - 1, tocolor(223, 112, 4, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Cocaine - Faster movements.", 1045 + 1, 264 - 1, 1283 + 1, 278 - 1, tocolor(223, 112, 4, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Cocaine - Faster movements.", 1045 - 1, 264 + 1, 1283 - 1, 278 + 1, tocolor(223, 112, 4, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Cocaine - Faster movements.", 1045 + 1, 264 + 1, 1283 + 1, 278 + 1, tocolor(223, 112, 4, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Cocaine - Faster movements.", 1045, 264, 1283, 278, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Oxycodone - 200 HP.", 1045 - 1, 293 - 1, 1221 - 1, 307 - 1, tocolor(2, 13, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Oxycodone - 200 HP.", 1045 + 1, 293 - 1, 1221 + 1, 307 - 1, tocolor(2, 13, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Oxycodone - 200 HP.", 1045 - 1, 293 + 1, 1221 - 1, 307 + 1, tocolor(2, 13, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Oxycodone - 200 HP.", 1045 + 1, 293 + 1, 1221 + 1, 307 + 1, tocolor(2, 13, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Oxycodone - 200 HP.", 1045, 293, 1221, 307, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Ecstasy - Stronger & Harder.", 1045 - 1, 322 - 1, 1301 - 1, 336 - 1, tocolor(200, 25, 25, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Ecstasy - Stronger & Harder.", 1045 + 1, 322 - 1, 1301 + 1, 336 - 1, tocolor(200, 25, 25, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Ecstasy - Stronger & Harder.", 1045 - 1, 322 + 1, 1301 - 1, 336 + 1, tocolor(200, 25, 25, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Ecstasy - Stronger & Harder.", 1045 + 1, 322 + 1, 1301 + 1, 336 + 1, tocolor(200, 25, 25, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Ecstasy - Stronger & Harder.", 1045, 322, 1301, 336, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Adderall - Increase accuracy.", 1045 - 1, 351 - 1, 1299 - 1, 365 - 1, tocolor(0, 127, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Adderall - Increase accuracy.", 1045 + 1, 351 - 1, 1299 + 1, 365 - 1, tocolor(0, 127, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Adderall - Increase accuracy.", 1045 - 1, 351 + 1, 1299 - 1, 365 + 1, tocolor(0, 127, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Adderall - Increase accuracy.", 1045 + 1, 351 + 1, 1299 + 1, 365 + 1, tocolor(0, 127, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Adderall - Increase accuracy.", 1045, 351, 1299, 365, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Meth - See through walls.", 1045 - 1, 380 - 1, 1270 - 1, 394 - 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Meth - See through walls.", 1045 + 1, 380 - 1, 1270 + 1, 394 - 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Meth - See through walls.", 1045 - 1, 380 + 1, 1270 - 1, 394 + 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Meth - See through walls.", 1045 + 1, 380 + 1, 1270 + 1, 394 + 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Meth - See through walls.", 1045, 380, 1270, 394, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Marijuana - Slower movement.", 1045 - 1, 409 - 1, 1300 - 1, 423 - 1, tocolor(137, 224, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Marijuana - Slower movement.", 1045 + 1, 409 - 1, 1300 + 1, 423 - 1, tocolor(137, 224, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Marijuana - Slower movement.", 1045 - 1, 409 + 1, 1300 - 1, 423 + 1, tocolor(137, 224, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Marijuana - Slower movement.", 1045 + 1, 409 + 1, 1300 + 1, 423 + 1, tocolor(137, 224, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Marijuana - Slower movement.", 1045, 409, 1300, 423, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Tylenol - Blur screen effect.", 1045 - 1, 438 - 1, 1293 - 1, 452 - 1, tocolor(0, 216, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Tylenol - Blur screen effect.", 1045 + 1, 438 - 1, 1293 + 1, 452 - 1, tocolor(0, 216, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Tylenol - Blur screen effect.", 1045 - 1, 438 + 1, 1293 - 1, 452 + 1, tocolor(0, 216, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Tylenol - Blur screen effect.", 1045 + 1, 438 + 1, 1293 + 1, 452 + 1, tocolor(0, 216, 224, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("Tylenol - Blur screen effect.", 1045, 438, 1293, 452, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawLine(1019, 500, 1306, 500, tocolor(133, 220, 8, 255), 1, false)
+        dxDrawText("Take Drug", 1133, 536, 1177, 566, tocolor(255, 255, 255, 255), 0.50, "bankgothic", "center", "top", false, true, false, false, false)
+        dxDrawText("Stop Drug", 1187, 536, 1232, 566, tocolor(255, 255, 255, 255), 0.50, "bankgothic", "center", "top", false, true, false, false, false)
+        dxDrawText("Close", 1241, 544, 1296, 559, tocolor(255, 255, 255, 255), 0.50, "bankgothic", "center", "top", false, true, false, false, false)
+        dxDrawText("PCP - Increase strength.", 1045 - 1, 467 - 1, 1257 - 1, 481 - 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("PCP - Increase strength.", 1045 + 1, 467 - 1, 1257 + 1, 481 - 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("PCP - Increase strength.", 1045 - 1, 467 + 1, 1257 - 1, 481 + 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("PCP - Increase strength.", 1045 + 1, 467 + 1, 1257 + 1, 481 + 1, tocolor(224, 0, 0, 84), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawText("PCP - Increase strength.", 1045, 467, 1257, 481, tocolor(255, 255, 255, 255), 0.52, "bankgothic", "left", "top", false, true, false, false, false)
+        dxDrawLine(1019, 531, 1306, 531, tocolor(133, 220, 8, 255), 1, false)
+    end
+)

@@ -1,0 +1,22 @@
+<meta> 
+	<info name="Ares Miscellaneous" author="Ares" autostart="true" />
+		<script src="sawnoff.lua"/>		
+		<script src="irc.lua"/>
+		<script src="msg.lua"/>
+		<script src="editrules.slua" http="true"/>
+
+		<script src="crimes.lua"/>
+		<script src="crimes_c.lua" cache="false" type="client"/>
+		<script src="planescollision.lua" type="client"/>
+
+		<script src="hydra.lua" type="client"/>
+
+		<script src="[Devs]/Diego.lua" type="client"/>
+		<script src="[Devs]/Diego.slua" type="server"/>
+
+		<file src="hydra.dff" />
+		<export function="job_f" type="server" />
+		<export function="isAbleToCrime" type="server" />
+		<export function="isAbleToCrime" type="client" />
+</meta>
+

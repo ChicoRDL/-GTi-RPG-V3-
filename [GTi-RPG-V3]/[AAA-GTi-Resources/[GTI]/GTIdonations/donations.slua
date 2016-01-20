@@ -1,0 +1,31 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 30 Dec 2015
+-- Resource: GTIdonations/donations.slua
+-- Type: Server Side
+-- Author: Ares
+----------------------------------------->>
+
+function callPanelInfo()
+	local donations = {}
+	
+	donations["server_balance"] = getServerBalance()
+	donations["logs"] = getDonationLogs()
+	donations["donors"] = getDonors()
+	
+	triggerClientEvent(client, "GTIdonations.showPanel", client, donations)
+end
+addEvent("GTIdonations.callPanelInfo", true)
+addEventHandler("GTIdonations.callPanelInfo", root, callPanelInfo)
+
+function getServerBalance()
+	return 31
+end
+
+function getDonationLogs ()
+	return ""
+end
+
+function getDonors()
+	return {["Ares"] = {5, 5}, ["IceMan"] = {6, 5}, ["Nat"] = {1, 1}, ["idk"] = {5, 2}}
+end

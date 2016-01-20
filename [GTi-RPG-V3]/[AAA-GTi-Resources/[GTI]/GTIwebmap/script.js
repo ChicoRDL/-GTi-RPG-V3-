@@ -1,0 +1,1 @@
+function init () {	var map = $('#map')[0];	//$(map).css({background: url("files/gtasa_map.png")});}

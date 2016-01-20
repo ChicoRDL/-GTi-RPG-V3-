@@ -1,0 +1,149 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 20 Dec 2014
+-- Resource: JTPenn/stimulus.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local stimulus = {
+	["SjoerdPSV"] = true,
+	["Sreten"] = true,
+	["yashrules"] = true,
+	["carlosvaz9401"] = true,
+	["Pilovali"] = true,
+	["Nerox"] = true,
+	["yacine1998"] = true,
+	["Makaveli"] = true,
+	["Nat"] = true,
+	["Jason115"] = true,
+	["Seifo"] = true,
+	["emilevirus"] = true,
+	["Toshiba"] = true,
+	["Smokerhands"] = true,
+	["ServetCan"] = true,
+	["nigga"] = true,
+	["laki996"] = true,
+	["LilDollaTechZone"] = true,
+	["fidodido"] = true,
+	["Naseer"] = true,
+	["Mitch"] = true,
+	["JayXxXGaming"] = true,
+	["azera"] = true,
+	["SyllaBear"] = true,
+	["nilesh'97"] = true,
+	["Noble"] = true,
+	["M1Merc"] = true,
+	["EnemyCRO"] = true,
+	["ChicoRDL"] = true,
+	["Fraag"] = true,
+	["wassmas"] = true,
+	["Smoke"] = true,
+	["pillow"] = true,
+	["TomasitoCaram"] = true,
+	["LaCosTa"] = true,
+	["Juice"] = true,
+	["johnny23"] = true,
+	["Albania"] = true,
+	["Diego"] = true,
+	["NewYorkStar1337"] = true,
+	["Abuela"] = true,
+	["Church"] = true,
+	["oBalla"] = true,
+	["Kellyoo"] = true,
+	["juasjuaseh"] = true,
+	["rockroll"] = true,
+	["BowDel"] = true,
+	["Philo"] = true,
+	["Mentoscola"] = true,
+	["Annex"] = true,
+	["Clark"] = true,
+	["Inferno"] = true,
+	["3OSAPB"] = true,
+	["CarlJohnson"] = true,
+	["Alcor"] = true,
+	["Joao377"] = true,
+	["GeForce1"] = true,
+	["Krimzon"] = true,
+	["fcpranev"] = true,
+	["Gunslinger"] = true,
+	["Mayhem"] = true,
+	["FranciscoG"] = true,
+	["Corkokiller"] = true,
+	["beast"] = true,
+	["jackj"] = true,
+	["ravenas"] = true,
+	["Skizzol"] = true,
+	["Nizwa"] = true,
+	["Qurid"] = true,
+	["Joseph"] = true,
+	["wetrippymane"] = true,
+	["Travis"] = true,
+	["Fnisgerth"] = true,
+	["NaTz02"] = true,
+	["mbendhiab"] = true,
+	["TJ10king"] = true,
+	["Snake"] = true,
+	["JTPenn814"] = true,
+	["9C40C2793F6385BA7C58FF765D449152"] = true,
+	["0E452FE9CE85B6ACF9F268F3D095A5A2"] = true,
+	["BED51298B204186D44ADF2D03C653024"] = true,
+	["872BE666AC664E482FDDAD43926D5EE4"] = true,
+	["98D05D687F14FE7D67B138E737831BE4"] = true,
+	["C0EB75588DC58E1BD41366263FFA91E4"] = true,
+	["BF469005BBCBA4A76A1E2C96E7B1A803"] = true,
+	["BE57A4893C8C2B74CCE7C4DFA0F359B2"] = true,
+	["05287DB040C0A375C66AB2132E786094"] = true,
+	["7784D1745F2D9DD06DD223333311BEB4"] = true,
+	["C2BCA6E68A73FC2D41B482B651637643"] = true,
+	["3F7825B434E6DE2F40A2C7D6225B1553"] = true,
+	["E09367FBAB11862AC8A8DC56F2D05224"] = true,
+	["AAB8E1EC6614B7C9ABD0A8B23003A4E4"] = true,
+	["3C1C97A1962D94D494081D7BE00ED8B4"] = true,
+	["A3CFA913A87EAE21AEA2022735233FA1"] = true,
+	["5AF77C4F1AAC9472D7BD48F242F72DA1"] = true,
+	["7FAF28703FC7CCB9C4A8E337C2F864F4"] = true,
+	["8FD1E72567D231CB78F04D257E0476B2"] = true,
+	["A2F53D93E84161B89EAEAE032D5E2C94"] = true,
+	--["77F9BFCDD8D0B273B4810AA21D8AA02"] = true, -- Invalid Serial
+	["17ADD8C2BE76EE4EA7F170187E083342"] = true,
+	["AFFD8C0F00EA637181FCD9E3B4C86B52"] = true,
+	["2C0DEA494F45824FC022354B4CB5E292"] = true,
+	["5239C20759A63720F23D59D37D68DB54"] = true,
+	["2E09262166A119729E4047CF840A3BF4"] = true,
+	["07C25BD187706FD470C4CBAC6AC41184"] = true,
+	["8C3A3F3CC60CA998E30DC6E2598D04A2"] = true,
+	["9339682697F5D400F91B8183F04EAA54"] = true,
+	["834AEE20C8436825E5AE65C2EAA4F282"] = true,
+	["F9A12C2EF20CA341D2F9EAD2DF345C02"] = true,
+	["8293D6C082225343D1ED3CDCDE6208F4"] = true,
+	["E5D7C3C3B33E7ADF4FF57D7293808134"] = true,
+	["EC9912CF006664F808D2376D3FFD7F04"] = true,
+	["A11A5D7942A66C539F1A99979DCCF0D3"] = true,
+	["71F9687CD1802B31460421AE16A87953"] = true,
+	["6DF835C42B8C4D425BB7188FD052C293"] = true,
+	["1247FA76521C474CE427DFEE6BE78C71"] = true,
+	["F8E5978217A7D4AD203F266F92628A53"] = true,
+	["59F9E3CDF96EF5E4B245AB2587178C43"] = true,
+	["527E7EAA12AB45452BBBFD7E02E79452"] = true,
+}
+
+addEventHandler("onPlayerLogin", root, function(_, account)
+	local day, hour = getRealTime().monthday, getRealTime().hour
+	if (day == 21 and hour >= 14 or day > 21) then return end
+	local acc_name = getAccountName(account)
+	if ((stimulus[acc_name] or stimulus[getPlayerSerial(source)]) and not exports.GTIaccounts:GAD(account, "has_stimulus")) then
+		exports.GTIbank:modifyPlayerBankBalance(source, 250000, "GTI Release Main Stimulus Package")
+		exports.GTIaccounts:SAD(account, "has_stimulus", true)
+		exports.GTIhud:dm("Your $250,000 stimulus has been deposited in your bank account", source, 25, 255, 25)
+	end
+end)
+
+setTimer(function()
+	local day, hour = getRealTime().monthday, getRealTime().hour
+	if (day == 22 and hour >= 14 or day > 22) then return end
+	for i,player in ipairs(getElementsByType("player")) do
+		exports.GTIbank:modifyPlayerBankBalance(player, 2500, "GTI Release Stimulus Package")
+		exports.GTIhud:dm("Your $2,500 stimulus has been deposited in your bank account", player, 25, 255, 25)
+	end
+end, 900000, 0)

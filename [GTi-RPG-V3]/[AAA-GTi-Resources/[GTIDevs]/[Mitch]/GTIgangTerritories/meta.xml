@@ -1,0 +1,32 @@
+<meta>
+    <info author="JTPenn" name="Gang Territories (Turfs)" type="script" autostart="true" />
+    
+    <script src="database.slua"	/>
+    <script src="turf.luac" 	type="client" />
+    <script src="turf.slua" 	/>
+    
+    <script src="points_mode/points_mode.luac" 	type="client" />
+    <script src="points_mode/points_mode.slua" 	/>
+    
+    <script src="creation/creation_gui.luac" 	type="client" />
+    <script src="creation/turf_create.luac" 	type="client" />
+    
+    <export function="setTurfData" 	type="server" />
+    <export function="getTurfData" 	type="server" />
+    
+	<export function="setTurfOwner"	type="server" />
+	
+    <export function="getTurfFromID" 			type="server" />
+    <export function="getMajorityGroupInTurf" 	type="server" />
+    <export function="getNearestTurfRespawn"	type="server" />
+    <export function="getTurfRespawnPoint" 		type="server" />
+    
+    <export function="canPlayerTurf" 	type="server" />
+    <export function="isGangster" 		type="server" />
+    <export function="isSWAT" 			type="server" />
+	<export function="isPlayerInTurf"	type="server" />
+    <export function="canPlayerTurf" 	type="client" />
+    <export function="isGangster" 		type="client" />
+    <export function="isSWAT" 			type="client" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+</meta>

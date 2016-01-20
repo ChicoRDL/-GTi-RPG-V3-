@@ -1,0 +1,29 @@
+
+GUIEditor = {
+    tab = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(294, 109, 679, 535, "Grand Theft International | Staff Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 25, 656, 500, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Players", GUIEditor.tabpanel[1])
+
+GUIEditor.gridlist[1] = guiCreateGridList(4, 4, 193, 462, false, GUIEditor.tab[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Players", 0.9)
+guiGridListAddRow(GUIEditor.gridlist[1])
+guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "-", false, false)
+GUIEditor.label[1] = guiCreateLabel(201, 5, 239, 451, "Player Details", false, GUIEditor.tab[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+GUIEditor.button[1] = guiCreateButton(444, 5, 202, 28, "Punish \"..playerName..\"", false, GUIEditor.tab[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+
+GUIEditor.tab[2] = guiCreateTab("Reports", GUIEditor.tabpanel[1])
+GUIEditor.tab[3] = guiCreateTab("Staff Chat", GUIEditor.tabpanel[1])
+GUIEditor.tab[4] = guiCreateTab("Bans", GUIEditor.tabpanel[1])
+GUIEditor.tab[5] = guiCreateTab("Logs", GUIEditor.tabpanel[1])

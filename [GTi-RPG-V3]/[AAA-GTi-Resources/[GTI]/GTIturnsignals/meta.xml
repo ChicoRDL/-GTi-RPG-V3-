@@ -1,0 +1,6 @@
+<meta>
+    <info author="MrBrutus" version="0.2.0" name="Turning Signals (/lleft, /lright, /warn)" description="Ability for the driver to lock his door" type="script" autostart="true" />
+    <script src="turnsignal_s.lua" type="server" />
+	
+	<export function="isVehicleBlinking" type="server" />
+</meta>

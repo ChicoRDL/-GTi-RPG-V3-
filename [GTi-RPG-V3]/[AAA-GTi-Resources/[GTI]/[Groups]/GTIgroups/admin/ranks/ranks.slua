@@ -1,0 +1,136 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 22 Jun 2014
+-- Resource: GTIgroupPanel/Admin/Ranks/ranks.lua
+-- Version: 1.0
+----------------------------------------->>
+
+local restricted_perms = {
+	["delete_group"] = true,
+	["change_group_name"] = true,
+}
+
+-- Get Group Rank/Permission Info
+---------------------------------->>
+
+function getRankMgmtInfo(player)
+	if (not client) then client = player end
+	local groupID = getPlayerGroup(client)
+	local ranks_ = getGroupRanks(groupID, true)
+	
+	local ranks = {}			-- Ranks Table
+	local rank_perms = {}		-- Permissions by Rank
+	local isLeader, isDefault	-- Leader, Default Rank IDs
+	local def_table				-- Default Rank Table
+	
+	for i,rankID in ipairs(ranks_) do
+		local rankName = getRankName(rankID)
+		table.insert(ranks, {rankID, rankName})
+		rank_perms[rankID] = getAllRankPermissions(rankID)
+		if (getGroupRankData(rankID, "isLeader") == 1) then
+			isLeader = rankID
+		elseif (getGroupRankData(rankID, "isDefault") == 1) then
+			isDefault = rankID
+			def_table = {rankID, rankName}
+			table.remove(ranks)
+		end
+	end
+	table.insert(ranks, def_table)
+	local permissions_ = getAllRankPermissions()
+	local permissions = {}
+	for i,perm in ipairs(permissions_) do
+		if (not restricted_perms[perm[1]]) then
+			table.insert(permissions, perm[2])
+		end
+	end
+	triggerClientEvent(client, "GTIgroupPanel.setRankMgmtInfo", resourceRoot, ranks, rank_perms, permissions, isLeader, isDefault)
+end
+addEvent("GTIgroupPanel.getRankMgmtInfo", true)
+addEventHandler("GTIgroupPanel.getRankMgmtInfo", root, getRankMgmtInfo)
+
+-- Add Group Rank
+------------------>>
+
+addEvent("GTIgroupPanel.addGroupRank", true)
+addEventHandler("GTIgroupPanel.addGroupRank", root, function(rank, perms)
+	local groupID = getPlayerGroup(client)
+		-- Check for Same Rank Name
+	for i,rankID in ipairs(getGroupRanks(groupID)) do
+		local rankName = getRankName(rankID)
+		if (rankName == rank) then
+			exports.GTIhud:dm("GROUP: A rank with this name already exists. Choose another rank name.", client, 255, 100, 100)
+			return
+		end
+	end
+	
+	local rank_perms = getAllRankPermissions(perms, true) or {}
+	addGroupRank(groupID, rank, rank_perms)
+	getRankMgmtInfo(client)
+	outputGroupChat("GROUP: "..getPlayerName(client).." created a '"..rank.."' rank", groupID)
+	addLogToDatabase(getPlayerName(client).." created a '"..rank.."' rank", client, groupID)
+	exports.GTIhud:dm("GROUP: Group rank '"..rank.."' has been successfully created.", client, 255, 100, 100)
+	triggerClientEvent(client, "GTIgroupPanel.closeAddGroupRankPanel", resourceRoot, "left", "up")
+end)
+
+-- Rename Group Rank
+--------------------->>
+
+addEvent("GTIgroupPanel.setGroupRankName", true)
+addEventHandler("GTIgroupPanel.setGroupRankName", root, function(rankID, rankName)
+	local groupID = getPlayerGroup(client)
+		-- Check for Same Rank Name
+	for i,rank in ipairs(getGroupRanks(groupID)) do
+		local rankNm = getRankName(rank)
+		if (rankNm == rankName) then
+			exports.GTIhud:dm("GROUP: A rank with this name already exists. Choose another rank name.", client, 255, 100, 100)
+			return
+		end
+	end
+	local oldName = getRankName(rankID)
+	setRankName(rankID, rankName)
+	exports.GTIhud:dm("GROUP: The '"..oldName.."' rank has been renamed to '"..rankName.."'", client, 255, 100, 100)
+	outputGroupChat("GROUP: "..getPlayerName(client).." has renamed the '"..oldName.."' rank to '"..rankName.."'", groupID)
+	addLogToDatabase(getPlayerName(client).." renamed the '"..oldName.."' rank to '"..rankName.."'", client, groupID)
+	getRankMgmtInfo(client)
+end)
+
+-- Remove Group Rank
+--------------------->>
+
+addEvent("GTIgroupPanel.removeGroupRank", true)
+addEventHandler("GTIgroupPanel.removeGroupRank", root, function(rankID)
+	local groupID = getPlayerGroup(client)
+	local rankName = getRankName(rankID)
+	deleteGroupRank(rankID)	
+	exports.GTIhud:dm("GROUP: The '"..rankName.."' rank has been successfully deleted.", client, 255, 100, 100)
+	outputGroupChat("GROUP: The '"..rankName.."' rank has been deleted by "..getPlayerName(client), groupID)
+	addLogToDatabase(getPlayerName(client).." deleted the '"..rankName.."' rank", client, groupID)
+	getRankMgmtInfo(client)
+end)
+
+-- Update Rank Permissions
+--------------------------->>
+
+addEvent("GTIgroupPanel.updateRankPermissions", true)
+addEventHandler("GTIgroupPanel.updateRankPermissions", root, function(rankID, permissions)
+	local groupID = getPlayerGroup(client)
+	local rankName = getRankName(rankID)
+	setAllRankPermissions(rankID, permissions)
+	exports.GTIhud:dm("GROUP: The permissions set for the '"..rankName.."' rank has been successfully updated.", client, 255, 100, 100)
+	outputGroupChat("GROUP: "..getPlayerName(client).." updated the permissions set for the '"..rankName.."' rank.", groupID)
+	addLogToDatabase(getPlayerName(client).." updated the permissions set for the '"..rankName.."' rank.", client, groupID)
+	getRankMgmtInfo(client)
+end) 
+
+-- Update Rank Order
+--------------------->>
+
+addEvent("GTIgroupPanel.updateRankOrder", true)
+addEventHandler("GTIgroupPanel.updateRankOrder", root, function(rankIDs)
+	local groupID = getPlayerGroup(client)
+	sortGroupRanks(groupID, rankIDs)
+	outputGroupChat("GROUP: "..getPlayerName(client).." updated group rank order.", groupID)
+	addLogToDatabase(getPlayerName(client).." updated group rank order.", client, groupID)
+	getRankMgmtInfo(client)
+end)

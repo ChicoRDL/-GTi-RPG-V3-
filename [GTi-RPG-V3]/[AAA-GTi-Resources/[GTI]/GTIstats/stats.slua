@@ -1,0 +1,293 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 12 Feb 2015
+-- Resource: GTIstats/stats.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local DEFAULT_GROUP = "None"	-- Group Name that appears if group DNE
+local playtime = {}				-- Playtime Cache
+local playtime_join = {}		-- Playtime on Join
+local TOTAL_IDLE_TIME = 300000
+
+-- Accuracy
+------------>>
+
+function getPlayerAccuracy(player)
+	if (not isElement(player)) then return false end
+	
+	local account = getPlayerAccount(player)	
+	local fired = getStatData(account, "bullets_fired") or 1
+	local hit = getStatData(account, "bullets_that_hit") or 1
+	
+	return string.format("%.1f", (hit/fired)*100).."%"
+end
+
+-- Distance Stats
+------------------>>
+
+addEvent("GTIstats.addDistanceStats", true)
+addEventHandler("GTIstats.addDistanceStats", root, function(dist_foot, dist_car, dist_boat, dist_bike, dist_plane, dist_moto, dist_swim, dist_total)
+	if (not exports.GTIutil:isPlayerLoggedIn(client)) then return end
+	modifyPlayerStatData(client, "dist_foot", math.floor(dist_foot))
+	modifyPlayerStatData(client, "dist_car", math.floor(dist_car))
+	modifyPlayerStatData(client, "dist_boat", math.floor(dist_boat))
+	modifyPlayerStatData(client, "dist_bike", math.floor(dist_bike))
+	modifyPlayerStatData(client, "dist_plane", math.floor(dist_plane))
+	modifyPlayerStatData(client, "dist_moto", math.floor(dist_moto))
+	modifyPlayerStatData(client, "dist_swim", math.floor(dist_swim))
+	modifyPlayerStatData(client, "dist_total", math.floor(dist_total))
+end)
+
+-- Group Name
+-------------->>
+
+addEventHandler("onPlayerQuit", root,
+	function()
+		local account = getPlayerAccount(source)
+		local group = exports.GTIgroups:getPlayerGroup(source, true)
+		if group then
+			setStatData(account, "group", group)
+		else
+			setStatData(account, "group", DEFAULT_GROUP)
+		end
+	end
+)
+
+-- Kills/Deaths
+---------------->>
+
+addEventHandler("onPlayerWasted", root,
+	function(totalAmmo, killer, killerWeapon, bodypart, stealth)
+		if (isElement(killer) and getElementType(killer) ~= "player") then return end	-- Avoid Vehicle Killers
+
+		if (isElement(killer) and killer ~= source) then
+			modifyPlayerStatData(source, "deaths", 1)
+			modifyPlayerStatData(killer, "kills", 1)
+		else
+			modifyPlayerStatData(source, "suicides", 1)
+		end
+	end
+)
+
+-- Net Worth
+------------->>
+
+function getPlayerNetWorth(player)
+	if (not isElement(player) or not exports.GTIutil:isPlayerLoggedIn(player)) then return false end
+	local account = getPlayerAccount(player)
+	
+	local worth = 0
+		-- Vehicle Net Worth
+	worth = worth + exports.GTIvehicles:getAccountVehicleWorth(getPlayerAccount(player)) or 0
+		-- Housing Net Worth
+	worth = worth + exports.GTIhousing:getPlayerHousingNetWorth(player) or 0
+		-- Weapon Net Worth
+	worth = worth + exports.GTIweapons:getPlayerWeaponNetWorth(player) or 0
+		-- Unpaid Wages
+	worth = worth + exports.GTIemployment:getPlayerOutstandingPay(player) or 0
+		-- Cash on Hand
+	worth = worth + getPlayerMoney(player) or 0
+		-- Bank Cash
+	worth = worth + exports.GTIbank:getPlayerBankBalance(player) or 0
+	
+	return worth
+end
+
+-- Online Status
+----------------->>
+
+--// For Nathan's Custom Signature & Third Party Use -->>
+addEventHandler("onPlayerLogin", root,
+	function(_, acc)
+		exports.GTIaccounts:SAD(acc, "onlinestatus", true)
+	end
+)
+
+addEventHandler("onPlayerQuit", root,
+	function()
+		local acc = getPlayerAccount(source)
+		exports.GTIaccounts:SAD(acc, "onlinestatus", false)
+	end
+)
+
+-- Zone
+----------------->>
+
+addEventHandler("onPlayerLogin", root,
+	function (_, acc)
+		local x, y, z = getElementPosition(source)
+		setStatData(acc, "last_location", getZoneName( x, y, z ) or "Unknown" )
+	end
+)
+
+addEventHandler("onPlayerQuit", root,
+	function ()
+		local acc = getPlayerAccount(source)
+		if ( not isGuestAccount(acc) ) then
+			local x, y, z = getElementPosition(source)
+			setStatData(acc, "last_location", getZoneName( x, y, z ) or "Unknown" )
+		end
+	end
+)
+
+
+-- Playtime
+------------>>
+
+-- Increase Playtime by Minute
+setTimer(function()
+	for player in pairs(playtime) do
+		if (getPlayerIdleTime(player) <= TOTAL_IDLE_TIME) then
+			playtime[player] = playtime[player] + 1
+			updatePlaytimeData(player)
+		end
+	end
+end, 60000, 0)
+
+function updatePlaytimeData(player)
+	local eleData
+	if (playtime[player] > 60) then
+		eleData = math.floor(playtime[player]/60).." hours"
+		if (math.floor(playtime[player]/60) == 1) then
+			eleData = string.sub(eleData, 1, -2)
+		end
+	else
+		eleData = playtime[player].." minutes"
+		if (playtime[player] == 1) then
+			eleData = string.sub(eleData, 1, -2)
+		end
+	end
+	setElementData(player, "playtime", eleData)
+end
+
+-- Cache Playtime on Login
+addEventHandler("onPlayerLogin", root, function(_, account)
+	playtime[source] = getStatData(account, "playtime") or 0
+	playtime_join[source] = getStatData(account, "playtime") or 0
+	updatePlaytimeData(source)
+end)
+
+-- Store Playtime on Quit
+addEventHandler("onPlayerQuit", root, function()
+	if (not playtime[source]) then return end
+
+	local groupID = exports.GTIgroups:getPlayerGroup(source)
+	if (groupID) then
+		local playtime = playtime[source] - playtime_join[source]
+		exports.GTIgroups:modifyGroupStat(groupID, "playtime", playtime)
+	end
+
+	local account = getPlayerAccount(source)
+	setStatData(account, "playtime", playtime[source])
+	playtime[source] = nil
+	playtime_join[source] = nil
+end)
+
+-- Load on Start
+addEventHandler("onDatabaseLoad", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		if (not exports.GTIutil:isPlayerLoggedIn(player)) then return end
+		local account = getPlayerAccount(player)
+		playtime[player] = getStatData(account, "playtime") or 0
+		playtime_join[player] = getStatData(account, "playtime") or 0
+		updatePlaytimeData(player)
+	end
+end)
+
+-- Save on Stop
+addEventHandler("onResourceStop", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		if (not exports.GTIutil:isPlayerLoggedIn(player) or not playtime[player]) then return end
+		local account = getPlayerAccount(player)
+		setStatData(account, "playtime", playtime[player])
+
+		local groupID = exports.GTIgroups:getPlayerGroup(player)
+		if (groupID) then
+			local playtime = playtime[player] - playtime_join[player]
+			exports.GTIgroups:modifyGroupStat(groupID, "playtime", playtime)
+		end
+	end
+end)
+
+	-- Export
+function getPlayerPlaytime(player)
+	if (not isElement(player)) then return false end
+	local account = getPlayerAccount(player)
+	if ( not account or isGuestAccount(account)) then return false end
+	return getStatData(account, "playtime") or 0
+end
+
+-- Specialized Kills
+--------------------->>
+
+addEventHandler("onPlayerWasted", root,
+	function(totalAmmo, killer, killerWeapon, bodypart, stealth)
+		if (isElement(killer) and getElementType(killer) ~= "player" or killer == source) then return end	-- Avoid Vehicle, Self Killers
+
+		-- Add Criminal Kill
+		if (exports.GTIcriminals:isCriminal(source)) then
+			modifyPlayerStatData(killer, "kill_criminal", 1)
+			return
+		end
+		
+		-- Add Cop Kill
+		if (exports.GTIpoliceArrest:canPlayerArrest(source)) then
+			modifyPlayerStatData(killer, "kill_police", 1)
+			return
+		end
+		
+		-- Add Gangster Kill
+		if (exports.GTIgangTerritories:isGangster(source)) then
+			modifyPlayerStatData(killer, "kill_gangster", 1)
+			return
+		end
+		
+		-- Add SWAT Kill
+		if (exports.GTIgangTerritories:isSWAT(source)) then
+			modifyPlayerStatData(killer, "kill_swat", 1)
+			return
+		end
+		
+	end
+)
+
+-- Weapon Stats
+---------------->>
+
+addEvent("GTIstats.addWeaponStats", true)
+addEventHandler("GTIstats.addWeaponStats", root, function(bullets_fired, bullets_that_hit, kg_explosives)
+	if (not exports.GTIutil:isPlayerLoggedIn(client)) then return end
+	modifyPlayerStatData(client, "bullets_fired", bullets_fired)
+	modifyPlayerStatData(client, "bullets_that_hit", bullets_that_hit)
+	modifyPlayerStatData(client, "kg_explosives", kg_explosives)
+end)
+
+-- Max Health
+---------------->>
+
+addEventHandler("onPlayerSpawn", root,
+	function ()
+		if ( not playtime[source] ) then return end
+		if ( playtime[source] >= 60000 ) then
+			setPedStat(source, 24, 1000)
+		elseif ( playtime[source] < 60000 and playtime[source] >= 36000) then
+			setPedStat(source, 24, math.ceil(playtime[source]/60))
+			--outputDebugString(getPlayerName(source)..";"..playtime[source])
+		end
+	end
+)
+
+
+setTimer(
+	function ()
+		for player in pairs(playtime) do
+			if ( playtime[player] >= 60000 ) then
+				setPedStat(player, 24, 1000)
+			elseif ( playtime[player] < 60000 and playtime[player] >= 36000 ) then
+				setPedStat(player, 24, math.ceil(playtime[player]/60))
+				--outputDebugString(getPlayerName(player)..";"..playtime[player])
+			end
+		end
+	end, 60000, 0)

@@ -1,0 +1,30 @@
+
+GUIEditor = {
+    checkbox = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(600, 327, 400, 138, "GTI Bank — Advanced Options", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.label[1] = guiCreateLabel(18, 30, 129, 15, "Bank Account Security", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 25, 255, 25)
+GUIEditor.label[2] = guiCreateLabel(17, 50, 356, 30, "Protect your money with another layer of security. Having a PIN allows you to access your money on the go.", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "left", true)
+GUIEditor.label[3] = guiCreateLabel(23, 89, 47, 15, "My PIN:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+guiLabelSetColor(GUIEditor.label[3], 25, 255, 25)
+GUIEditor.edit[1] = guiCreateEdit(76, 86, 98, 21, "", false, GUIEditor.window[1])
+guiEditSetMasked(GUIEditor.edit[1], true)
+guiEditSetMaxLength(GUIEditor.edit[1], 10)
+GUIEditor.label[4] = guiCreateLabel(89, 112, 225, 15, "Select \"Secure Account\" to enable the PIN protection", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "right", false)
+GUIEditor.checkbox[1] = guiCreateCheckBox(273, 90, 108, 15, "Secure Account", false, false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(179, 87, 64, 19, "Update", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[5] = guiCreateLabel(353, 25, 38, 16, "[Close]", false, GUIEditor.window[1])

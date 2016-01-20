@@ -1,0 +1,87 @@
+<meta>
+	<info name="GTA V Radar + GPS" author="Vandam" type="script" version="1.2.6" />
+		<oop>true</oop>
+	
+		<script src="classlib.lua" type="client" cache="false"/>
+		<script src="util.lua" type="client" cache="false"/>
+		<script src="Cursor.lua" type="client" cache="false"/>
+		<script src="dxUtil.lua" type="client" cache="false"/>
+	
+		<script src="radar_c.lua" type="client" cache="false" />
+		<script src="navi_c.lua" type="client" cache="false" />
+		<script src="nodes.lua" type="client" />
+		<script src="settings.lua" type="client" />
+		
+		
+		<file src="images/gps.png" />
+		<file src="images/radar.jpg" />
+		<file src="images/water.jpg" />
+		<file src="images/spielerpfeil.png" />
+		<file src="images/1.png" />
+		<file src="images/2.png" />
+		<file src="images/3.png" />
+		<file src="images/4.png" />
+		<file src="images/5.png" />
+		<file src="images/6.png" />
+		<file src="images/7.png" />
+		<file src="images/8.png" />
+		<file src="images/9.png" />
+		<file src="images/10.png" />
+		<file src="images/11.png" />
+		<file src="images/12.png" />
+		<file src="images/13.png" />
+		<file src="images/14.png" />
+		<file src="images/15.png" />
+		<file src="images/16.png" />
+		<file src="images/17.png" />
+		<file src="images/18.png" />
+		<file src="images/19.png" />
+		<file src="images/20.png" />
+		<file src="images/21.png" />
+		<file src="images/22.png" />
+		<file src="images/23.png" />
+		<file src="images/24.png" />
+		<file src="images/25.png" />
+		<file src="images/26.png" />
+		<file src="images/27.png" />
+		<file src="images/28.png" />
+		<file src="images/29.png" />
+		<file src="images/30.png" />
+		<file src="images/31.png" />
+		<file src="images/32.png" />
+		<file src="images/33.png" />
+		<file src="images/34.png" />
+		<file src="images/35.png" />
+		<file src="images/36.png" />
+		<file src="images/37.png" />
+		<file src="images/38.png" />
+		<file src="images/39.png" />
+		<file src="images/40.png" />
+		<file src="images/41.png" />
+		<file src="images/42.png" />
+		<file src="images/43.png" />
+		<file src="images/44.png" />
+		<file src="images/45.png" />
+		<file src="images/46.png" />
+		<file src="images/47.png" />
+		<file src="images/48.png" />
+		<file src="images/49.png" />
+		<file src="images/50.png" />
+		<file src="images/51.png" />
+		<file src="images/52.png" />
+		<file src="images/53.png" />
+		<file src="images/54.png" />
+		<file src="images/55.png" />
+		<file src="images/56.png" />
+		<file src="images/57.png" />
+		<file src="images/58.png" />
+		<file src="images/59.png" />
+		<file src="images/60.png" />
+		<file src="images/61.png" />
+		<file src="images/62.png" />
+		<file src="images/63.png" />
+		<file src="images/up.png" />
+		<file src="images/square.png" />
+		<file src="images/down.png" />
+	
+</meta>

@@ -1,0 +1,64 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Vehicles System" autostart="true" />
+    <script src="database.slua" />
+    <script src="util.slua" />
+    <script src="add_delete.slua" />
+    <script src="prices.slua" />
+    <!--Misc Vehicle Functions-->
+    <script src="misc/vehSettings.luac" type="client" />
+    <script src="misc/vehSettings.slua" />
+    <script src="misc/vehicle_repair.slua" />
+    <!--Vehicle Storage-->
+    <script src="storage/storage.luac" type="client" />
+    <script src="storage/storage.slua" />
+    <!--GTIdroid Vehicle App-->
+    <script src="manage.slua" />
+    
+    <!--Exports-->
+    <export function="getVehiclePriceTable" type="server" />
+    <export function="getRecoveryCostPerMeter" type="server" />
+    
+    <export function="addPlayerVehicle" type="server" />
+    <export function="doesPlayerOwnVehicleModel" type="server" />
+    <export function="despawnVehicle" type="server" />
+    <export function="getVehicleSaleValue" type="server" />
+    <export function="deleteVehicle" type="server" />
+    <export function="isVehicleSpawned" type="server" />
+    <export function="getVehicleSlotFromID" type="server" />
+    <export function="getVehicleIDFromSlot" type="server" />
+    <export function="getVehicleOwner" type="server" />
+    <export function="getVehicleByID" type="server" />
+    
+    <export function="spawnPlayerVehicle" type="server" />
+    <export function="isVehicleMarkedOnRadar" type="server" />
+    <export function="hidePlayerVehicle" type="server" />
+    <export function="hideAllPlayerVehicles" type="server" />
+    <export function="togglePlayerVehicleBlip" type="server" />
+    <export function="destroyPlayerVehicleBlip" type="server" />
+    <export function="recoverPlayerVehicle" type="server" />
+    
+    <export function="getVehicleData" type="server" />
+    <export function="setVehicleData" type="server" />
+    <export function="getVehicleOwnerData" type="server" />
+    <export function="setVehicleOwnerData" type="server" />
+    <export function="getAllVehicleOwnerData" type="server" />
+    
+    <export function="getVehicleCost" type="server" />
+    <export function="getMaximumVehicleID" type="server" />
+    <export function="getNextAvailibleVehicleIDSlot" type="server" />
+    <export function="getNearestRecoveryPoint" type="server" />
+    <export function="isVehicleInCategory" type="server" />
+    <export function="getVehicleValue" type="server" />
+    
+    <export function="getVehicleEngineDamage" type="server" />
+    <export function="getVehicleEngineRepairCost" type="server" />
+    <export function="getVehicleBodyDamage" type="server" />
+    <export function="getVehicleBodyRepairCost" type="server" />
+    <export function="getVehicleRepairCost" type="server" />
+    <export function="repairVehicle" type="server" />
+    
+    <export function="isCarInventoryEmpty" type="server" />
+    <export function="getAccountVehicleWorth" type="server" />
+    
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

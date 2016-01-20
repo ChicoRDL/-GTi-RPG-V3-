@@ -1,0 +1,20 @@
+<meta>
+    <info author="Sjoerd" name="SjoerdMisc" autostart="true" />
+    <script src="client.lua" type="client" />
+    <script src="server.lua" type="server"/> 
+    <script src="lights.lua" type="server"/> 
+	
+    <!--<script src="vehaim.luac" type="client" />
+    <script src="vehaim_s.lua" type="server"/> -->
+    
+	<!-- <script src="hit_c.lua" type="client" /> -->
+	
+	<!-- <file src="hitmarker.png" />
+	<file src="hitmarker-sound.wav" /> -->
+    <file src="afk_.png" />
+	
+	<script src="c_cockpitview.luac" type="client"/>
+    <script src="hide_bug.luac" type="client"/>
+	
+    <export function="toggleCockpitView" type="server" />
+</meta>

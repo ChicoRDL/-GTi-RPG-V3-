@@ -1,0 +1,20 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(542, 215, 306, 365, "Spawn a Vehicle", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(11, 21, 287, 15, "Select a vehicle from the list below and click spawn!", false, GUIEditor.window[1])
+GUIEditor.gridlist[1] = guiCreateGridList(11, 40, 285, 273, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.4)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Price", 0.4)
+GUIEditor.label[2] = guiCreateLabel(276, 345, 23, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-small")
+GUIEditor.button[1] = guiCreateButton(119, 320, 74, 36, "Spawn", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")

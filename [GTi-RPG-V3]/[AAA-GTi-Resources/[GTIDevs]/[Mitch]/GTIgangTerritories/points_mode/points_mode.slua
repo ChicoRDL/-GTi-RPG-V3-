@@ -1,0 +1,539 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 29 Jul 2014
+-- Resource: GTIturfing/points_mode.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local TOT_ROUNDS = 2 			-- Number of Wins Required to Take Turf
+local TAKE_PAY = 3450			-- Cash Earned on Turf Capture
+local TAKE_XP = 875				-- Group XP Earned on Capture per person
+local KILL_PAY = 500			-- Cash Earned per Kill
+--local KILL_XP = 250			-- Group XP Earned on Kill
+local PROVOKE_SEC = 45			-- Time for Provocation (seconds)
+local ROUND_SEC = 60			-- Time in a Round (seconds)
+local MAX_PAUSE_TIME = 120		-- Max time a turf war can be paused before going neutral again.
+
+local earners = {}	-- Last Payment by Player
+
+addEvent("onPlayerTakeTurf", true)
+
+-- Turf Enter/Leave Handler
+---------------------------->>
+
+function getTurfingInfoA(player, dim, turf)
+	if (not canPlayerTurf(player) or not dim) then return end
+	if (getElementInterior(player) ~= 0 or getElementDimension(player) ~= 0) then return end
+	if (not turf) then
+		turf = getTurfFromColShape(source)
+	end
+	if (getTurfType(turf) ~= 1) then return end
+	
+	-- Turf War In Progress -->>
+	if (isTurfWarInProgress(turf)) then
+		if (not isPlayerTurfOwner(player, turf) and not isPlayerTurfAttacker(player, turf)) then return end
+		if (isTurfWarPaused(turf)) then
+			setTurfWarPaused(turf, false)
+		end
+		drawTurfWarStatsA(player, turf)
+		setTimer(drawTurfWarStatsA, 1000, 1, player, turf)
+	
+	-- Turf Not Owned by You (Provocation) -->>
+	elseif (not isPlayerTurfOwner(player, turf)) then
+		if (isPlayerEnemyInTurf(player, turf)) then
+			exports.GTIhud:dm("TURF: There are other gangsters or cops in this turf. Kill all of them in order to start a turf war.", player, 135, 30, 75)
+			return
+		end
+		
+		-- Begin Provocation
+		local owner = getTurfOwner(turf)
+		if (owner) then
+			exports.GTIhud:dm("TURF: You have entered "..exports.GTIgroups:getGroupName(owner).."'s turf. Stay in the turf to begin a turf war.", player, 135, 30, 75)
+		else
+			exports.GTIhud:dm("TURF: You have entered an unowned turf. Stay in the turf to begin a turf war.", player, 135, 30, 75)
+		end
+		
+		if (not isTurfBeingProvoked(turf)) then
+			setElementData(turf, "time", PROVOKE_SEC)
+			if (isGangster(player)) then
+				setTurfBeingProvoked(turf, true, exports.GTIgroups:getPlayerGroup(player))
+			else
+				setTurfBeingProvoked(turf, true)
+			end
+		end
+		
+	-- Turf Owned by You (Provocation) -->
+	elseif (isPlayerTurfOwner(player, turf)) then
+		-- Stop Provocation
+		if (isTurfBeingProvoked(turf)) then
+			exports.GTIhud:dm("TURF: Your turf is under threat. Kill any enemies in the turf to stop provocation.", player, 135, 30, 75)
+			return
+		end
+		
+		exports.GTIhud:dm("TURF: You have entered your turf.", player, 135, 30, 75)
+	end
+end
+addEventHandler("onColShapeHit", resourceRoot, getTurfingInfoA)
+
+function removeTurfingInfoA(player, dim)
+	if (not isGangster(player) and not isSWAT(player)) then return end
+	if (not dim) then return end
+	if (getElementInterior(player) ~= 0 or getElementDimension(player) ~= 0) then return end
+	if (isPlayerInTurf(player)) then return end
+	local turf = getTurfFromColShape(source)
+	if (getTurfType(turf) ~= 1) then return end
+	
+	stopDrawingTurfStatsA(player)
+	if (#getPlayersInTurf(turf) == 0) then
+		setTurfWarPaused(turf, true)
+	end
+end
+addEventHandler("onColShapeLeave", resourceRoot, removeTurfingInfoA)
+
+-- Vehicle Enter/Exit Handlers
+------------------------------->>
+
+addEventHandler("onPlayerVehicleExit", root, function()
+	if (not isGangster(source) and not isSWAT(source)) then return end
+	local x,y = getElementPosition(source)
+	local turf = getTurfFromPosition(x, y)
+	getTurfingInfoA(source, true, turf)
+end)
+
+addEventHandler("onPlayerVehicleEnter", root, function()
+	if (not isGangster(source) and not isSWAT(source)) then return end
+	local x,y = getElementPosition(source)
+	local turf = getTurfFromPosition(x, y)
+	if (getTurfType(turf) ~= 1) then return end
+	
+	stopDrawingTurfStatsA(source)
+	if (#getPlayersInTurf(turf) == 0) then
+		setTurfWarPaused(turf, true)
+	end
+end)
+
+-- Interior Enter/Exit Handlers
+-------------------------------->>
+
+addEvent("onInteriorEnter", true)
+addEvent("onInteriorExit", true)
+addEvent("onHouseEnter", true)
+addEvent("onHouseLeave", true)
+function changeTurfStateOnChange(player, destination)
+	if (not isGangster(player) and not isSWAT(player)) then return end
+	if (getElementInterior(destination) == 0 and getElementDimension(destination) == 0) then
+		local x,y = getElementPosition(destination)
+		local turf = getTurfFromPosition(x, y)
+		if (getTurfType(turf) ~= 1) then return end
+		
+		getTurfingInfoA(player, true, turf)
+	else
+		local x,y = getElementPosition(destination)
+		local turf = getTurfFromPosition(x, y)
+		if (getTurfType(turf) ~= 1) then return end
+		
+		stopDrawingTurfStatsA(player)
+		if (#getPlayersInTurf(turf) == 0) then
+			setTurfWarPaused(turf, true)
+		end
+	end
+end
+addEventHandler("onInteriorEnter", root, changeTurfStateOnChange)
+addEventHandler("onInteriorExit", root, changeTurfStateOnChange)
+addEventHandler("onHouseEnter", root, changeTurfStateOnChange)
+addEventHandler("onHouseLeave", root, changeTurfStateOnChange)
+
+-- Kill Handler
+---------------->>
+
+addEventHandler("onPlayerWasted", root, function(_, killer)
+	if (not isElement(killer) or getElementType(killer) ~= "player") then return end
+	if (not isGangster(killer) and not isSWAT(killer)) then return end
+	if (not isGangster(source) and not isSWAT(source)) then return end
+	if (not isPlayerInTurf(killer)) then return end
+	local turf = getPlayerOccupiedTurf(killer)
+	if (getTurfType(turf) ~= 1) then return end
+	if (not isPlayerTurfOwner(killer, turf) and not isPlayerTurfOwner(source, turf)) then return end
+	if (exports.GTIgroups:arePlayersInSameGroup(killer, source)) then return end
+	
+	-- Turf War In Progress
+	------------------------>>
+	
+	if (isTurfWarInProgress(turf)) then
+			-- Add Owner Kill
+		if (isPlayerTurfOwner(killer, turf)) then
+			local owner_pts = getElementData(turf, "owner_pts") or 0
+			setElementData(turf, "owner_pts", owner_pts + 1)
+			-- Add Attacker Kill
+		elseif (isPlayerTurfOwner(source, turf)) then
+			local attack_pts = getElementData(turf, "attack_pts") or 0
+			setElementData(turf, "attack_pts", attack_pts + 1)
+		end
+		
+			-- Pay Player, Group
+		exports.GTIbank:GPM(killer, KILL_PAY, "TURF: Killed Player")
+		--[[local groupID = exports.GTIgroups:getPlayerGroup(killer)
+		if (groupID) then
+			exports.GTIgroups:modifyGroupExperience(groupID, KILL_XP)
+			local r,g,b = exports.GTIgroups:getGroupColor(groupID)
+			exports.GTIhud:drawNote("GroupXP"..math.random(1,1000), "+ "..exports.GTIutil:tocomma(KILL_XP).." Group Experience", killer, r, g, b, 7500)
+		end--]]
+		
+			-- Update Turfer HUD Stats
+		if (isPlayerTurfOwner(killer, turf) or isPlayerTurfOwner(source, turf)) then
+			drawTurfWarStatsA(getPlayersInTurf(turf), turf)
+		end
+		
+		removeTurfingInfoA(source, dim)
+	
+	-- Turf Owner Killed (Provocation) 
+	----------------------------------->>
+	
+	elseif (isPlayerTurfOwner(source, turf)) then
+			-- All turf owners dead, start turf war
+		if (#getPlayersInTurf(turf, true) - 1 <= 0) then
+			if (isPlayerTurfOwner(killer, turf)) then return end
+			
+			local groupID
+			if (isGangster(killer)) then
+				groupID = exports.GTIgroups:getPlayerGroup(killer)
+			end
+			setTurfWarInProgress(turf, true, groupID)
+			setElementData(turf, "time", ROUND_SEC)
+			if (isTurfWarPaused(turf)) then
+				setTurfWarPaused(turf, false)
+			end
+			drawTurfWarStatsA(getPlayersInTurf(turf), turf)
+			
+		end
+	
+	-- Turf Attacker Killed (Provocation) 
+	-------------------------------------->>
+	
+	elseif (isPlayerTurfOwner(killer, turf)) then
+			-- All turf attackers dead, end provocation
+		if (#getPlayersInTurf(turf, true) == #getPlayersInTurf(turf)) then
+			removeElementData(turf, "time")
+			setTurfBeingProvoked(turf, false)
+			--exports.GTIhud:dm("TURF: Provocation Ended. You have successfully secured your turf.", getPlayersInTurf(turf, true), 135, 30, 75)
+		end		
+	end
+	stopDrawingTurfStatsA(source)
+end)
+
+-- Toggle Next Round
+--------------------->>
+
+function toggleNextRoundA(turf)
+	local owner_pts = getElementData(turf, "owner_pts") or 0
+	local attack_pts = getElementData(turf, "attack_pts") or 0
+	local round = getElementData(turf, "round") or 0
+	local owner_rnds = getElementData(turf, "owner_rnds") or 0
+	local attack_rnds = getElementData(turf, "attack_rnds") or 0
+	
+	local winner
+	
+		-- No one killed anyone, grant win majority group
+	if (owner_pts == 0 and attack_pts == 0) then
+		local majority = getMajorityGroupInTurf(turf)
+		if (majority == (getTurfOwner(turf) or 0)) then
+			winner = 1
+			setElementData(turf, "owner_rnds", owner_rnds + 1)
+		else
+			winner = 2
+			setElementData(turf, "attack_rnds", attack_rnds + 1)
+		end
+		setElementData(turf, "round", round + 1)
+		
+		-- Tie, no one wins round
+	elseif (owner_pts == attack_pts) then
+		
+		-- Owner Wins Round
+	elseif (owner_pts > attack_pts) then
+		winner = 1
+		setElementData(turf, "owner_rnds", owner_rnds + 1)
+		setElementData(turf, "round", round + 1)
+	
+		-- Attacker Wins Round
+	elseif (attack_pts > owner_pts) then
+		winner = 2
+		setElementData(turf, "attack_rnds", attack_rnds + 1)
+		setElementData(turf, "round", round + 1)
+	end
+	
+	local isWinner = checkForTurfWinnerA(turf)
+	if (isWinner) then return true end
+	
+	setElementData(turf, "owner_pts", 0)
+	setElementData(turf, "attack_pts", 0)
+	setElementData(turf, "time", ROUND_SEC)
+	
+	drawTurfWarStatsA(getPlayersInTurf(turf), turf)
+	
+	local owner_rnds = getElementData(turf, "owner_rnds") or 0
+	local attack_rnds = getElementData(turf, "attack_rnds") or 0
+	
+	if (not winner) then
+		--exports.GTIhud:dm("TURF: This round was a tie. Score: "..owner_rnds.." - "..attack_rnds, getPlayersInTurf(turf), 135, 30, 75)
+	elseif (winner == 1) then
+		local owner = getTurfOwner(turf)
+		owner = exports.GTIgroups:getGroupName(owner) or "Law Enforcement"
+		--exports.GTIhud:dm("TURF: This round has been won by "..owner..". Score: "..owner_rnds.." - "..attack_rnds, getPlayersInTurf(turf), 135, 30, 75)
+	elseif (winner == 2) then
+		local attacker = getTurfAttacker(turf)
+		attacker = exports.GTIgroups:getGroupName(attacker) or "Law Enforcement"
+		--exports.GTIhud:dm("TURF: This round has been won by "..attacker..". Score: "..owner_rnds.." - "..attack_rnds, getPlayersInTurf(turf), 135, 30, 75)
+	end
+	return true
+end
+
+-- Grant Turf to Winner
+------------------------>>
+
+function checkForTurfWinnerA(turf)
+	local owner_rnds = getElementData(turf, "owner_rnds") or 0
+	local attack_rnds = getElementData(turf, "attack_rnds") or 0
+	
+	local owner = getTurfOwner(turf)
+	local attacker = getTurfAttacker(turf)
+	
+		-- Mark as Successful Turf Defended
+	if (owner_rnds >= TOT_ROUNDS) then
+		setTurfWarInProgress(turf, false)
+		
+		local x,y = getTurfLocation(turf)
+		if (owner and attacker) then
+			exports.GTIgroups:outputGroupChat("TURF: Our turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully defended against "..exports.GTIgroups:getGroupName(attacker), owner, true)
+			exports.GTIgroups:outputGroupChat("TURF: Our attempt to capture the turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has failed.", attacker, true)
+			exports.GTIgroups:modifyGroupStat(owner, "turfs_defended", 1)
+		elseif (owner) then
+			exports.GTIgroups:outputGroupChat("TURF: Our turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully defended against Law Enforcement", owner, true)
+			outputSWATChat("TURF: Our attempt to liberate the turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has failed.")
+			exports.GTIgroups:modifyGroupStat(owner, "turfs_defended", 1)
+		elseif (attacker) then
+			outputSWATChat("TURF: Our neutral turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully defended against "..exports.GTIgroups:getGroupName(attacker))
+			exports.GTIgroups:outputGroupChat("TURF: Our attempt to capture the turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has failed.", attacker, true)
+		end
+		
+		-- Mark as Successful Turf Taken
+	elseif (attack_rnds >= TOT_ROUNDS) then
+		setTurfWarInProgress(turf, false)
+		setTurfOwner(turf, attacker)
+		
+		local x,y = getTurfLocation(turf)
+		if (owner and attacker) then
+			exports.GTIgroups:outputGroupChat("TURF: The turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." is now ours!", attacker, true)
+			exports.GTIgroups:outputGroupChat("TURF: Our turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been captured by "..exports.GTIgroups:getGroupName(attacker), owner, true)
+			exports.GTIgroups:modifyGroupStat(attacker, "turfs_taken", 1)
+		elseif (owner) then
+			outputSWATChat("TURF: The turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully liberated")
+			exports.GTIgroups:outputGroupChat("TURF: Our turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been liberated by Law Enforcement", owner, true)
+		elseif (attacker) then
+			exports.GTIgroups:outputGroupChat("TURF: The turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." is now ours!", attacker, true)
+			outputSWATChat("TURF: Our neutral turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been captured by "..exports.GTIgroups:getGroupName(attacker))
+			exports.GTIgroups:modifyGroupStat(attacker, "turfs_taken", 1)
+		end
+	end
+	
+	if (owner_rnds >= TOT_ROUNDS or attack_rnds >= TOT_ROUNDS) then
+			-- Pay New Owners
+		local owner = getTurfOwner(turf)
+		if (owner) then
+			local total = #getPlayersInTurf(turf, true)
+			local r,g,b = exports.GTIgroups:getGroupColor(owner)
+			local winners = 0
+			for i,player in ipairs(getPlayersInTurf(turf, true)) do
+				if (not earners[player]) then
+					winners = winners + 1
+					exports.GTIbank:GPM(player, TAKE_PAY, "Turfing: Successful capture")
+				end
+				exports.GTIstats:modifyPlayerStatData(player, "turf_cap_gang", 1)
+				triggerEvent("onPlayerTakeTurf", player)
+			end
+			exports.GTIgroups:modifyGroupExperience(owner, TAKE_XP*winners)
+			exports.GTIhud:drawNote("GroupXP"..math.random(1,1000), "+ "..exports.GTIutil:tocomma(TAKE_XP*winners).." Group Experience", getPlayersInTurf(turf, true), r, g, b, 7500)
+		else
+			-- Pay Law Enforcement
+			local groupXP = {}
+			local groupPlrs = {}
+			for i,player in ipairs(getPlayersInTurf(turf)) do
+				if (isSWAT(player) and not earners[player]) then
+					exports.GTIbank:GPM(player, TAKE_PAY, "Turfing: Successful capture")
+					local groupID = exports.GTIgroups:getPlayerGroup(player)
+					if (groupID) then
+						if (not groupXP[groupID]) then groupXP[groupID] = 0 end
+						groupXP[groupID] = groupXP[groupID] + 1
+						if (not groupPlrs[groupID]) then groupPlrs[groupID] = {} end
+						table.insert(groupPlrs[groupID], player)
+					end
+				end
+				triggerEvent("onPlayerTakeTurf", player)
+				exports.GTIstats:modifyPlayerStatData(player, "turf_lib_swat", 1)
+			end
+			for groupID,plrs in pairs(groupXP) do
+				exports.GTIgroups:modifyGroupExperience(groupID, TAKE_XP*plrs)
+				local r,g,b = exports.GTIgroups:getGroupColor(groupID)
+				exports.GTIhud:drawNote("GroupXP"..math.random(1,1000), "+ "..exports.GTIutil:tocomma(TAKE_XP*plrs).." Group Experience", groupPlrs[groupID], r, g, b, 7500)
+			end
+		end
+		
+		removeElementData(turf, "time")
+		removeElementData(turf, "pause_time")
+		removeElementData(turf, "owner_pts")
+		removeElementData(turf, "attack_pts")
+		removeElementData(turf, "round")
+		removeElementData(turf, "owner_rnds")
+		removeElementData(turf, "attack_rnds")
+		
+		stopDrawingTurfStatsA(getPlayersInTurf(turf))
+		
+		return true
+	end
+	return false
+end
+
+-- Stop Turfs from Being Idle
+------------------------------>>
+
+function endTurfWarOnIdleA(turf)
+	local owner = getTurfOwner(turf)
+	local attacker = getTurfAttacker(turf)
+	
+		-- Mark as Successful Turf Defended
+	setTurfWarInProgress(turf, false)
+		
+	local x,y = getTurfLocation(turf)
+	if (owner and attacker) then
+		exports.GTIgroups:outputGroupChat("TURF: Our turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully defended against "..exports.GTIgroups:getGroupName(attacker), owner, true)
+		exports.GTIgroups:outputGroupChat("TURF: Our attempt to capture the turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has failed.", attacker, true)
+		exports.GTIgroups:modifyGroupStat(owner, "turfs_defended", 1)
+	elseif (owner) then
+		exports.GTIgroups:outputGroupChat("TURF: Our turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully defended against Law Enforcement", owner, true)
+		outputSWATChat("TURF: Our attempt to liberate the turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has failed.")
+		exports.GTIgroups:modifyGroupStat(owner, "turfs_defended", 1)
+	elseif (attacker) then
+		outputSWATChat("TURF: Our neutral turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has been successfully defended against "..exports.GTIgroups:getGroupName(attacker))
+		exports.GTIgroups:outputGroupChat("TURF: Our attempt to capture the turf in "..getZoneName(x, y, 0)..", "..getZoneName(x, y, 0, true).." has failed.", attacker, true)
+	end
+	
+	removeElementData(turf, "time")
+	removeElementData(turf, "pause_time")
+	removeElementData(turf, "owner_pts")
+	removeElementData(turf, "attack_pts")
+	removeElementData(turf, "round")
+	removeElementData(turf, "owner_rnds")
+	removeElementData(turf, "attack_rnds")
+	
+	stopDrawingTurfStatsA(getPlayersInTurf(turf))
+	return true
+end
+
+-- Update Turfer HUD Stats
+--------------------------->>
+
+function drawTurfWarStatsA(player, turf)
+	local owner = getTurfOwner(turf)
+	local attacker = getTurfAttacker(turf)
+	triggerClientEvent(player, "GTIgangTerritories.drawTurfWarStatsA", resourceRoot, turf,
+		owner, exports.GTIgroups:getGroupName(owner), {exports.GTIgroups:getGroupColor(owner)},
+		attacker, exports.GTIgroups:getGroupName(attacker), {exports.GTIgroups:getGroupColor(attacker)})
+end
+
+function stopDrawingTurfStatsA(player)
+	triggerClientEvent(player, "GTIgangTerritories.stopDrawingTurfStatsA", resourceRoot)
+end
+
+addEvent("onPlayerQuitJob", true)
+addEventHandler("onPlayerQuitJob", root, function(jobName, shift, division)
+	if (jobName ~= "Gangster" and division ~= "SWAT Division") then return end
+	stopDrawingTurfStatsA(source)
+end)
+
+-- Turf War Sync Mechanism
+--------------------------->>
+
+setTimer(function()
+	for i,turf in ipairs(getAllTurfs()) do
+	if (getTurfType(turf) == 1) then
+	
+	-- Turf War in Progress -->>
+	
+	if (isTurfWarInProgress(turf)) then
+		if (not isTurfWarPaused(turf)) then
+			local time_left = getElementData(turf, "time")
+			if (time_left == 0) then
+				toggleNextRoundA(turf)	
+			else
+				setElementData(turf, "time", time_left - 1)
+			end
+			if (isTurfWarInProgress(turf)) then
+				local M,S = math.floor(time_left/60), time_left - (math.floor(time_left/60)*60)
+				if (S < 10) then S = "0"..S end
+				exports.GTIhud:drawStat("turf.time", "Turf War Round End", M..":"..S, getPlayersInTurf(turf), 135, 30, 75)
+			end
+		else
+			local pause_time = getElementData(turf, "pause_time") or 0
+			if (pause_time == MAX_PAUSE_TIME) then
+				endTurfWarOnIdleA(turf)
+			else
+				setElementData(turf, "pause_time", pause_time + 1)
+			end
+		end
+		
+	-- Provocation -->>
+	
+	elseif (isTurfBeingProvoked(turf)) then
+		local time_left = getElementData(turf, "time")
+		if (time_left == 0) then
+			local groupID = getMajorityGroupInTurf(turf)
+			
+				-- End Provocation if Owner
+			local owner = getTurfOwner(turf) or 0
+			if (not groupID or groupID == owner) then
+				removeElementData(turf, "time")
+				removeElementData(turf, "pause_time")
+				setTurfBeingProvoked(turf, false)
+				--exports.GTIhud:dm("TURF: Provocation Ended. You have successfully secured your turf.", getPlayersInTurf(turf, true), 135, 30, 75)
+				stopDrawingTurfStatsA(getPlayersInTurf(turf))
+			else
+					-- Start Turf War
+				if (groupID == 0) then groupID = false end
+				local success = setTurfWarInProgress(turf, true, groupID)
+				if (success) then
+					setElementData(turf, "time", ROUND_SEC)
+					if (isTurfWarPaused(turf)) then
+						setTurfWarPaused(turf, false)
+					end
+					drawTurfWarStatsA(getPlayersInTurf(turf), turf)
+				end
+			end
+		else
+			setElementData(turf, "time", time_left - 1)
+		end
+		if (isTurfBeingProvoked(turf)) then
+			local M,S = math.floor(time_left/60), time_left - (math.floor(time_left/60)*60)
+			if (S < 10) then S = "0"..S end
+			exports.GTIhud:drawStat("turf.time", "Time to Turf War", M..":"..S, getPlayersInTurf(turf), 135, 30, 75)
+		end
+	end
+
+	end
+	end
+end, 1000, 0)
+
+-- Throw Out Earners
+--------------------->>
+
+setTimer(function()
+	for player,secs in pairs(earners) do
+		if (isElement(player)) then 
+			earners[player] = secs - 1
+			if (earners[player] == 0) then
+				earners[player] = nil
+			end
+		else
+			earners[player] = nil 
+		end
+	end
+end, 1000, 0)

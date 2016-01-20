@@ -1,0 +1,7 @@
+<meta>
+    <info author="JTPenn" name="Anti-DM Protection Zones, Weapon Use Prevention" autostart="true" />
+    <script src="safezone.luac" type="client"/>
+	<script src="safezone.slua" type="server"/>
+	<export function="isElementWithinSafezone"	type="client" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

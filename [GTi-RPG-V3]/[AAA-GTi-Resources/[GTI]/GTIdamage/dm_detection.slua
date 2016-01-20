@@ -1,0 +1,104 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 06 Mar 2015
+-- Resource: GTIdamage/dm_detection.slua
+-- Version: 1.5
+----------------------------------------->>
+
+local NEAR = 3 -- Distance to be caught in the crossfire
+
+-- Is Kill Allowed?
+-------------------->>
+
+function isPlayerAllowedToKill(player, target)
+	if (not isElement(player) or not isElement(target)) then return false end
+	
+	if (getElementType(player) == "vehicle") then
+		player = getVehicleController(player)
+		if (not isElement(player)) then return end
+	end
+	
+	-- *** ALLOWED KILLS *** -->>
+	
+	local teamA = getTeamName(getPlayerTeam(player))
+	local teamV = getTeamName(getPlayerTeam(target))
+	
+	-- Suicide
+	if (player == target) then return true end
+		
+	-- Government Attacker Legality
+	if (teamA == "Government") then
+		return true
+	end
+	
+	-- If Self Defense
+	if (isPlayerDefendingSelf(player, target)) then
+		return true
+	end
+
+	-- Is Fellow Group Member
+	if (exports.GTIgroups:arePlayersInSameGroup(player, target)) then
+		return true
+	end
+	
+	-- If Players both in Prison
+	if (exports.GTIprison:isPlayerInJail(player) and exports.GTIprison:isPlayerInJail(target)) then
+		return true
+	end
+	
+	-- Police Officer Victim Legality
+	if (exports.GTIpoliceArrest:canPlayerArrest(target)) then
+		-- If Player is Wanted
+		if (exports.GTIpoliceWanted:isPlayerWanted(player)) then
+			return true
+		end
+		-- If Officer has Group Member in Custody
+		for i,plr in ipairs(getPlayerArrests(target)) do
+			if (exports.GTIgroups:arePlayersInSameGroup(player, plr)) then
+				return true
+			end
+		end
+	end	
+	
+	-- *** DISALLOWED KILL TYPES *** -->>
+	
+	-- Police Officer Attacker Legality
+	if (exports.GTIpoliceArrest:canPlayerArrest(player)) then
+		-- If Unwanted Target
+		if (not exports.GTIpoliceWanted:isPlayerWanted(target)) then
+			return false
+		end
+		-- If Target in Custody (Arrestable, Arrested, Tased, Surrendered, or in Jail)
+		if (exports.GTIpoliceArrest:isPlayerInPoliceCustody(target)) then
+			return false
+		end
+		return true
+	end
+	
+	-- Turfer Attacker Legality
+	if (exports.GTIgangTerritories:canPlayerTurf(player, true)) then
+		-- If Target not Turfer
+		if (not exports.GTIgangTerritories:canPlayerTurf(target, true)) then
+			return false
+		end
+		return true
+	end
+	
+	-- *** DISALLOW EVERYTHING ELSE *** -->>
+	
+	return false
+end
+
+-- Is Close to an Intended Target?
+----------------------------------->>
+
+function isPlayerNearAllowedTarget(player, target)
+	if (not isElement(player) or not isElement(target)) then return false end
+	for i,plr in ipairs(getElementsByType("player")) do
+		if (exports.GTIutil:getDistanceBetweenElements3D(target, plr) <= NEAR) then
+			if (isPlayerAllowedToKill(player, plr)) then return true end
+		end
+	end
+	return false
+end

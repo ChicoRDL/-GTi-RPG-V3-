@@ -1,0 +1,8 @@
+<meta>
+	<info author="Sjoerd" type="script" name="Drug Lab" autostart="false" />
+	
+	<script src="druglab_c.luac" type="client"/>
+	<script src="druglab_s.lua" type="server"/>.
+	
+	<file src="font.ttf" />	
+</meta>

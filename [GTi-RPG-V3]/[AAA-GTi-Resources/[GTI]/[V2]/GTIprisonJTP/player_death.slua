@@ -1,0 +1,42 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 11 Mar 2015
+-- Resource: GTIprison/player_death.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local DAMAGE_TIME = 5	-- Add 5 seconds for player damage
+local KILL_TIME = 30	-- Add 30 seconds for killing a player
+
+-- Set Player In Prison
+------------------------>>
+
+addEventHandler("onPlayerSpawn", root, function()
+	if (not isPlayerInJail(source)) then return end
+	local l = math.random(#prison_spawns)
+	setElementPosition(source, prison_spawns[l][1], prison_spawns[l][2], prison_spawns[l][3])
+	setElementRotation(source, 0, 0, prison_spawns[l][4])
+	setElementInterior(source, PRISON_INT)
+	setElementDimension(source, PRISON_DIM)
+end)
+
+-- Add Time for Damage
+----------------------->>
+
+addEventHandler("onPlayerDamage", root, function(attacker, weapon, bodypart, loss)
+	if (not isElement(attacker) or getElementType(attacker) ~= "player" or loss == 0) then return end
+	if (not isPlayerInJail(source) or not isPlayerInJail(attacker)) then return end
+	if (attacker == source) then return end
+	sentences[attacker] = sentences[attacker] + DAMAGE_TIME
+end)
+
+-- Add Time for Kills
+---------------------->>
+
+addEventHandler("onPlayerWasted", root, function(_, killer)
+	if (not isElement(killer) or getElementType(killer) ~= "player") then return end
+	if (not isPlayerInJail(source) or not isPlayerInJail(killer)) then return end
+	if (killer == source) then return end
+	sentences[killer] = sentences[killer] + KILL_TIME
+end)

@@ -1,0 +1,8 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Mail Carrier Job" autostart="true" />
+    
+    <script src="locations.lua" type="client" />
+    <script src="mailCarrier.lua" type="client" />
+    <script src="mailCarrier.slua" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

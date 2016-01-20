@@ -1,0 +1,7 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Teams Handler" autostart="true" />
+    
+	<script src="Teams.lua" />
+    
+    <export function="assignTeam" type="server" />
+</meta>

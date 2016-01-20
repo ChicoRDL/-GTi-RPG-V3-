@@ -1,0 +1,10 @@
+<meta>
+	<info author="Jack" version="2.0" name="/updates Panel" autostart="true" />
+	
+	<script src="updates.luac" type="client"/>
+	<script src="errors.luac" type="client"/>
+	
+	<script src="updates_server.lua" type="server"/>
+	
+	<file src="images/logo.png"/>
+</meta>

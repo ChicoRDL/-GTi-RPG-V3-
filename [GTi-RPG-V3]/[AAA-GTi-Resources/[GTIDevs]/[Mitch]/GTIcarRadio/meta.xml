@@ -1,0 +1,21 @@
+﻿<meta>
+	<info author="H5N1" name="Car Radio" autostart="true" />
+	
+	<script src="gui.lua" type="client" />
+	<script src="scriptC.lua" type="client" />
+	<script src="scriptS.lua" />
+	
+	<file src="radios.xml" type="server" />
+	
+	<file src="files/def.ttf" type="client" />
+	<file src="files/Painted.ttf" type="client" />
+	<file src="files/AllOverAgain.ttf" type="client" />
+	<file src="files/BIRTH_OF_A_HERO.ttf" type="client" />
+	
+	<export function="setRadioStation" type="client" />
+	<export function="showStationText" type="client" />
+	
+	<settings>
+		<setting name="#withoutCar" value="false" />
+	</settings>
+</meta>

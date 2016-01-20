@@ -1,0 +1,38 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    tab = {},
+    staticimage = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    window = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(445, 259, 616, 413, "", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 20, 598, 386, false, GUIEditor.window[1])
+
+        GUIEditor.tab[1] = guiCreateTab("Tab", GUIEditor.tabpanel[1])
+
+        GUIEditor.staticimage[1] = guiCreateStaticImage(8, 19, 162, 62, ":GTIammu/guns/22.png", false, GUIEditor.tab[1])
+
+        GUIEditor.label[1] = guiCreateLabel(85, 10, 110, 26, "Pistol - $0", false, GUIEditor.staticimage[1])
+        GUIEditor.label[2] = guiCreateLabel(85, 36, 110, 26, "Ammo - $2", false, GUIEditor.staticimage[1])
+
+        GUIEditor.staticimage[2] = guiCreateStaticImage(8, 81, 162, 72, ":GTIammu/guns/23.png", false, GUIEditor.tab[1])
+        GUIEditor.staticimage[3] = guiCreateStaticImage(8, 153, 164, 71, ":GTIammu/guns/24.png", false, GUIEditor.tab[1])
+        GUIEditor.button[1] = guiCreateButton(215, 19, 112, 30, "Purchase Gun", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(215, 51, 112, 30, "Purchase Ammo", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")    
+    end
+)

@@ -1,0 +1,158 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    tab = {},
+    staticimage = {},
+    edit = {},
+    window = {},
+    tabpanel = {},
+    label = {},
+    button = {},
+    checkbox = {},
+    gridlist = {},
+    memo = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(282, 227, 679, 443, "Grand Theft International | Staff Panel", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+
+        GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 25, 660, 406, false, GUIEditor.window[1])
+
+        GUIEditor.tab[1] = guiCreateTab("Players", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[1] = guiCreateGridList(4, 4, 193, 366, false, GUIEditor.tab[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Players", 0.9)
+        guiGridListAddRow(GUIEditor.gridlist[1])
+        guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "-", false, false)
+        GUIEditor.label[1] = guiCreateLabel(201, 5, 244, 84, "Player Details\nName: (Account: )\nIP:\nVersion:\nSerial:\nCountry:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "left", true)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.button[1] = guiCreateButton(449, 5, 202, 28, "Punish \"..playerName..\"", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(444, 38, 60, 34, "", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(449, 38, 202, 28, "Punishlog", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[4] = guiCreateButton(449, 71, 202, 28, "View Global Bans", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[5] = guiCreateButton(449, 104, 202, 28, "Power Management", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[6] = guiCreateButton(449, 138, 92, 28, "Set Health", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[7] = guiCreateButton(555, 138, 97, 28, "Set Armor", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[7], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[8] = guiCreateButton(449, 240, 202, 28, "Warp to \"..playerName..\"", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[8], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[9] = guiCreateButton(449, 273, 202, 28, "Warp \"..playerName..\" To...", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[9], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[10] = guiCreateButton(555, 172, 97, 28, "Give Weapon", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[10], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.edit[1] = guiCreateEdit(449, 172, 92, 28, "", false, GUIEditor.tab[1])
+        GUIEditor.button[11] = guiCreateButton(555, 206, 97, 28, "Give Vehicle", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[11], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.edit[2] = guiCreateEdit(449, 206, 92, 28, "", false, GUIEditor.tab[1])
+        GUIEditor.button[12] = guiCreateButton(449, 306, 92, 28, "Set Money", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[12], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[13] = guiCreateButton(555, 306, 97, 28, "Set Name", false, GUIEditor.tab[1])
+        guiSetProperty(GUIEditor.button[13], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.label[2] = guiCreateLabel(200, 79, 245, 14, "_________________________________________________", false, GUIEditor.tab[1])
+        guiLabelSetColor(GUIEditor.label[2], 255, 0, 0)
+        GUIEditor.label[3] = guiCreateLabel(197, 258, 245, 14, "_________________________________________________", false, GUIEditor.tab[1])
+        guiLabelSetColor(GUIEditor.label[3], 255, 0, 0)
+        GUIEditor.label[4] = guiCreateLabel(201, 98, 241, 171, "Health:\nArmor:\nSkin:\nTeam:\nMoney:\nWeapon:\nLocation:\nX:\nY:\nZ:\nInterior:  Dimension:\nOccupation:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[4], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+        guiLabelSetVerticalAlign(GUIEditor.label[4], "center")
+        GUIEditor.label[5] = guiCreateLabel(207, 98, 241, 171, "Health:\nArmor:\nSkin:\nTeam:\nMoney:\nWeapon:\nLocation:\nX:\nY:\nZ:\nInterior:  Dimension:\nOccupation:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[5], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[5], "left", true)
+        guiLabelSetVerticalAlign(GUIEditor.label[5], "center")
+        GUIEditor.label[6] = guiCreateLabel(201, 277, 241, 47, "Vehicle Details\nVehicle:\nVehicle Health:", false, GUIEditor.tab[1])
+        guiSetFont(GUIEditor.label[6], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[6], "left", true)
+        guiLabelSetVerticalAlign(GUIEditor.label[6], "center")
+
+        GUIEditor.tab[2] = guiCreateTab("Reports", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[2] = guiCreateGridList(4, 2, 281, 369, false, GUIEditor.tab[2])
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Player", 0.3)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Target", 0.3)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Date & Time", 0.3)
+        GUIEditor.label[7] = guiCreateLabel(290, 9, 360, 210, "IMAGE", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[7], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[7], "center")
+        GUIEditor.label[8] = guiCreateLabel(290, 199, 360, 20, "Click image to zoom", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[8], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[8], 255, 149, 0)
+        guiLabelSetHorizontalAlign(GUIEditor.label[8], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[8], "center")
+        GUIEditor.staticimage[1] = guiCreateStaticImage(288, 4, 362, 200, ":GTIaccounts/images/logo.png", false, GUIEditor.tab[2])
+
+        GUIEditor.label[9] = guiCreateLabel(0, 176, 362, 24, "Click image to zoom", false, GUIEditor.staticimage[1])
+        guiSetFont(GUIEditor.label[9], "default-bold-small")
+        guiLabelSetColor(GUIEditor.label[9], 255, 0, 0)
+        guiLabelSetHorizontalAlign(GUIEditor.label[9], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[9], "center")
+
+        GUIEditor.label[10] = guiCreateLabel(288, 5, 362, 252, "[IMAGE GOES HERE]", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.label[10], "default-bold-small")
+        guiLabelSetHorizontalAlign(GUIEditor.label[10], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[10], "center")
+
+        GUIEditor.label[11] = guiCreateLabel(0, 234, 362, 18, "[ Click Image to Zoom ]", false, GUIEditor.label[10])
+        guiLabelSetColor(GUIEditor.label[11], 255, 137, 0)
+        guiLabelSetHorizontalAlign(GUIEditor.label[11], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[11], "center")
+
+        GUIEditor.button[14] = guiCreateButton(332, 258, 270, 26, "Set report VALID", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.button[14], "default-bold-small")
+        guiSetProperty(GUIEditor.button[14], "NormalTextColour", "FF5FFF00")
+        GUIEditor.button[15] = guiCreateButton(332, 288, 270, 26, "Set report INVALID", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.button[15], "default-bold-small")
+        guiSetProperty(GUIEditor.button[15], "NormalTextColour", "FFFF0000")
+        GUIEditor.button[16] = guiCreateButton(332, 318, 270, 26, "Set report CLOSED", false, GUIEditor.tab[2])
+        guiSetFont(GUIEditor.button[16], "default-bold-small")
+        guiSetProperty(GUIEditor.button[16], "NormalTextColour", "FFFFBA00")
+        GUIEditor.button[17] = guiCreateButton(332, 258, 270, 26, "Set report valid", false, GUIEditor.tab[2])
+        guiSetProperty(GUIEditor.button[17], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.edit[3] = guiCreateEdit(334, 349, 268, 22, "[ Insert extra comments for report ]", false, GUIEditor.tab[2])
+
+        GUIEditor.tab[3] = guiCreateTab("Staff Chat", GUIEditor.tabpanel[1])
+
+        GUIEditor.memo[1] = guiCreateMemo(5, 4, 493, 338, "--CHAT--", false, GUIEditor.tab[3])
+        guiMemoSetReadOnly(GUIEditor.memo[1], true)
+        GUIEditor.edit[4] = guiCreateEdit(7, 348, 491, 23, "", false, GUIEditor.tab[3])
+        GUIEditor.gridlist[3] = guiCreateGridList(499, 4, 156, 338, false, GUIEditor.tab[3])
+        guiGridListAddColumn(GUIEditor.gridlist[3], "Staff", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[3], "Status", 0.5)
+        guiGridListAddRow(GUIEditor.gridlist[3])
+        guiGridListSetItemText(GUIEditor.gridlist[3], 0, 1, "-", false, false)
+        guiGridListSetItemText(GUIEditor.gridlist[3], 0, 2, "-", false, false)
+        GUIEditor.button[18] = guiCreateButton(502, 349, 82, 22, "Send", false, GUIEditor.tab[3])
+        guiSetProperty(GUIEditor.button[18], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.checkbox[1] = guiCreateCheckBox(587, 349, 68, 21, "Mute", false, false, GUIEditor.tab[3])
+
+        GUIEditor.tab[4] = guiCreateTab("Bans", GUIEditor.tabpanel[1])
+
+        GUIEditor.gridlist[4] = guiCreateGridList(3, 2, 477, 379, false, GUIEditor.tab[4])
+        guiGridListAddColumn(GUIEditor.gridlist[4], "Name", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[4], "Account", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[4], "Duration", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[4], "Banner", 0.2)
+        GUIEditor.label[12] = guiCreateLabel(481, 2, 175, 270, "", false, GUIEditor.tab[4])
+
+        GUIEditor.tab[5] = guiCreateTab("Logs", GUIEditor.tabpanel[1])
+
+        GUIEditor.label[13] = guiCreateLabel(577, 24, 92, 23, "Close", false, GUIEditor.window[1])
+        guiLabelSetHorizontalAlign(GUIEditor.label[13], "center", false)    
+    end
+)

@@ -1,0 +1,13 @@
+<meta>
+	<!-- <script src="texture.lua" 	type="client" /> -->
+    <script src="medic_c.lua" 		type="client" />
+    <script src="medic_s.lua"		type="server" />
+    <script src="medicgui_c.lua" 	type="client" />
+    
+	<file src="hud/marker.png" 	type="client" />
+	<file src="shaders/replace.fx" 	type="client" />
+	<!-- <script src="files/multiShader_.luac" type="client" /> -->
+
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+    <info author="LilDolla" name="Paramedic Job" autostart="true"></info>
+</meta>

@@ -1,0 +1,80 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 27 Dec 2013
+-- Resource: GTIvehicles/add_delete.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+-- Add Vehicle
+--------------->>
+
+function addPlayerVehicle(player, model, x, y, z, rot, color, variant, cost, spawn)
+	local account = getPlayerAccount(player)
+
+	local dataID = getMaximumVehicleID()+1
+		-- Register Vehicle to Account
+	local accName = getAccountName(account)
+	setVehicleData(dataID, "owner", accName)
+	setVehicleData(dataID, "vehicleID", model)
+		-- Save Color
+	local colorString = ""
+	for i,col in ipairs(color) do
+		colorString = colorString..","..col
+	end
+	colorString = string.gsub(colorString, ",", "", 1)
+	setVehicleData(dataID, "color", colorString)
+		-- Save Various other Info
+	setVehicleData(dataID, "position", x..","..y..","..z..","..rot..",0,0")
+	setVehicleData(dataID, "health", 1000)
+	setVehicleData(dataID, "fuel", 50)
+	setVehicleData(dataID, "mileage", 0)
+	setVehicleData(dataID, "variant", variant[1]..","..variant[2])
+	setVehicleData(dataID, "originalPrice", cost or 0)
+	setVehicleData(dataID, "purchaseDate", getRealTime().timestamp)
+		-- Add Vehicle to Owner Database
+	local slot = getNextAvailibleVehicleIDSlot(player)
+	setVehicleOwnerData(account, "vehicle"..slot, dataID)
+	sortVehicleOwnerData(account)
+	if (spawn) then
+		despawnVehicle(player)
+			-- Create the Vehicle
+		local vehicle = createVehicle(model, x, y, z, 0, 0, rot)
+		local v = color
+		setVehicleColor(vehicle, v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11], v[12])
+		warpPedIntoVehicle(player, vehicle)
+			-- Register the Vehicle to the Owner
+		setElementData(vehicle, "vehicleID", dataID, false)
+		setElementData(vehicle, "owner", accName)
+		setElementData(vehicle, "mileage", 0)
+		setElementData(vehicle, "fuel", 50)
+		table.insert(vehicles[player], vehicle)
+		activeVehicleIDs[dataID] = true
+	end
+	return true
+end
+
+-- Delete Vehicle
+------------------>>
+
+function deleteVehicle(vehID)
+	local account = getAccount(getVehicleData(vehID, "owner"))
+	local health = getVehicleData(vehID, "health")
+	local model = getVehicleData(vehID, "vehicleID")
+	if (activeVehicleIDs[vehID]) then
+		local vehicle = getVehicleByID(vehID)
+		health = getElementHealth(vehicle)
+	end
+
+	local vehicleKey = getVehicleSlotFromID(account, vehID)
+	deleteVehicleOwnerData(account, vehicleKey)
+	setVehicleData(vehID, "active", 0)
+	sortVehicleOwnerData(account)
+
+	if (activeVehicleIDs[vehID]) then
+		local vehicle = getVehicleByID(vehID)
+		destroyElement(vehicle)
+		activeVehicleIDs[vehID] = nil
+	end
+	return true
+end

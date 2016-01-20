@@ -1,0 +1,5 @@
+<meta>
+<info author="Mitch" name="Capture The Securicar" autostart="false" />
+<script src="capture_c.lua" type="client" />
+<script src="capture_s.lua" type="server" />
+</meta>

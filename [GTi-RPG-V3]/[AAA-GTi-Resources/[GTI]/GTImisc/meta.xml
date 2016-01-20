@@ -1,0 +1,23 @@
+<meta>
+    <info author="JTPenn" name="/glue, /afk" autostart="true"></info>
+    <!-- <file src="dev-int/logo.png" />
+    <script src="dev-int/render_logo.lua" type="client" 	cache="false"/>-->
+    
+    <script src="misc.luac" type="client" />
+	<script src="nvision.lua" type="client" />
+
+	<script src="misc.slua" type="server" />
+    
+    <script src="afk.luac" type="client" />
+    <script src="adverts.lua" type="client" />
+    <script src="afk.slua" />
+    <script src="glue.slua" />
+	<script src="airportradar.slua" />
+
+	<file src="fx/ped_wall.fx" type="client"/>
+	<script src="money.slua" type="server"/>
+	<export function="gluePlayer" type="server" />
+	<export function="ungluePlayer" type="server" />
+	<export function="getPlayersGluedToVehicle" type="server" />
+	<export function="isPlayerGlued" type="server" />
+</meta>

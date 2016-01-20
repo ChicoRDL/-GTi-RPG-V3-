@@ -1,0 +1,125 @@
+----------------------------------------->>
+-- GTI: Grand Theft International Network
+-- Date: 18 Jan 2014
+-- Resource: GTImailcarrier/mailCarrier.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local vehIDs = {
+[413] = 0.881, -- Pony (Pay Offset)
+	-- 41,351 meters per hour (25.694 miles)
+[498] = 1.000, -- Boxville (Pay Offset)
+	-- 36,430 meters per hour (22.637 miles)
+}
+
+CARDBOARD_BOX = 1220
+
+--local dist = {}			-- Table of Player Distances (Debug Only)
+local packages = {}		-- Box Objects
+local lastPay = {}
+
+-- Payment Function
+-------------------->>
+
+function deliverPackage(vehicle, distance, finishMission)
+	if (lastPay[client]) then return end
+	lastPay[client] = true
+	setTimer(function(client) lastPay[client] = nil end, 15000, 1, client)
+	
+	local vehOffset = vehIDs[getElementModel(vehicle)]
+	local payOffset = exports.GTIemployment:getPlayerJobPayment(client, "Mail Carrier")
+	local hrPay = exports.GTIemployment:getPlayerHourlyPay(client)
+	local hrExp = exports.GTIemployment:getHourlyExperience()
+	
+	local progress = 1
+	local pay = math.ceil( distance*payOffset	* vehOffset )
+	local Exp = math.ceil( (pay/hrPay)*hrExp 	* vehOffset )
+	
+	exports.GTIemployment:modifyPlayerJobProgress(client, "Mail Carrier", progress)
+	exports.GTIemployment:modifyPlayerEmploymentExp(client, Exp, "Mail Carrier")
+	exports.GTIemployment:givePlayerJobMoney(client, "Mail Carrier", pay)
+	
+	if (not finishMission) then
+		exports.GTIhud:dm("Package Delivered!", client, 255, 200, 0)
+	else
+		exports.GTIhud:dm("Delivery Round Complete! Here's a bonus.", client, 255, 200, 0)
+	end
+	
+	--if (not dist[client]) then dist[client] = 0 end
+	--dist[client] = dist[client] + distance
+	--outputChatBox("* Total Distance: "..dist[client].." meters ("..string.format("%.3f", (dist[client]/1609)).." miles)", client, 25, 255, 25)
+end
+addEvent("GTImailcarrier.deliverPackage", true)
+addEventHandler("GTImailcarrier.deliverPackage", root, deliverPackage)
+
+-- Sync Packages
+----------------->>
+
+function carryPackage(vehicle)
+	local x,y,z = getElementPosition(client)
+	local rot = getElementRotation(client)
+		-- Just in case
+	if (packages[player]) then
+		destroyElement(packages[player])
+		packages[player] = nil
+	end
+	
+	packages[client] = createObject(CARDBOARD_BOX, x, y, z+1.5, 0, 0, rot)
+	attachElements(packages[client], client, -0.02, 0.450, 0.676)
+	setElementCollisionsEnabled(packages[client], false)
+	exports.GTIanims:setJobAnimation(client, "CARRY", "crry_prtial", 500, false, false, true, true)
+	toggleAllControls(client, false, true, false)
+	toggleControl(client, "enter_passenger", false)
+	for i,ctrl in ipairs({"forwards", "backwards", "left", "right", "walk"}) do
+		toggleControl(client, ctrl, true)
+	end
+	
+	setVehicleDoorOpenRatio(vehicle, 4, 1, 500)
+	setVehicleDoorOpenRatio(vehicle, 5, 1, 500)
+end
+addEvent("GTImailcarrier.carryPackage", true)
+addEventHandler("GTImailcarrier.carryPackage", root, carryPackage)
+
+function dropPackage(vehicle)
+	exports.GTIanims:setJobAnimation(client, "CARRY", "putdwn", 1000, false, false, true, false)
+	setTimer(function(player, vehicle)
+		exports.GTIanims:setJobAnimation(player)
+		toggleControl(player, "enter_passenger", true)
+		toggleAllControls(player, true, true, false)
+		if (packages[player]) then
+			destroyElement(packages[player])
+			packages[player] = nil
+		end
+		
+		setVehicleDoorOpenRatio(vehicle, 4, 0, 500)
+		setVehicleDoorOpenRatio(vehicle, 5, 0, 500)
+	end, 1000, 1, client, vehicle)
+end
+addEvent("GTImailcarrier.dropPackage", true)
+addEventHandler("GTImailcarrier.dropPackage", root, dropPackage)
+
+-- Terminate Job
+----------------->>
+
+function terminateJob(player)
+	if (not client) then client = player end
+	if (packages[client]) then
+		destroyElement(packages[client])
+		packages[client] = nil
+		exports.GTIanims:setJobAnimation(client)
+		toggleControl(client, "enter_passenger", true)
+		toggleAllControls(client, true, true, false)
+	end
+end
+addEvent("GTImailcarrier.terminateJob", true)
+addEventHandler("GTImailcarrier.terminateJob", root, terminateJob)
+
+addEventHandler("onPlayerQuit", root, function()
+	terminateJob(source)
+end)
+
+addEvent("onPlayerArrested", true)
+addEventHandler("onPlayerArrested", root, function()
+	terminateJob(source)
+end)

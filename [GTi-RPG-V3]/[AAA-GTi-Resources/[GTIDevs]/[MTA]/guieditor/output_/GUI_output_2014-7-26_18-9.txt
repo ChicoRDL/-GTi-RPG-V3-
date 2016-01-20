@@ -1,0 +1,23 @@
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawText("Weapon Stats", 1006, 244, 1356, 304, tocolor(255, 255, 255, 255), 1.50, "bankgothic", "center", "center", false, false, true, false, false)
+        dxDrawText("", 1006, 648, 1356, 679, tocolor(255, 255, 255, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText("UZI", 1006, 586, 1356, 617, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("MP5", 1006, 555, 1356, 586, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Ak47", 1006, 524, 1356, 555, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("M4", 1006, 493, 1356, 524, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Sawn Off", 1006, 462, 1356, 493, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Spas12", 1006, 431, 1356, 462, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Shotgun", 1006, 400, 1356, 431, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Deagle", 1006, 369, 1356, 400, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Silenced", 1006, 338, 1356, 369, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Sniper Rifle", 1006, 617, 1356, 648, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+        dxDrawText("Pistol", 1006, 307, 1356, 338, tocolor(255, 255, 255, 255), 1.50, "default-bold", "left", "center", false, false, true, false, false)
+    end
+)

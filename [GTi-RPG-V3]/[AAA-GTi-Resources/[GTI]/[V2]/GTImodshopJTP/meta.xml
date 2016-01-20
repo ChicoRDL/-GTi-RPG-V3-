@@ -1,0 +1,8 @@
+<meta>
+	<info author="JTPenn"	name="[EXP] Vehicle Customization Shop"	autostart="false" />
+	<script src="dxInterface.lua" 	type="client" cache="false"/>
+	<script src="modshop.lua" type="client" cache="false"/>
+	
+	<file src="images/transfender.png" />
+	<file src="images/LondonSixty.ttf" />
+</meta>

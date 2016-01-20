@@ -1,0 +1,1 @@
+C:/Lua/curl.exe -s -X POST -F compile=1 -F blockdecompile=1 -F encrypt=1 -F luasource=@"%1" http://luac.mtasa.com/index.php > "%1c"

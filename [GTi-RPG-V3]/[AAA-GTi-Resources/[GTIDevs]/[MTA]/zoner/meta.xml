@@ -1,0 +1,7 @@
+<meta>
+    <info name="ZoneEdit" type="script" author="PredatorX" version="1.0" description="ZoneEdit"></info>
+    <min_mta_version client="1.3.0-9.03739" server="1.3.0-9.03739" />
+
+    <script type="client" src="zoneC.lua" protected="true"></script>
+    <script type="server" src="zoneS.lua"></script>
+</meta>

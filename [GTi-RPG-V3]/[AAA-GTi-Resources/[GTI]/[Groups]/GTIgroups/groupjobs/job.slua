@@ -1,0 +1,47 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Ares
+-- Date: 10 Sep 2015
+-- Resource: GTIcriminals/jobs/job.slua
+-- Version: 1.0
+----------------------------------------->>
+
+Jobs = {
+	[2] = { "Criminal", "Madness Rebellious"},
+	[7] = { "Criminal", "Rude Prawns" },
+	[14] = { "Police Officer", "CIA Agent"},
+	[82] = { "Criminal", "TriForce"},
+	[618] = { "Criminal", "Public Enemy" },
+	[3018] = { "Criminal", "Dem Boy" },
+}
+
+--addEvent("GroupJobs:changeBlipColor", true)
+
+function onPlayerGetJob( job )
+	local groupID = exports.GTIgroups:getPlayerGroup(source)
+	if ( Jobs[groupID] ) then
+		local jobName, jobGroup, r, g, b = Jobs[groupID][1], Jobs[groupID][2], exports.GTIgroups:getGroupColor(groupID)
+		if ( job == jobName ) then
+			setElementData(source, "_job", jobGroup)
+			setElementData(source, "GTIgroups.groupColor", r..";"..g..";"..b)
+			--setPlayerNametagColor(source, r, g, b)
+		else
+			setElementData(source, "_job", exports.GTIemployment:getPlayerJob(source))
+			setElementData(source, "GTIgroups.groupColor", nil)
+		end
+	end
+end
+addEventHandler("onPlayerGetJob", root, onPlayerGetJob)
+--addEventHandler("GroupJobs:changeBlipColor", root, onPlayerGetJob)
+
+function onPlayerQuitJob( job )
+	local groupID = exports.GTIgroups:getPlayerGroup(source)
+	if ( Jobs[groupID] ) then
+		--if ( job == jobName ) then
+			setElementData(source, "_job", exports.GTIemployment:getPlayerJob(source))
+			setElementData(source, "GTIgroups.groupColor", nil)
+			--setPlayerNametagColor(source, getTeamColor( getPlayerTeam(source) ) )
+		--end
+	end
+end
+addEventHandler("onPlayerQuitJob", root, onPlayerQuitJob)

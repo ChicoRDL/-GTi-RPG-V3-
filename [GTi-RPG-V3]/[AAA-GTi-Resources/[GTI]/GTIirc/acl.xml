@@ -1,0 +1,25 @@
+﻿<acl>
+	<!--L0/Guest Commands-->
+	<command name="!pcount" level="0" echoChannelOnly="true" desc="Displays server player count." />
+	<command name="!uptime" level="0" echoChannelOnly="true" desc="Displays server uptime." />
+	<command name="!players" level="0" echoChannelOnly="true" desc="Displays a list of all players IG." />
+	<command name="!pm" level="0" echoChannelOnly="true" desc="Allows you to PM players who are IG." />
+	<command name="!commands" level="0" echoChannelOnly="true" desc="Gives you a list of all commands you can use." />
+	<command name="!cmds" level="0" echoChannelOnly="true" desc="Gives you a list of all commands you can use." />
+	<!--L1 Commands-->
+	<command name="!say" level="1" echoChannelOnly="true" desc="Allows you to talk IG from IRC [Main Chat]." />
+	<command name="!s" level="1" echoChannelOnly="true" desc="Allows you to talk IG from IRC [Main Chat]." />
+	<command name="!sup" level="1" echoChannelOnly="true" desc="Allows you to talk in the IG Support Chat from IRC." />
+	<command name="!support" level="1" echoChannelOnly="true" desc="Allows you to talk in the IG Support Chat from IRC." />
+	<!--L2 Commands-->
+	<command name="!note" level="2" echoChannelOnly="true" desc="Allows you to say a note IG." />
+	<!--L5 commands-->
+	<command name="!refresh" level="5" echoChannelOnly="true" desc="Allows you to refresh the server for resources." />
+	<command name="!resources" level="5" echoChannelOnly="true" desc="Displays a list of all resources." />
+	<command name="!start" level="5" echoChannelOnly="true" desc="Allows you to start a resource." />
+	<command name="!restart" level="5" echoChannelOnly="true" desc="Allows you to restart a resource." />
+	<command name="!stop" level="5" echoChannelOnly="true" desc="Allows you to stop a resource." />
+	<command name="!run" level="5" echoChannelOnly="true" desc="Allows you to run functions [Server Side]." />
+	<command name="!crun" level="5" echoChannelOnly="true" desc="Allows you to run functions [Client Side]." />
+	<command name="!status" level="5" echoChannelOnly="true" desc="Allows you to know what's a resource state" />
+</acl>

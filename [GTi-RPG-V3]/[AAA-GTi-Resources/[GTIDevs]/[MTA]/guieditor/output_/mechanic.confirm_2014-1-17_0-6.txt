@@ -1,0 +1,26 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(485, 308, 395, 113, "Mechanic Repair", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(10, 22, 376, 15, "[ABC]Player>123 wants to repair your CarName", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(136, 42, 123, 15, "Repair Cost: $2,500", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 75, 255, 75)
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.button[1] = guiCreateButton(9, 62, 183, 27, "Repair Vehicle", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(199, 62, 187, 27, "Decline Repair", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[2], "default-bold-small")
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[3] = guiCreateLabel(147, 92, 99, 15, "Press M to show cursor", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)

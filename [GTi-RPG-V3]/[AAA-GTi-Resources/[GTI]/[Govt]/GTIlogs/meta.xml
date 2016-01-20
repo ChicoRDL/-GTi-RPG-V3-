@@ -1,0 +1,12 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Server Logging System" autostart="true" />
+    <script src="database.slua" />
+    <script src="logging.slua" />
+	<script src="log_files.slua" />
+    
+    <export function="outputLog" 		type="server" />
+    <export function="outputWebLog" 	type="server" />
+	<export function="outputAdminLog"	type="server" />
+	<export function="outputServerLog"	type="server" />
+	<export function="outputAccountLog"	type="server" />
+</meta>

@@ -1,0 +1,43 @@
+<meta>
+   <info author="JTPenn" 	version="1.5"	name="Accounts System"	type="script"
+	description="Accounts System and Central Accounts Database" autostart="true" />
+	
+	<script src="database.slua" 					/>
+    
+	<script src="login/loginGUI.luac" 	type="client"		/>
+   	<script src="login/login_util.luac" type="client"		/>
+	<script src="login/login.luac" 		type="client"		/>
+   	<script src="login/login.slua" 					/>
+  	 
+	<script src="recovery/recovery_gui.luac"type="client" 		/>
+	<script src="recovery/recovery.luac"	type="client"		/>
+	<script src="recovery/recovery.slua"				/>
+	
+	<script src="spawn/spawn.luac"		type="client" 		/>
+	<script src="spawn/spawn.slua"					/>
+	
+	<script src="transitions.luac" 	type="client" 			/>
+	<script src="encryption.slua" 					/>
+    	<script src="start_screen.slua" 				/>
+			
+	<file src="images/gti_logo.png"					/>
+	<file src="images/recent_updates.png" 				/>
+	<file src="images/user.png"					/>
+	<file src="images/pass.png"					/>
+			
+    	<export function="invSet" 			type="server" />
+    	<export function="invGet" 			type="server" />
+	<export function="SAD" 				type="server" />
+    	<export function="GAD" 				type="server" />
+   	<export function="encryptPassword"		type="server" />
+	<export function="deleteAccount" 		type="server" />
+	<export function="isPlayerLoggedIn"		type="client" />
+	
+	<aclrequest>
+		<right name="function.setPlayerMoney" 	access="true" />
+		<right name="function.kickPlayer" 	access="true" />
+		<right name="function.removeAccount" 	access="true" />
+		<right name="function.addAccount" 	access="true" />
+	</aclrequest>
+	<min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000" />
+</meta>

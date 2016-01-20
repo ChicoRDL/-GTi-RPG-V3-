@@ -1,0 +1,230 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 01 Dec 2013
+-- Resource: GTIaccounts/database.slua
+-- Version: 2.6
+----------------------------------------->>
+
+setGameType("GTI:RPG:CnR v2.0")
+setMapName("GTI:RPG:CnR")
+
+-- Database Functions
+---------------------->>
+
+local SERVER_PORT = 22003	-- Only Save Data on Main Server
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `accountdata`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `inventory`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+
+local database_online		-- Is Database Online?
+local accountData = {}		-- Account Data Cache
+local inventory_online = {}	-- Is Database Online?
+local inventory = {}		-- Account Data Cache
+
+addEvent("onDatabaseLoad")	-- Triggers when the database is ready
+addEvent("onAccountDelete")	-- Triggers when an account is deleted
+
+-- Cache Account Data Database
+------------------------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cacheDatabase, {}, db, "SELECT * FROM `accountdata`")
+end)
+
+function cacheDatabase(qh)
+	local result = dbPoll(qh, 0)
+	accountData["Console"] = {}
+	for i,row in ipairs(result) do
+		accountData[row.name] = {}
+		for column,value in pairs(row) do
+			if (column ~= "name" or column ~= "id") then
+				if (not accountData["Console"][column]) then
+					accountData["Console"][column] = true
+				end
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				accountData[row.name][column] = value
+			end
+		end
+	end
+	database_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "accountdata")
+end
+
+-- Cache Inventory Database
+---------------------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	for i,player in ipairs(getElementsByType("player")) do
+		local account = getPlayerAccount(player)
+		if (not isGuestAccount(account)) then
+			local account = getAccountName(account)
+			dbQuery(cacheDatabaseByPlayer, {player}, db, "SELECT * FROM `inventory` WHERE `name`=?", account)
+		end
+	end
+end)
+
+addEventHandler("onPlayerLogin", root, function(_, account)
+	if (isGuestAccount(account)) then return false end
+	local account = getAccountName(account)
+	dbQuery(cacheDatabaseByPlayer, {source}, db, "SELECT * FROM `inventory` WHERE `name`=?", account)
+end)
+
+function cacheDatabaseByPlayer(qh, player)
+	if (not inventory["Console"]) then
+		inventory["Console"] = {}
+	end
+	
+	local result = dbPoll(qh, 0)
+	local row = result[1]
+	if (not row) then 
+		inventory_online[getAccountName(getPlayerAccount(player))] = true
+	return end
+	
+	inventory[row.name] = {}
+	for column,value in pairs(row) do
+		if (column ~= "name" or column ~= "id") then
+			if (not inventory["Console"][column]) then
+				inventory["Console"][column] = true
+			end
+			if (value == "true") then value = true end
+			if (value == "false") then value = false end
+			inventory[row.name][column] = value
+		end
+	end
+	inventory_online[row.name] = true
+	triggerEvent("onDatabaseLoad", player, "inventory")
+end
+
+addEventHandler("onPlayerQuit", root, function()
+	local account = getPlayerAccount(source)
+	if (isGuestAccount(account)) then return end
+	local account = getAccountName(account)
+	if (inventory[account]) then
+		inventory[account] = nil
+		inventory_online[account] = nil 
+	end
+end)
+
+-- Account Exports
+------------------->>
+
+function SAD(account, key, value)
+	if (not database_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	
+	local account = getAccountName(account)
+	
+	if (not accountData[account]) then
+		accountData[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `accountdata`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (accountData["Console"] and accountData["Console"][key] == nil) then
+		accountData["Console"][key] = true
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `accountdata` ADD `??` text", key)
+		end
+	end
+	
+	accountData[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `accountdata` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `accountdata` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function GAD(account, key)
+	if (not database_online) then return nil end
+	if (not account or not key) then return nil end
+	if (isGuestAccount(account) or type(key) ~= "string") then return nil end
+	
+	local account = getAccountName(account)
+	if (accountData[account] == nil) then return nil end
+	if (accountData[account][key] == nil) then return nil end
+	
+	return tonumber(accountData[account][key]) or accountData[account][key]
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(db, "DELETE FROM `accountdata` WHERE name=?", account)
+	accountData[account] = nil
+end)
+
+-- Inventory Exports
+--------------------->>
+
+function invSet(account, key, value)
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	local account = getAccountName(account)
+	if (not inventory_online[account]) then	return false end
+		
+	if (not inventory[account]) then
+		inventory[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `inventory`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (inventory["Console"] and inventory["Console"][key] == nil) then
+		inventory["Console"][key] = true
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `inventory` ADD `??` text", key)
+		end
+	end
+	
+	inventory[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `inventory` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `inventory` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function invGet(account, key)
+	if (not account or not key) then return nil end
+	if (isGuestAccount(account) or type(key) ~= "string") then return nil end
+	local account = getAccountName(account)
+	if (not inventory_online[account]) then	return nil end
+	
+	if (inventory[account] == nil) then return nil end
+	if (inventory[account][key] == nil) then return nil end
+	
+	return tonumber(inventory[account][key]) or inventory[account][key]
+end
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+	dbExec(db, "DELETE FROM `accountdata` WHERE name=?", account)
+	inventory[account] = nil
+end)
+
+-- Account Deletion
+-------------------->>
+
+function deleteAccount(account, admin)
+	if (not account or isGuestAccount(account) or not admin or not isElement(admin)) then return end
+	triggerEvent("onAccountDelete", resourceRoot, getAccountName(account))
+	if (wasEventCancelled()) then return end
+	exports.GTIlogs:outputAdminLog("ACCOUNTS: Account '"..getAccountName(account).."' has been deleted by "..getPlayerName(admin)..".", admin)
+	removeAccount(account)
+	return true
+end

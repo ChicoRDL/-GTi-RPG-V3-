@@ -1,0 +1,70 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 22 Mar 2015
+-- Resource: GTIvehicleChallenges/records.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local db = dbConnect("sqlite", "records.db")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `records_bmx`(`account` TEXT, `time` INT, `date` INT)")
+
+local TOP_TIMES = 15	-- Number of Top Times to Store
+
+-- Get Records
+--------------->>
+
+function getTopRecords(players)
+	local result = dbPoll(dbQuery(db, "SELECT * FROM `records_bmx` ORDER BY `time` ASC LIMIT "..TOP_TIMES), -1)
+	local records = {}
+	for i,v in ipairs(result) do
+		if (players) then
+			v.account = exports.GTIaccounts:GAD(getAccount(v.account), "lastname")
+		end
+		table.insert(records, {v.account, v.time, v.date})
+	end
+	return records
+end
+
+function addNewRecordIfBeaten(player, new_time)
+		-- See if Player Broke Record
+	local records = getTopRecords()
+	local account = getAccountName(getPlayerAccount(player))
+	local new_record, acc_exists
+	for i,v in ipairs(records) do
+		if (not new_record and new_time < v[2]) then
+			new_record = i
+		end
+		if (v[1] == account) then
+			acc_exists = i
+		end
+	end
+	
+		-- If less than 15 records, put player on the board
+	if (#records < TOP_TIMES and not new_record and not acc_exists) then
+		new_record = #records + 1
+	end
+		
+		-- If they didn't break a record, return false
+	if (not new_record) then return false end
+	
+		-- Add Record to Database
+	if (acc_exists and new_time < records[acc_exists][2]) then
+			-- Update Current Record if Top Time
+		records[acc_exists][2] = new_time
+		records[acc_exists][3] = getRealTime().timestamp
+		dbExec(db, "UPDATE `records_bmx` SET `time`=?, `date`=? WHERE `account`=?", new_time, getRealTime().timestamp, getAccountName(getPlayerAccount(player)))
+		return new_record
+	elseif (new_record) then
+			-- Add New Record to Database
+		table.insert(records, new_record, {getAccountName(getPlayerAccount(player)), new_time, getRealTime().timestamp})
+		dbExec(db, "INSERT INTO `records_bmx`(`account`, `time`, `date`) VALUES(?,?,?)", getAccountName(getPlayerAccount(player)), new_time, getRealTime().timestamp)
+			-- Remove Last Place Value if More than 15 records
+		if (#records > TOP_TIMES) then
+			local acc_name = records[16][1]
+			dbExec(db, "DELETE FROM `records_bmx` WHERE `account`=?", acc_name)
+		end
+		return new_record
+	end
+	return false
+end

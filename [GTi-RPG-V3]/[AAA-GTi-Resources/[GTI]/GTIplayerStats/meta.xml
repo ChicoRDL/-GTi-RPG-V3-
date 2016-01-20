@@ -1,0 +1,12 @@
+<meta>
+    <info author="JTPenn" name="[GTI2] Player, Vehicle, and Weapon Skills" autostart="true" />
+    
+    <file src="fonts/verdana.ttf" />
+    
+    <script src="hud_stat.luac" type="client" />
+    <script src="stamina.luac" type="client" />
+    <script src="vehicle_skills.luac" type="client" />
+    <script src="weapon_skills.lua" type="client" cache="false"/>
+    <script src="wep_training/wep_training.lua" type="client" cache="false"/>
+    <script src="player_stats.slua" />
+</meta>

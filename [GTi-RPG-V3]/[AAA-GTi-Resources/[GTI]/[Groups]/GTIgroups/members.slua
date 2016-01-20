@@ -1,0 +1,266 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 07 Mar 2014
+-- Resource: GTIgroups/members.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local invites = {}
+
+local member_limit = {
+	[1] = 45,	[2] = 45,	[3] = 45,	[4] = 45,	[5] = 45,
+	[6] = 45,	[7] = 45,	[8] = 45,	[9] = 45,	[10] = 45,	
+	[11] = 45,	[12] = 45,	[13] = 45,	
+}
+
+-- Group Membership
+-------------------->>
+
+function addMember(groupID, member, rank)
+	if (not isElement(member) or not rank) then return false end
+		-- Is Group Valid?
+	local isGroup = getGroupData(groupID, "display_name")
+	if (not isGroup) then return false end
+		-- Add Member
+	local account = getPlayerAccount(member)
+	setGroupMemberData(account, "group_id", groupID)
+		-- Set Rank
+	setGroupMemberData(account, "rank_id", rank)
+		-- Record Join Time
+	setGroupMemberData(account, "join_time", getRealTime().timestamp)
+		-- Associate MembersByGroup[groupID] = {"accountName", ...}
+	if (type(MembersByGroup[groupID]) ~= "table") then MembersByGroup[groupID] = {} end
+	local account = getAccountName(account)
+	table.insert(MembersByGroup[groupID], account)
+		-- Set Element Data
+	setElementData(member, "group", getGroupName(groupID))
+	setElementData(member, "groupID", getPlayerGroup(member))
+	return true
+end
+
+function deleteMember(account)
+	if (not account or isGuestAccount(account)) then return false end
+	dropGroupMemberData(account)
+	local player = getAccountPlayer(account)
+	if (isElement(player)) then
+		removeElementData(player, "group")
+		removeElementData(player, "groupID")
+			-- Resign if Turfing
+		if (exports.GTIgangTerritories:isGangster(player) or exports.GTIgangTerritories:isSWAT(player)) then
+			exports.GTIemployment:resign(player)
+		end	
+	end
+	return true
+end
+
+-- Get Members
+--------------->>
+
+function getGroupMembers(groupID)
+	if not MembersByGroup[groupID] then return {} end
+	
+	local members = {}
+	for k,v in ipairs(MembersByGroup[groupID]) do
+		if getAccount(v) then
+			table.insert(members,v)
+		else
+			outputDebugString("[Group] Member "..v.." doesn't exist. Removing from group...")
+			deleteNilAccount(v)
+		end
+	end
+	
+	return members
+end
+
+function getGroupLeaders(groupID)
+	local members = getGroupMembers(groupID)
+	if (#members == 0) then return end
+	
+	local leaders = {}
+	for i,acc_name in ipairs(members) do
+		local account = getAccount(acc_name)
+		if (account) then
+			local rankID = getGroupMemberData(account, "rank_id")
+			if (getGroupRankData(rankID, "isLeader") == 1) then
+				table.insert(leaders, acc_name)
+			end
+		end
+	end
+	return leaders
+end
+
+-- Group-Member Relations
+-------------------------->>
+
+function arePlayersInSameGroup(player1, player2)
+	if (not player1 or not player2) then return false end
+	if (not isElement(player1) or not isElement(player2)) then return false end
+	local group1 = getPlayerGroup(player1)
+	if (not group1) then return false end
+	local group2 = getPlayerGroup(player2)
+	if (not group2) then return false end
+	if (group1 == group2) then return true end
+	return false
+end
+
+function areAccountsInSameGroup(account1, account2)
+	if (not account1 or not account2) then return false end
+	if (isGuestAccount(account1) or isGuestAccount(account2)) then return false end
+	local group1 = getAccountGroup(account1)
+	if (not group1) then return false end
+	local group2 = getAccountGroup(account2)
+	if (not group2) then return false end
+	if (group1 == group2) then return true end
+	return false
+end
+
+function getPlayerGroup(player, name)
+	if (not player or not isElement(player) or getElementType(player) ~= "player") then return false end
+	local account = getPlayerAccount(player)
+	local groupID = getGroupMemberData(account, "group_id")
+	if (name) then
+		return getGroupData(groupID, "display_name")
+	end
+	return groupID
+end
+
+function getAccountGroup(account, name)
+	if (not account or isGuestAccount(account)) then return false end
+	local groupID = getGroupMemberData(account, "group_id")
+	if (name) then
+		return getGroupData(groupID, "display_name")
+	end
+	return groupID
+end
+
+function isPlayerInGroup(player)
+	if (not player or not isElement(player) or getElementType(player) ~= "player") then return false end
+	local account = getPlayerAccount(player)
+	local groupID = getGroupMemberData(account, "group_id")
+	if (groupID) then return true end
+	return false
+end
+
+-- Group Chat
+-------------->>
+
+function outputGroupChat(text, groupID, text_display, gridlist)
+	local members = getGroupMembers(groupID)
+	if (not members) then return false end
+	local r,g,b = getGroupColor(groupID)
+	for i,member in ipairs(members) do
+		memberElement = member
+		local account = getAccount(member)
+		if (account) then
+			local member = getAccountPlayer(account)
+			if (member) then
+				if (not text_display) then
+					outputChatBox(text, member, r, g, b, true)
+					if (gridlist) then
+						exports.GTIchat:outputGridlist(member, member, "Group", text)
+					end
+				else
+					exports.GTIhud:dm(text, member, r, g, b, true)
+				end
+			end
+		end
+	end
+	return true
+end
+
+local antiflood = {}
+
+function groupChat(player, cmd, ...)
+	local groupID = getPlayerGroup(player)
+	if (not groupID) then return end
+	
+	if antiflood[player] then return outputChatBox("* You can only send a message per second!",player,255,0,0) end
+	antiflood[player] = setTimer(function() antiflood[player] = nil end, 1000, 1)
+	
+	local message = table.concat({...}, " ")
+	if (string.gsub(message, "%s", "") == "") then return end
+	outputGroupChat("(GROUP) "..getPlayerName(player)..": #FFFFFF"..message, groupID, false, true)
+	exports.GTIlogs:outputServerLog("(GROUP) [ID:"..groupID.."] "..getPlayerName(player)..": "..message, "groups", player)
+end
+addCommandHandler("gc", groupChat)
+
+-- Group Note
+-------------->>
+
+function groupNote(player, cmd, ...)
+	local groupID = getPlayerGroup(player)
+	if (not groupID) then return end
+	if (hasMemberPermissionTo(player, "group_note")) then
+		local message = table.concat({...}, " ")
+		if (string.gsub(message, "%s", "") == "") then return end
+		outputGroupChat("#DC143C(GROUPNOTE) "..getPlayerName(player)..": #FFFFFF"..message, groupID, false, true)
+		exports.GTIlogs:outputServerLog("(GROUPNOTE) [ID:"..groupID.."] "..getPlayerName(player)..": "..message, "groups", player)
+		 exports.GTIircg:outputGroupChannel(groupID, "(GROUPNOTE)", getPlayerName(player)..": "..message)
+		triggerEvent("onGroupNote", player, message, groupID)
+	end
+end	
+addCommandHandler("groupnote", groupNote)		
+addEvent("onGroupNote", true)
+
+-- Group Member Limit
+---------------------->>
+
+function getGroupMemberLimit(groupID)
+	local level = getGroupLevel(groupID) or 1
+	return member_limit[level] or false
+end
+
+-- Group Invites
+----------------->>
+
+function invitePlayer(player, groupID)
+	if (not isElement(player) or getElementType(player) ~= "player") then return false end
+	
+	if (#getGroupMembers(groupID) >= getGroupMemberLimit(groupID)) then return false end
+	
+	if (not invites[player]) then invites[player] = {} end
+	invites[player][groupID] = true
+	return true
+end
+
+function getGroupInvites(player)
+	return invites[player] or {}
+end
+
+function clearGroupInvite(player, groupID)
+	if (not invites[player]) then return false end
+	invites[player][groupID] = nil
+	return true
+end
+
+function clearAllInvites(player)
+	invites[player] = nil
+	return true
+end
+
+-- Set Group Data on Join
+-------------------------->>
+
+function setGroupOnJoin()
+	local groupName = getPlayerGroup(source, true)
+	if (not groupName) then return end
+	setElementData(source, "group", groupName)
+	setElementData(source, "groupID", getPlayerGroup(source))
+end
+addEventHandler("onPlayerLogin", root, setGroupOnJoin)
+
+function setGroupOnStart(data)
+	if (data ~= "group_members") then return end
+	for i,player in ipairs(getElementsByType("player")) do
+		local groupName = getPlayerGroup(player, true)
+		if (groupName) then
+			setElementData(player, "group", groupName)
+			setElementData(player, "groupID", getPlayerGroup(player))
+		elseif (getElementData(player, "group")) then
+			removeElementData(player, "group")
+			removeElementData(player, "groupID")
+		end
+	end
+end
+addEventHandler("onDatabaseLoad", resourceRoot, setGroupOnStart)

@@ -1,0 +1,76 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 09 Mar 2015
+-- Resource: GTIpoliceVehicles/stingers.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local stinger_veh = {
+	--[id] = {distanceFromCentre2Base, BoundingBoxMinY},	-- Name
+	[596] = {0.820, -3.13},	-- Police LS
+	[597] = {0.820, -3.13},	-- Police SF
+	[598] = {0.820, -3.13},	-- Police LV
+	[541] = {0.699, -2.25},	-- Bullet
+}
+
+local stingers = {}		-- Stinger Objects by Player
+local sting_inv = {}	-- Stinger Inventory by Vehicle
+
+local STINGER_MODEL = 2899	-- Stinger Model ID
+local STINGER_INV = 3
+
+-- Notify Player
+----------------->>
+
+addEventHandler("onVehicleEnter", root, function(player)
+	if (getElementType(player) ~= "player") then return end
+	if (not exports.GTIrentals:isVehicleRental(source)) then return end
+	if (not stinger_veh[getElementModel(source)]) then return end
+	if (not exports.GTIpoliceArrest:canPlayerArrest(player)) then return end
+	exports.GTIhud:drawNote("veh_inv", "Use /stinger deploy spike strips", player, 30, 125, 255, 7500)
+	sting_inv[source] = STINGER_INV
+end)
+
+-- Deploy Stinger
+------------------>>
+
+addCommandHandler("stinger", function(player)
+	if (not isPedInVehicle(player)) then return end
+	if (not exports.GTIpoliceArrest:canPlayerArrest(player)) then return end
+	local vehicle = getPedOccupiedVehicle(player)
+	if (not exports.GTIrentals:isVehicleRental(vehicle)) then return end
+	if (not stinger_veh[getElementModel(vehicle)]) then return end
+	
+	if (not sting_inv[vehicle] or sting_inv[vehicle] == 0) then
+		exports.GTIhud:dm("This vehicle has no more stingers left to deploy", client, 255, 25, 25)
+		return
+	end
+	
+	if (stingers[player]) then destroyElement(stingers[player]) end
+	
+	local x,y,z = getElementPosition(vehicle)
+	local _,_,rot = getElementRotation(vehicle)
+	stingers[player] = createObject(STINGER_MODEL, x, y, z, 0, 0, rot+90)
+	setElementData(stingers[player], "isStinger", true)
+	
+	attachElements(stingers[player], vehicle, 0, stinger_veh[getElementModel(vehicle)][2], -stinger_veh[getElementModel(vehicle)][1]+0.3)
+	detachElements(stingers[player], vehicle)
+	
+	sting_inv[vehicle] = sting_inv[vehicle] - 1
+	
+	exports.GTIhud:dm("STINGER DEPLOYED! You have "..sting_inv[vehicle].." remaining in this vehicle.", player, 30, 125, 255)
+end)
+
+-- Destroy Stinger
+------------------->>
+
+function destoryStinger()
+	if (stingers[source]) then
+		destroyElement(stingers[source])
+		stingers[source] = nil
+	end
+end
+addEventHandler("onPlayerVehicleExit", root, destoryStinger)
+addEventHandler("onPlayerWasted", root, destoryStinger)
+addEventHandler("onPlayerQuit", root, destoryStinger)

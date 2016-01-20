@@ -1,0 +1,4 @@
+function setMods ( )
+	triggerClientEvent ( source, "GTISettings_setWeaponMods", source )
+end
+addEventHandler ("onPlayerLogin", root, setMods )

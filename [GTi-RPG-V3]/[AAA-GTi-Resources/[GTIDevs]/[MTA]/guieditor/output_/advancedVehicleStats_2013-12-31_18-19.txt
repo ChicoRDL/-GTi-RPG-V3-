@@ -1,0 +1,42 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(562, 287, 250, 172, "Advanced Vehicle Stats", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(10, 24, 80, 15, "Vehicle Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 200, 0, 255)
+GUIEditor.label[2] = guiCreateLabel(94, 24, 147, 15, "<Vehicle Name>", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "clear-normal")
+GUIEditor.label[3] = guiCreateLabel(10, 46, 53, 15, "Location:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 200, 0, 255)
+GUIEditor.label[4] = guiCreateLabel(67, 46, 175, 15, "<District>, <City>", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "clear-normal")
+GUIEditor.label[5] = guiCreateLabel(10, 68, 41, 15, "Health:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 200, 0, 255)
+GUIEditor.label[6] = guiCreateLabel(128, 68, 27, 15, "Fuel:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 200, 0, 255)
+GUIEditor.label[7] = guiCreateLabel(56, 68, 66, 15, "47.0%", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "clear-normal")
+GUIEditor.label[8] = guiCreateLabel(161, 68, 66, 15, "47%", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "clear-normal")
+GUIEditor.label[9] = guiCreateLabel(10, 90, 48, 15, "Mileage:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[9], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[9], 200, 0, 255)
+GUIEditor.label[10] = guiCreateLabel(63, 90, 175, 15, "50,000.000 Miles", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "clear-normal")
+GUIEditor.label[11] = guiCreateLabel(10, 114, 35, 15, "Value:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[11], 200, 0, 255)
+GUIEditor.label[12] = guiCreateLabel(51, 114, 175, 15, "$99,999,999", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[12], "clear-normal")
+GUIEditor.button[1] = guiCreateButton(88, 135, 77, 28, "Close", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")

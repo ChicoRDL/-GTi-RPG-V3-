@@ -1,0 +1,26 @@
+﻿<root>
+	<radio name="User Track Player" path="12" type="4"/>
+	<radio name="Dubstep, drum and bass" path="http://dubstep.fm/listen.pls"  type="4"/>
+	<radio name="Electro, dance, house" path="http://stream.electroradio.ch:26630/listen.pls" type="4" />
+	<radio name="90s grunge rock" path="http://173.193.14.170:8006/listen.pls"  type="4"/>
+	<radio name="Hip hop, rap, rnb" path="http://mp3uplink.duplexfx.com:8054/listen.pls" type="4" />
+	<radio name="Reggae n Dancehall music" path="http://www.raggakings.net/listen.wax" type="4" />
+	<radio name="Dirty South FM" path="http://www.dirtysouthradioonline.com/broadband-128.asx" type="4" />
+	<radio name="Smooth Jazz Station" path="http://www.1.fm/go/baysmoothjazz128k.asx" type="4" />
+	<radio name="Rock Web Station" path="http://100xr.redirectme.net/100xr.asx" type="4" />
+	<radio name="Trance Live" path="http://yp.shoutcast.com/sbin/tunein-station.pls?id=163476" type="4" />
+	<radio name="PowerHit Radio" path="http://stream.power.ee/PHR.m3u" type="4" />
+	<radio name="Non Stop Play" path="http://www.nonstopplay.com/listen.pls" type="4" />
+	<radio name="SlamFM" path="http://vip-icecast.538.lw.triple-it.nl/SLAMFM_MP3.m3u" type="4" />
+	<radio name="Bob Marley Radio" path="http://dir.xiph.org/listen/4206056/listen.m3u" type="4" />
+	<radio name="Rasta MusicFM" path="http://dir.xiph.org/listen/3620739/listen.m3u" type="4" />
+	<radio name="Dance Wave" path="http://dir.xiph.org/listen/4210712/listen.m3u" type="4" />
+	<radio name="Manure's Rock Hits Radio" path="http://manurerock2.out.airtime.pro:8000/manurerock2_a" type="4" />
+	<radio name="House NERadio" path="http://listen.neradio.fm/listen.pls" />
+	<radio name="Hardstyle NERadio" path="http://listen.hardstyle.nu/listen.pls" type="4" />
+	<!--<radio name="test direct linka" path="http://www16.speedyshare.com/files/30069639/download/Butch%20Clancy%20-%20Russian%20Lullaby.mp3" type="4" />-->
+
+	
+	<!--radio type 0 = GTA radio; type 1 = grunge font for metal, rock etc; type 2 = future font for electro, techno, dubstep, rave, dance etc; type 3 = brush font for 60&70&80&90, classic, psychodelic and progressive, type 4 = other, normal font like in type 0 (but dont use type 0) -->
+	<!-- type = gta radio, type 1+ = internet radio -->
+</root>

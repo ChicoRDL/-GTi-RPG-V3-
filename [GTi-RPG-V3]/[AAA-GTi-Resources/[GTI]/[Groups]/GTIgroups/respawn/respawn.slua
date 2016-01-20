@@ -1,0 +1,93 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 27 Dec 2015
+-- Resource: GTIgroups/respawn/respawn.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local respawn_points = {}
+
+local respawn_plrs = {}
+
+-- Get Respawn Point
+--------------------->>
+
+function getBaseSpawnPoint(player)
+	if ( not getPlayerGroup(player) or not respawn_points[getPlayerGroup(player)] ) then return false end
+	return unpack(respawn_points[getPlayerGroup(player)])
+end
+
+function canPlayerSpawnInBase(player)
+	return respawn_points[getPlayerGroup(player)]
+end
+
+-- Respawn Position
+-------------------->>
+
+	-- Select Respawn on Wasted -->>
+addEventHandler("onPlayerWasted", root, function(_, killer)
+	if ( not canPlayerSpawnInBase(source)) then return end
+	if ( killer and exports.GTIpoliceArrest:canPlayerArrest(killer) and exports.GTIaccounts:GAD(getPlayerAccount(source), "jail_time") ~= 0 )  then return end
+	if exports.GTIprison:isPlayerInJail ( source ) then return end
+	if exports.GTIgangTerritories:isGangster ( source ) or exports.GTIgangTerritories:isSWAT ( source ) then return end
+	local x, y, z, rot, int, dim, loc = getBaseSpawnPoint(source)
+	local r, g, b = getTeamColor(getPlayerTeam(source))
+	exports.GTIhud:drawNote("group.respawn2", "Press 2 to respawn at hospital", source, r, g, b)
+	exports.GTIhud:drawNote("group.respawn", "Press 1 to respawn at "..loc.." base", source, r, g, b)
+	bindKey(source, "1", "down", setPlayerRespawnPosition)
+	bindKey(source, "num_1", "down", setPlayerRespawnPosition)
+	bindKey(source, "2", "down", setPlayerRespawnPosition)
+	bindKey(source, "num_2", "down", setPlayerRespawnPosition)
+end)
+
+function setPlayerRespawnPosition(player, key, state)
+	exports.GTIhud:drawNote("group.respawn2", "", player)
+	if (key == "1") then
+		local x, y, z, rot, int, dim, loc = getBaseSpawnPoint(player)
+		local r, g, b = getTeamColor(getPlayerTeam(player))
+		respawn_plrs[player] = {x, y, z, rot, int, dim, loc}
+		exports.GTIhud:drawNote("group.respawn", "Respawning at "..loc.." base...", player, r, g, b)
+			if ( exports.GTIemployment:getPlayerJob(player, true) == "Police Officer" ) then
+				exports.GTIhud:drawNote("police.respawn", "", player)
+			end
+	elseif (key == "2") then
+		respawn_plrs[player] = nil
+		local r, g, b = getTeamColor(getPlayerTeam(player))
+		exports.GTIhud:drawNote("group.respawn", "Respawning at nearest hospital...", player, r, g, b)
+			if ( exports.GTIemployment:getPlayerJob(player, true) == "Police Officer" ) then
+				exports.GTIhud:drawNote("police.respawn", "", player)
+			end
+	end
+end
+
+addEventHandler("onPlayerSpawn", root, function()
+	unbindKey(source, "1", "down", setPlayerRespawnPosition)
+	unbindKey(source, "num_1", "down", setPlayerRespawnPosition)
+	unbindKey(source, "2", "down", setPlayerRespawnPosition)
+	unbindKey(source, "num_2", "down", setPlayerRespawnPosition)
+	exports.GTIhud:drawNote("group.respawn", "", source)
+	exports.GTIhud:drawNote("group.respawn2", "", source)
+	if (not canPlayerSpawnInBase(source)) then return end
+	if (type(respawn_plrs[source]) == "table") then
+		local x, y, z, rot, int, dim, loc = unpack(respawn_plrs[source])
+		setElementPosition(source, x, y, z)
+		setElementRotation(source, 0, 0, rot)
+		setElementInterior(source, int)
+		setElementDimension(source, dim)
+	end
+	respawn_plrs[source] = nil
+end)
+
+	-- Clear Memory
+addEventHandler("onPlayerQuit", root, function()
+	respawn_plrs[source] = nil
+end)
+
+addEventHandler("onResourceStart", root,
+	function (res)
+		if ( res == getThisResource() or res == getResourceFromName("GTIgroupTable") ) then
+			respawn_points = exports.GTIgroupTable:getRespawnPoints()
+		end
+	end
+)

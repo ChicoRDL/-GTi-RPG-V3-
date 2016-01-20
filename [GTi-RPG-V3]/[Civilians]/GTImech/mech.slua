@@ -1,0 +1,171 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 03 Jun 2013
+-- Resource: GTImech/mech.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local HOURLY_PROG = 1175	-- HP Per Hour
+
+local repair_vehicle
+
+-- Diagnose Problems
+--------------------->>
+
+function sendDiagnosis()
+	local vehicle = source
+	if (not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return end
+	local veh_info = {}
+
+	veh_info["name"] = getVehicleName(vehicle)
+	local owner = exports.GTIvehicles:getVehicleOwner(vehicle)
+	if (owner) then
+		veh_info["owner"] = getPlayerName(owner)
+	else
+		veh_info["owner"] = "Unowned"
+	end
+
+	veh_info["engine"] = exports.GTIvehicles:getVehicleEngineDamage(vehicle)
+	veh_info["engine_repair"] = exports.GTIvehicles:getVehicleEngineRepairCost(vehicle)
+	veh_info["body"] = exports.GTIvehicles:getVehicleBodyDamage(vehicle)
+	veh_info["body_repair"] = exports.GTIvehicles:getVehicleBodyRepairCost(vehicle)
+	veh_info["fuel"] = getElementData(vehicle, "fuel") or 50
+	veh_info["total"] = exports.GTIvehicles:getVehicleRepairCost(vehicle)
+
+	triggerClientEvent(client, "GTImech.processDiagnosis", vehicle, veh_info)
+end
+addEvent("GTImech.sendDiagnosis", true)
+addEventHandler("GTImech.sendDiagnosis", root, sendDiagnosis)
+
+-- Repair Vehicle
+------------------>>
+
+function notifyRepair()
+	local vehicle = source
+	local owner = exports.GTIvehicles:getVehicleOwner(vehicle)
+	if (not owner) then
+		exports.GTIhud:dm("This vehicle has no owner. You can only repair vehicles that have owners.", client, 255, 125, 0)
+	else
+		--Check if the vehicle is being repaired by another mechanic (Jack)
+		if (getElementData(vehicle, "repairing")) then
+			exports.GTIhud:dm("This vehicle is being repaired by another mechanic.", client, 255, 125, 0)
+			return
+		end
+
+		--Check the vehicle's health. If it's 100% then there's no need for a repair.
+		if (getElementHealth(vehicle) >= 1000) then
+			exports.GTIhud:dm("This vehicle is in no need of a repair.", client, 255, 125, 0)
+			return
+		end
+		
+		if (owner ~= client) then
+			local cost = exports.GTIvehicles:getVehicleRepairCost(vehicle)
+			triggerClientEvent(owner, "GTImech.sendNotice", vehicle, client, cost)
+			exports.GTIhud:dm("The owner of this vehicle has been notified. Waiting for response...", client, 255, 125, 0)
+		else
+			triggerEvent("GTImech.acceptRepair", vehicle, client, client)
+		end
+	end
+end
+addEvent("GTImech.notifyRepair", true)
+addEventHandler("GTImech.notifyRepair", root, notifyRepair)
+
+function acceptRepair(mech, owner)
+	if (exports.GTIemployment:getPlayerJob(mech, true) ~= "Mechanic") then return end
+	if (not client) then client = owner end
+	if (not isElement(mech)) then
+		exports.GTIhud:dm("The mechanic that notified you of a repair no longer exists.", client, 255, 125, 0)
+		return
+	end
+	if (not isElement(source)) then
+		exports.GTIhud:dm("The vehicle cannot be found.", client, 255, 125, 0)
+		exports.GTIhud:dm("The vehicle cannot be found.", mech, 255, 125, 0)
+		return
+	end
+	
+	--Check if the mechanic is in a vehicle. If so, decline! (Jack)
+	if (isPedInVehicle(mech)) then	
+		exports.GTIhud:dm("You can't repair a vehicle while in a vehicle!", mech, 255, 125, 0)
+		exports.GTIhud:dm("The mechanic that notified you is currently unavailable.", client, 225, 125, 0)
+		return
+	end
+
+	local repair_cost = exports.GTIvehicles:getVehicleRepairCost(source)
+	local cash = getPlayerMoney(client)
+	if (repair_cost > cash) then
+		exports.GTIhud:dm("You cannot afford to repair this vehicle. ($"..exports.GTIutil:tocomma(repair_cost - cash).." needed)", client, 255, 125, 0)
+		exports.GTIhud:dm("Your customer cannot afford to repair this vehicle.", mech, 255, 125, 0)
+		return
+	end
+
+	local damage = exports.GTIvehicles:getVehicleEngineDamage(source) + exports.GTIvehicles:getVehicleBodyDamage(source)
+	setElementFrozen(mech, true)
+	setElementFrozen(source, true)
+	setPedAnimation(mech, "RYDER", "RYD_Beckon_03", -1, true, false, false, true)
+	setTimer(repairVehicle, (damage*100)+1000, 1, client, mech, source, repair_cost)
+	setElementData(source, "repairing", true) --set "repairing" to true so other mechanics can't repair it also.
+end
+addEvent("GTImech.acceptRepair", true)
+addEventHandler("GTImech.acceptRepair", root, acceptRepair)
+
+function repairVehicle(owner, mech, vehicle, cost)
+	if (not isElement(owner) and not isElement(mech)) then return end
+	if (exports.GTIemployment:getPlayerJob(mech, true) ~= "Mechanic") then return end
+	if (not isElement(owner) and isElement(mech)) then
+		exports.GTIhud:dm("The vehicle's owner has disappeared.", mech, 255, 25, 25)
+		return
+	end
+	if (isElement(owner) and not isElement(mech)) then
+		if (not isElement(vehicle)) then
+			exports.GTIhud:dm("The mechanic and the vehicle has disappeared.", owner, 255, 25, 25)
+			setPedAnimation(mech)
+		else
+			exports.GTIhud:dm("The mechanic has disappeared.", owner, 255, 25, 25)
+		end
+		return
+	end
+	if (not isElement(vehicle)) then
+		setPedAnimation(mech)
+		exports.GTIhud:dm("The vehicle has disappeared.", owner, 255, 25, 25)
+		exports.GTIhud:dm("The vehicle has disappeared.", mech, 255, 25, 25)
+		return
+	end
+
+	setPedAnimation(mech)
+	setElementFrozen(mech, false)
+	setElementFrozen(vehicle, false)
+	if (owner ~= mech) then
+
+		local hrExp = exports.GTIemployment:getHourlyExperience()
+		local progress = (1000-getElementHealth(vehicle))/10
+		local progress = tonumber(string.format("%.1f", progress ))
+		local exp_ = math.ceil( (progress/HOURLY_PROG)*hrExp )
+
+		exports.GTIemployment:modifyPlayerJobProgress(mech, "Mechanic", progress)
+		if (not exports.GTIgroups:arePlayersInSameGroup(owner, mech)) then
+			exports.GTIemployment:modifyPlayerEmploymentExp(mech, exp_, "Mechanic")
+		end
+		exports.GTIemployment:givePlayerJobMoney(mech, "Mechanic", cost)
+		exports.GTIbank:TPM(owner, cost, "GTImech: Vehicle Repair ("..getPlayerName(mech)..")")
+		exports.GTIhud:dm("Your "..getVehicleName(vehicle).." has been repaired for $"..exports.GTIutil:tocomma(cost), owner, 255, 200, 0)
+		exports.GTIhud:dm("You have repaired this "..getVehicleName(vehicle).." and earned $"..exports.GTIutil:tocomma(cost), mech, 255, 200, 0)
+	else
+		exports.GTIbank:TPM(owner, cost, "GTImech: Vehicle Repair ("..getPlayerName(mech)..")")
+		exports.GTIhud:dm("You have repaired your "..getVehicleName(vehicle).." for $"..exports.GTIutil:tocomma(cost), owner, 255, 200, 0)
+	end
+	exports.GTIvehicles:repairVehicle(vehicle)
+	removeElementData(vehicle, "repairing") --set repairing to nil so mechanics can repair the vehicle in future.
+end
+
+
+function completeMission(plr, money)
+	if (isElement(plr)) then	
+		exports.GTIemployment:modifyPlayerJobProgress(plr, "Mechanic", 50)
+		exports.GTIemployment:givePlayerJobMoney(plr, "Mechanic", money)
+		triggerClientEvent(plr, "GTImech.repaired", plr)
+	end
+end
+addEvent("GTImechanic.completeMission", true)
+addEventHandler("GTImechanic.completeMission", root, completeMission)	
+		

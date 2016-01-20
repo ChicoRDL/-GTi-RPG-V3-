@@ -1,0 +1,39 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Ares
+-- Date: 7 Jul 2015
+----------------------------------------->>
+
+-- 'vehiclegrunge256'
+-- #emapsultanbody256
+
+local group_veh_shaderTable = { 
+    { group = 2, model = 560, textureName = '#emapsultanbody256', texturePath = "GHoST1.jpg" },
+    --[[{ group = 2, model = 409, textureName = 'vehiclegrunge256', texturePath = "GHoST2.jpg" },
+    { group = 2, model = 562, textureName = '#emapelegybody128', texturePath = "GHoST3.jpg" },
+	{ group = 2, model = 451, textureName = 'vehiclegrunge256', texturePath = "GHoST4.jpg" },]]
+	{ group = 2, model = 541, textureName = 'vehiclegrunge256', texturePath = "GHoST5.jpg" },
+	{ group = 14, model = 560, textureName = '#emapsultanbody256', texturePath = "CIA1.png" },
+	{ group = 14, model = 559, textureName = '#emapjesterbody256', texturePath = "CIA2.jpg" },
+	{ group = 14, model = 541, textureName = 'vehiclegrunge256', texturePath = "CIA3.jpg" },
+	{ group = 82, model = 411, textureName = 'vehiclegrunge256', texturePath = "TF1.png" },
+	{ group = 3018, model = 411, textureName = 'vehiclegrunge256', texturePath = "DEM1.png" },
+}
+
+local vehicle_shaders = {}
+
+function groupShaderVehicle (veh)
+    for index, value in ipairs ( getElementsByType("player") ) do
+        for index, shaderInfo in pairs ( group_veh_shaderTable ) do
+            if ( exports.GTIgroups:getPlayerGroup(source) == shaderInfo.group ) then
+                if (getElementModel(veh) == shaderInfo.model) then
+                    if vehicle_shaders[veh] then return end
+                    local group, model, textureName, texturePath = shaderInfo.group, shaderInfo.model, shaderInfo.textureName, shaderInfo.texturePath
+					triggerClientEvent(root, "GTIshaders.applyShader", root, veh, {model, textureName, texturePath}, 'vehicle' )
+					vehicle_shaders[veh] = veh
+                end    
+            end
+        end
+    end
+end
+addEventHandler("onPlayerVehicleEnter", root, groupShaderVehicle)

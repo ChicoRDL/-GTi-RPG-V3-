@@ -1,0 +1,85 @@
+<meta>
+    <info author="Mitch" name="Advanced Blip system" autostart="true" />
+	<script src="client.luac" type="client" />
+	<script src="server.lua" type="server" />
+	<script src="vehicleBlips.luac" type="client" />
+	<script src="playerBlips.slua" 	/>
+	<script src="radar.luac" type="client" />
+    
+    <export function="setPlayerNameColor" 	type="server" />
+    <export function="destroyBlip" 			type="server" />
+    
+    <!--Custom Blips-->
+    <!--<info author="Talidan" type="misc" name="Custom Blips" description="A resource to create custom blips" version="1.1" />-->
+    <script src="custom_blips/imagelib.lua" 			type="client" />
+    <script src="custom_blips/blipstreamer_client.lua" 	type="client" />
+    <script src="custom_blips/customblips.lua" 			type="client" />
+    <script src="custom_blips/utility.lua" 			type="client" />
+    
+    <export function="guiConvertToCustomBlip" 		type="client" />
+    <export function="createCustomBlip" 			type="client" />
+    <export function="getCustomBlipStreamRadius" 	type="client" />
+    <export function="setCustomBlipStreamRadius" 	type="client" />
+    <export function="getCustomBlipPosition" 		type="client" />
+    <export function="setCustomBlipPosition" 		type="client" />
+    <export function="setCustomBlipAlpha" 			type="client" />
+    <export function="setCustomBlipColor" 			type="client" />
+    <export function="setCustomBlipRadarScale" 		type="client" />
+    <export function="setCustomBlipVisible" 		type="client" />
+    <export function="isCustomBlipVisible" 			type="client" />
+    <export function="destroyCustomBlip" 			type="client" />
+	
+	<file src="Shader.fx" />
+	<file src="radar_blips/radar_centre.png" />
+	<file src="radar_blips/radar_modGarage.png" />
+	<file src="radar_blips/radar_mafiaCasino.png" />
+	<file src="radar_blips/radar_school.png" />
+	<file src="radar_blips/radar_burgerShot.png" />
+	<file src="radar_blips/radar_bulldozer.png" />
+	<file src="radar_blips/radar_chicken.png" />
+	<file src="radar_blips/radar_CESARVIAPANDO.png" />
+	<file src="radar_blips/radar_chicken.png" />
+	<file src="radar_blips/radar_CJ.png" />
+	<file src="radar_blips/radar_CRASH1.png" />
+	<file src="radar_blips/radar_dateDisco.png" />
+	<file src="radar_blips/radar_boatyard.png" />
+	<file src="radar_blips/radar_diner.png" />
+	<file src="radar_blips/radar_emmetGun.png" />
+	<file src="radar_blips/radar_Flag.png" />
+	<file src="radar_blips/radar_fire.png" />
+	<file src="radar_blips/radar_girlfriend.png" />
+	<file src="radar_blips/radar_hostpital.png" />
+	<file src="radar_blips/radar_LocoSyndicate.png" />
+	<file src="radar_blips/radar_MADDOG.png" />
+	<file src="radar_blips/radar_MCSTRAP.png" />
+	<file src="radar_blips/radar_OGLOC.png" />
+	<file src="radar_blips/radar_pizza.png" />
+	<file src="radar_blips/radar_airYard.png" />
+	<file src="radar_blips/radar_police.png" />
+	<file src="radar_blips/radar_propertyG.png" />
+	<file src="radar_blips/radar_propertyR.png" />
+	<file src="radar_blips/radar_RYDER.png" />
+	<file src="radar_blips/radar_saveGame.png" />
+	<file src="radar_blips/radar_school.png" />
+	<file src="radar_blips/radar_qmark.png" />
+	<file src="radar_blips/radar_tattoo.png" />
+	<file src="radar_blips/radar_THETRUTH.png" />
+	<file src="radar_blips/radar_waypoint.png" />
+	<file src="radar_blips/radar_TorenoRanch.png" />
+	<file src="radar_blips/radar_tshirt.png" />
+	<file src="radar_blips/radar_dateDisco.png" />
+	<file src="radar_blips/radar_truck.png" />
+	<file src="radar_blips/radar_cash.png" />
+	<file src="radar_blips/radar_race.png" />
+	<file src="radar_blips/radar_gym.png" />
+	<file src="radar_blips/radar_ammugun.png" />
+	<file src="radar_blips/radar_barbers.png" />
+	<file src="radar_blips/radar_BIGSMOKE.png" />
+	<file src="radar_blips/radar_impound.png" />
+	<file src="radar_blips/radar_light.png" />
+	<file src="radar_blips/radar_gangN.png" />
+	<file src="radar_blips/radar_gangG.png" />
+	<file src="radar_blips/radar_spray.png" />
+	<file src="radar_blips/radar_north.png" />
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>

@@ -1,0 +1,6 @@
+<meta>
+    <info author="Ares" version="1.0" name="GTIdroid Translator" type="script" autostart="true" />
+     
+    <script src="Translator_C.lua" type="client" />
+    <script src="Translator_S.lua" />
+</meta>

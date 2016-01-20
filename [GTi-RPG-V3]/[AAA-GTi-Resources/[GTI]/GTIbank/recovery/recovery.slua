@@ -1,0 +1,81 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 26 Sep 2014
+-- Resource: GTIbank/recovery.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local pendingRecoveries = {}	-- Table of Pending Account Recoveries
+
+local RECOVERY_TIMEOUT = 600000	-- Timeout for Account Recovery
+
+-- Attempt Recovery
+-------------------->>
+
+addEvent("GTIbank.attemptRecovery", true)
+addEventHandler("GTIbank.attemptRecovery", root, function(email)
+	local account = getPlayerAccount(client)
+	local acc_mail = exports.GTIaccounts:GAD(account, "email")
+	if (email ~= acc_mail) then
+		exports.GTIhud:dm("Error: Email Address does not match email associated with account", client, 255, 25, 25)
+		return
+	end
+	
+	local recoveryCode = generateHexNumber(32)
+	pendingRecoveries[client] = {account, recoveryCode, getTickCount() + RECOVERY_TIMEOUT}
+	
+	callRemote("http://gtirpg.net/MTA/pin_recovery.php", function() end, email, getPlayerName(client), getPlayerIP(client), getPlayerSerial(client), recoveryCode)
+	exports.GTIhud:dm("PIN Recovery instructions have been sent to "..email..". Check your email. Keep this window open!", client, 25, 255, 25)
+	triggerClientEvent(client, "GTIbank.recoverPIN", resourceRoot)
+end)
+
+-- Recover PIN
+--------------->>
+
+addEvent("GTIbank.recoverPIN", true)
+addEventHandler("GTIbank.recoverPIN", root, function(code, pin)
+	if (not pendingRecoveries[client]) then
+		exports.GTIhud:dm("ERROR: Your recovery code has expired. You must resubmit an account recovery request.", client, 255, 25, 25)
+		return
+	end
+	
+	if (code ~= pendingRecoveries[client][2]) then
+		exports.GTIhud:dm("ERROR: Your recovery code is invalid. Make sure you enter the correct recovery code.", client, 255, 25, 25)
+		return
+	end
+	
+	local account = pendingRecoveries[client][1]
+	setBankData(account, "pin", pin)
+	
+	exports.GTIhud:dm("Bank PIN successfully reset!", client, 25, 255, 25)
+	triggerClientEvent(client, "GTIbank.endPINRecovery", resourceRoot)	
+end)
+
+-- Utilities
+------------->>
+
+local hex = {"a", "b", "c", "d", "e", "f", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+
+function generateHexNumber(length)
+	if (type(length) ~= "number") then return false end
+	
+	local number = {}
+	for i=1,length do
+		table.insert(number, hex[math.random(#hex)])
+	end
+	number = table.concat(number, "")
+	return number
+end
+
+addEventHandler("onPlayerQuit", root, function()
+	pendingRecoveries[source] = nil
+end)
+
+setTimer(function()
+	for player,tbl in pairs(pendingRecoveries) do
+		if (getTickCount() > tbl[3]) then
+			pendingRecoveries[player] = nil
+		end
+	end
+end, 15000, 0)

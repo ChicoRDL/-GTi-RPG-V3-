@@ -1,0 +1,4 @@
+<meta>
+<info author="Mitch" name="Anti-Block System for Shop Entrances" autostart="true" />
+<script src="antiBlock_c.luac" type="client" />
+</meta>

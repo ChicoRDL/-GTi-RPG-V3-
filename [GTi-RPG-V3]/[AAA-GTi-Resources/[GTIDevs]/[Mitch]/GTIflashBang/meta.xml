@@ -1,0 +1,8 @@
+<meta>
+	<info author="enesaktassss" name="Flash Bang" autostart="true" />
+	
+	<script src="hits_c.lua" type="client"/>
+ 	
+	<file src="flash.ogg" />
+
+</meta>

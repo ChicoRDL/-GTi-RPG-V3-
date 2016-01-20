@@ -1,0 +1,484 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 04 Mar 2013
+-- Resource: GTIgroups/database.slua
+-- Version: 2.5
+----------------------------------------->> 
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+local tostring = tostring
+
+local SERVER_PORT = 22003	-- Only Save Data on Main Server
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "") 
+dbExec(db, "CREATE TABLE IF NOT EXISTS `groups`(`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `group_members`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `group_ranks`(`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `group_applications`(`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))")
+
+local database1_online	-- Is 'groups' Database Online?
+local database2_online	-- Is 'group_members' Database Online?
+local database3_online	-- Is 'group_ranks' Database Online?
+local database4_online	-- Is 'group_applications' Database Online?
+
+Group = {}			-- Table of Group Database Cache
+GroupMembers = {}	-- Table of Group Member Database Cache
+GroupRanks = {}		-- Table of Group Ranks Database Cache
+GroupApps = {}		-- Table of Group Applications Database Cache
+
+RanksByGroup = {}	-- Table of Rank ID's by group
+MembersByGroup = {}	-- Table of Group Members by ID
+AppsByGroup = {}	-- Table of Applications by group
+
+maxGroupID = 0		-- Highest Group ID number
+maxGroupRank = 0	-- Highest Group Rank Number
+
+addEvent("onDatabaseLoad", true)	-- Triggers when the database is ready
+
+-- Cache Groups
+---------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cacheGroupDatabase, {}, db, "SELECT * FROM `groups`")
+	dbQuery(cacheGroupMemberDatabase, {}, db, "SELECT * FROM `group_members`")
+	dbQuery(cacheGroupRankDatabase, {}, db, "SELECT * FROM `group_ranks`")
+	dbQuery(cacheGroupAppsDatabase, {}, db, "SELECT * FROM `group_applications`")
+end)
+
+function cacheGroupDatabase(qh)
+	local result = dbPoll(qh, 0)
+	Group[0] = {}
+	for i,row in ipairs(result) do
+		Group[row.id] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id") then
+				Group[0][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				Group[row.id][column] = value
+				
+				if (maxGroupID < row.id) then
+					maxGroupID = row.id
+				end
+			end
+		end
+	end
+	database1_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "groups")
+end
+
+function cacheGroupMemberDatabase(qh)
+	local result = dbPoll(qh, 0)
+	GroupMembers["Console"] = {}
+	for i,row in ipairs(result) do
+		GroupMembers[row.name] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id" or column ~= "name") then
+				GroupMembers["Console"][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				GroupMembers[row.name][column] = value
+					-- Associate Members by Group
+				if (column == "group_id") then
+					value = tonumber(value)
+					if (not MembersByGroup[value]) then MembersByGroup[value] = {} end
+					table.insert(MembersByGroup[value], row.name)
+				end
+			end
+		end
+	end
+	database2_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "group_members")
+	-- Update Element Data
+	setGroupOnStart()
+end
+
+function cacheGroupRankDatabase(qh)
+	local result = dbPoll(qh, 0)
+	GroupRanks[0] = {}
+	for i,row in ipairs(result) do
+		GroupRanks[row.id] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id") then
+				GroupRanks[0][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				GroupRanks[row.id][column] = value
+					-- Update Highest Rank ID
+				if (maxGroupRank < row.id) then
+					maxGroupRank = row.id
+				end
+					-- Associate Group Ranks
+				if (column == "group_id") then
+					value = tonumber(value)
+					if (not RanksByGroup[value]) then RanksByGroup[value] = {} end
+					table.insert(RanksByGroup[value], tonumber(row.id))
+				end
+			end
+		end
+	end
+	database3_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "group_ranks")
+end
+
+function cacheGroupAppsDatabase(qh)
+	local result = dbPoll(qh, 0)
+	GroupApps[0] = {}
+	for i,row in ipairs(result) do
+		GroupApps[row.id] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id") then
+				GroupApps[0][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				GroupApps[row.id][column] = value
+					-- Associate Group Apps
+				if (column == "group_id") then
+					value = tonumber(value)
+					if (not AppsByGroup[value]) then AppsByGroup[value] = {} end
+					table.insert(AppsByGroup[value], tonumber(row.id))
+				end
+			end
+		end
+	end
+	database4_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "group_applications")
+end
+
+-- Database Exports
+-------------------->>
+
+function setGroupData(id, key, value)
+	if (not database1_online) then return false end
+	if (not id or not key or not value) then return false end
+	if (type(id) ~= "number" or type(key) ~= "string") then return false end
+
+	if (type(Group[id]) ~= "table") then
+		Group[id] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `groups`(id) VALUES(?)", id)
+		end
+	end
+	
+	if (Group[0][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `groups` ADD `??` text", key)
+		end
+		Group[0][key] = true
+	end
+	
+	Group[id][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `groups` SET `??`=? WHERE id=?", key, tostring(value), id)
+		else
+			dbExec(db, "UPDATE `groups` SET `??`=NULL WHERE id=?", key, id)
+		end
+	end
+		-- Update Highest Available Slot
+	if (maxGroupID < id) then maxGroupID = id end
+	return true
+end
+
+function getGroupData(id, key)
+	if (not database1_online) then return nil end
+	if (not id or not key) then return nil end
+	if (type(id) ~= "number" or type(key) ~= "string") then return nil end
+	
+	if (Group[id] == nil) then return nil end
+	if (Group[id][key] == nil) then return nil end
+	
+	return tonumber(Group[id][key]) or Group[id][key]
+end
+
+function dropGroupData(id)
+	if (not database1_online) then return false end
+	if (not id or type(id) ~= "number") then return false end
+	if (not Group[id]) then return false end
+	
+	if (getServerPort() == SERVER_PORT) then
+		local account = getGroupAccount(id)
+		removeAccount(account)
+	end
+	
+	Group[id] = nil
+	if (getServerPort() == SERVER_PORT) then
+		dbExec(db, "DELETE FROM `groups` WHERE id=?", id)
+	end
+	
+	for i,account in ipairs(MembersByGroup[id]) do
+		dropGroupMemberData(getAccount(account))
+	end
+	for i,rankid in ipairs(RanksByGroup[id]) do
+		dropGroupRankData(rankid)
+	end
+	
+	MembersByGroup[id] = nil
+	RanksByGroup[id] = nil
+	return true
+end
+
+-- Database Exports
+-------------------->>
+
+function setGroupMemberData(account, key, value)
+	if (not database2_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+
+	local account = getAccountName(account)
+	if (type(GroupMembers[account]) ~= "table") then
+		GroupMembers[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `group_members`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (GroupMembers["Console"][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `group_members` ADD `??` text", key)
+		end
+		GroupMembers["Console"][key] = true
+	end
+	
+	GroupMembers[account][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `group_members` SET `??`=? WHERE name=?", key, tostring(value), account)
+		else
+			dbExec(db, "UPDATE `group_members` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function getGroupMemberData(account, key)
+	if (not database2_online) then return nil end
+	if (not account or not key) then return nil end
+	if (isGuestAccount(account) or type(key) ~= "string") then return nil end
+	
+	local account = getAccountName(account)
+	if (GroupMembers[account] == nil) then return nil end
+	if (GroupMembers[account][key] == nil) then return nil end
+	
+	return tonumber(GroupMembers[account][key]) or GroupMembers[account][key]
+end
+
+function dropGroupMemberData(account)
+	if (not database2_online) then return false end
+	if (not account or isGuestAccount(account)) then return false end
+	
+	local groupID = getGroupMemberData(account, "group_id")
+	local account = getAccountName(account)
+	GroupMembers[account] = nil
+	if (getServerPort() == SERVER_PORT) then
+		dbExec(db, "DELETE FROM `group_members` WHERE name=?", account)
+	end
+	
+	for i,v in ipairs(MembersByGroup[groupID]) do
+		if (v == account) then
+			local member = getAccountPlayer(getAccount(account))
+			if (member) then
+				removeElementData(member, "group")
+			end
+			table.remove(MembersByGroup[groupID], i)
+			break
+		end
+	end
+	return true
+end
+
+-- Database Exports
+-------------------->>
+
+function setGroupRankData(id, key, value)
+	if (not database3_online) then return false end
+	if (not id or not key) then return false end
+	if (type(id) ~= "number" or type(key) ~= "string") then return false end
+
+	if (type(GroupRanks[id]) ~= "table") then
+		GroupRanks[id] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `group_ranks`(id) VALUES(?)", id)
+		end
+	end
+	
+	if (GroupRanks[0][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `group_ranks` ADD `??` text", key)
+		end
+		GroupRanks[0][key] = true
+	end
+	
+	GroupRanks[id][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `group_ranks` SET `??`=? WHERE id=?", key, tostring(value), id)
+		else
+			dbExec(db, "UPDATE `group_ranks` SET `??`=NULL WHERE id=?", key, id)
+		end
+	end
+		-- Increment Max Group Rank
+	if (maxGroupRank < id) then maxGroupRank = id end
+	return true
+end
+
+function getGroupRankData(id, key)
+	if (not database3_online) then return nil end
+	if (not id or not key) then return nil end
+	if (type(id) ~= "number" or type(key) ~= "string") then return nil end
+	
+	if (GroupRanks[id] == nil) then return nil end
+	if (GroupRanks[id][key] == nil) then return nil end
+	
+	return tonumber(GroupRanks[id][key]) or GroupRanks[id][key]
+end
+
+function dropGroupRankData(id)
+	if (not database3_online) then return false end
+	if (not id or type(id) ~= "number") then return false end
+	
+	local groupID = getRankGroup(id)
+	GroupRanks[id] = nil
+	if (getServerPort() == SERVER_PORT) then
+		dbExec(db, "DELETE FROM `group_ranks` WHERE id=?", id)
+	end
+	
+	for i,v in ipairs(RanksByGroup[groupID]) do
+		if (v == id) then
+			table.remove(RanksByGroup[groupID], i)
+			break
+		end
+	end
+	return true
+end
+
+-- Group Applications Data
+--------------------------->>
+--[[
+function setGroupApplicationData(id, key, value)
+	if (not database4_online) then return false end
+	if (not id or not key) then return false end
+	if (type(id) ~= "number" or type(key) ~= "string") then return false end
+
+	if (type(GroupApps[id]) ~= "table") then
+		GroupApps[id] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `group_applications`(id) VALUES(?)", id)
+		end
+	end
+	
+	if (GroupApps[0][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `group_applications` ADD `??` text", key)
+		end
+		GroupApps[0][key] = true
+	end
+	
+	GroupApps[id][key] = value
+	if (getServerPort() == SERVER_PORT) then
+		if (value ~= nil) then
+			dbExec(db, "UPDATE `group_applications` SET `??`=? WHERE id=?", key, tostring(value), id)
+		else
+			dbExec(db, "UPDATE `group_applications` SET `??`=NULL WHERE id=?", key, id)
+		end
+	end
+		-- Increment Max Group Rank
+	if (maxGroupRank < id) then maxGroupRank = id end
+	return true
+end
+
+function getGroupApplicationData(id, key)
+	if (not database4_online) then return nil end
+	if (not id or not key) then return nil end
+	if (type(id) ~= "number" or type(key) ~= "string") then return nil end
+	
+	if (GroupApps[id] == nil) then return nil end
+	if (GroupApps[id][key] == nil) then return nil end
+	
+	return tonumber(GroupApps[id][key]) or GroupApps[id][key]
+end
+
+function dropGroupApplicationData(id)
+	if (not database4_online) then return false end
+	if (not id or type(id) ~= "number") then return false end
+	
+	local groupID = getRankGroup(id)
+	GroupApps[id] = nil
+	if (getServerPort() == SERVER_PORT) then
+		dbExec(db, "DELETE FROM `group_applications` WHERE id=?", id)
+	end
+	
+	for i,v in ipairs(RanksByGroup[groupID]) do
+		if (v == id) then
+			table.remove(RanksByGroup[groupID], i)
+			break
+		end
+	end
+	return true
+end
+--]]
+-- Group History Database
+-------------------------->>
+
+local dbLogs = dbConnect("mysql", "dbname=gti_logs;host=127.0.0.1", "GTILogs", "")
+
+function addLogToDatabase(text, player, group_id)
+	dbExec(dbLogs, "CREATE TABLE IF NOT EXISTS `log_groups`(id INT NOT NULL AUTO_INCREMENT, group_id INT, timestamp INT, text TEXT, player TEXT, account TEXT, ip TEXT, serial TEXT, PRIMARY KEY(id))")
+	
+	local serial, ip, account
+	if (isElement(player)) then
+		serial = getPlayerSerial(player)
+		ip = getPlayerIP(player)
+		account = getAccountName(getPlayerAccount(player))
+		player = getPlayerName(player)
+	end
+	dbExec(dbLogs, "INSERT INTO `log_groups`(timestamp, group_id, text, player, account, ip, serial) VALUES(?, ?, ?, ?, ?, ?, ?)", getRealTime().timestamp, group_id, text, player, account, ip, serial)
+	return true
+end
+
+function getAccountLogs(player, group_id, data_table)
+	if (not player or not group_id or not data_table) then return false end
+	if (data_table ~= "log_groups") then return end
+	dbQuery(returnDatabase, {player, data_table}, dbLogs, "SELECT * FROM `log_groups` WHERE `group_id`=? ORDER BY `timestamp` DESC LIMIT 250", group_id)
+end
+
+function returnDatabase(qh, player, data_table)
+	local result = dbPoll(qh, 0)
+	triggerEvent("onLogDatabaseLoad", player, data_table, result)
+end
+
+-- Utilities
+------------->>
+
+function getNextGroupSlot()
+	return maxGroupID+1
+end
+
+function getNextGroupRankSlot()
+	return maxGroupRank+1
+end
+
+function getGroupIDFromName(name)
+	for GroupID, Data in pairs (Groups) do
+		if ( Data.displayname == name ) then
+			return GroupID
+		end
+	end
+end
+		
+-- Delete non-existent accounts
+------------------------------->>
+function deleteNilAccount(member)	
+	outputDebugString("[Groups] Checking "..member.." for valid account...")
+	if not getAccount(member) then
+		outputDebugString("[Group] No account found for "..member..". Removing from group...")
+		local account = addAccount(member,math.random(-100000,100000))
+		deleteMember(account)
+		setTimer(removeAccount,1000,1,getAccount(member))
+		outputDebugString("[Groups] Member deleted.")
+	end
+end

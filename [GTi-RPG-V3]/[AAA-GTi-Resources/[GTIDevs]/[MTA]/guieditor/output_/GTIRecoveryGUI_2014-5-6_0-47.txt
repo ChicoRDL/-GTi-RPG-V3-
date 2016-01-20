@@ -1,0 +1,60 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    staticimage = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {}
+}
+local screenW, screenH = guiGetScreenSize()
+GUIEditor.window[1] = guiCreateWindow((screenW - 698) / 2, (screenH - 365) / 2, 698, 365, "GTI - Password Recovery", false)
+guiWindowSetMovable(GUIEditor.window[1], false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.edit[1] = guiCreateEdit(118, 96, 234, 32, "", false, GUIEditor.window[1])
+GUIEditor.label[1] = guiCreateLabel(10, 103, 98, 15, "Account Name: ", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+GUIEditor.label[2] = guiCreateLabel(10, 188, 342, 15, "__________________________________________________", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.edit[2] = guiCreateEdit(128, 289, 220, 32, "", false, GUIEditor.window[1])
+GUIEditor.label[3] = guiCreateLabel(10, 294, 108, 17, "Recovery Code:  ", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+GUIEditor.label[4] = guiCreateLabel(11, 24, 341, 62, "Step 1. - In order to be able to successfully recover your in-game account, you must have had an e-mail linked to your account. To recover the account, enter your account name that the e-mail is bound to.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+GUIEditor.label[5] = guiCreateLabel(10, 173, 342, 15, "XXX Notification Message", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "clear-normal")
+guiLabelSetColor(GUIEditor.label[5], 255, 255, 0)
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", false)
+GUIEditor.label[6] = guiCreateLabel(11, 217, 341, 62, "Step 2. - After recieving your recovery code (found in the recieved recovery e-mail), please enter the code into the edit box below then confirm it.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[6], "left", true)
+GUIEditor.button[1] = guiCreateButton(137, 139, 89, 24, "Send E-Mail", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "clear-normal")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(138, 331, 89, 24, "Check Code", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[2], "clear-normal")
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[7] = guiCreateLabel(358, 24, 15, 322, "|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+GUIEditor.label[8] = guiCreateLabel(379, 24, 309, 62, "Step 3. - Once your recovery code is confirmed by the server, then you will be able to enter your new password for your account.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "clear-normal")
+guiLabelSetHorizontalAlign(GUIEditor.label[8], "left", true)
+GUIEditor.label[9] = guiCreateLabel(379, 103, 72, 15, "Password: ", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[9], "clear-normal")
+GUIEditor.edit[3] = guiCreateEdit(461, 96, 227, 32, "", false, GUIEditor.window[1])
+GUIEditor.button[3] = guiCreateButton(491, 163, 89, 24, "Finalize", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[3], "clear-normal")
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+GUIEditor.staticimage[1] = guiCreateStaticImage(421, 265, 231, 76, ":GTIaccounts/logo.png", false, GUIEditor.window[1])
+GUIEditor.label[10] = guiCreateLabel(379, 138, 309, 15, "XXX Password Strength", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "clear-normal")
+guiLabelSetColor(GUIEditor.label[10], 255, 255, 0)
+guiLabelSetHorizontalAlign(GUIEditor.label[10], "center", false)

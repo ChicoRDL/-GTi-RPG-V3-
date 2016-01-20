@@ -1,0 +1,69 @@
+<meta>
+    <info name="GTIdroid Settings App" author="Nerox" autostart="false" />
+    <script src="settingsapp_c.lua" type="client" />
+    <script src="settingsapp_s.lua" type="server" />
+    <file src="button.png" />
+    <file src="Settings.png" />
+    <file src="bkgr_black.png" />
+    <file src="bold.ttf" />
+    <!-- Shaders -->
+    <!-- Water shine -->
+    <script src="shaders/Water/c_water.lua" type="client" />
+    <script src="shaders/Water/c_sunInfluence.lua" type="client" />
+    <script src="shaders/Water/c_switch.lua" type="client" />
+    <file src="shaders/Water/fx/water.fx" type="client" />
+    <file src="shaders/Water/fx/mta-helper.fx" type="client" />
+    <file src="shaders/Water/images/wavemap.png" type="client" />
+    <file src="shaders/Water/images/cube_env256.dds" type="client" />
+    <!-- Bloom -->
+    <script src="shaders/Bloom/c_bloom.lua" type="client" />
+    <script src="shaders/Bloom/c_switch.lua" type="client" />
+    <file src="shaders/Bloom/fx/addBlend.fx" type="client" />
+    <file src="shaders/Bloom/fx/blurH.fx" type="client" />
+    <file src="shaders/Bloom/fx/blurV.fx" type="client" />
+    <file src="shaders/Bloom/fx/brightPass.fx" type="client" />
+    <file src="shaders/Bloom/fx/mta-helper.fx" type="client" />
+    <!-- Car reflection -->
+    <script src="shaders/cReflection/c_car_reflect.lua" type="client" />
+    <script src="shaders/cReflection/c_switch.lua" type="client" />
+    <file src="shaders/cReflection/fx/car_refgrun.fx" type="client" />
+    <file src="shaders/cReflection/fx/car_refgene.fx" type="client" />
+    <file src="shaders/cReflection/fx/car_refshat.fx" type="client" />
+    <file src="shaders/cReflection/fx/mta-helper.fx" type="client" />
+    <file src="shaders/cReflection/images/smallnoise3d.dds" type="client" />
+    <!-- Car reflection -->
+    <script src="shaders/Cartoon/ToonShader.lua" type="client" />
+    <file src="shaders/Cartoon/shaders/ToonShader.fx" type="client" />
+    <!-- Dynamic sky -->
+    <script src="shaders/dynamicSky/c_shader_skybox_alt.lua" type="client" />
+    <script src="shaders/dynamicSky/c_switch.lua" type="client" />
+    <file src="shaders/dynamicSky/shaders/shader_skydome.fx" type="client" />
+    <file src="shaders/dynamicSky/shaders/shader_null.fx" type="client" />
+    <file src="shaders/dynamicSky/textures/skydome.jpg" type="client" />
+    <file src="shaders/dynamicSky/models/skybox_model.dff" type="client" />
+    <file src="shaders/dynamicSky/models/skybox_model.txd" type="client" />
+    <!-- Detail shader -->
+    <script src="shaders/Detail/c_detail.lua" type="client" />
+    <script src="shaders/Detail/c_switch.lua" type="client" />
+    
+    <file src="shaders/Detail/fx/detail.fx" type="client" />
+    <file src="shaders/Detail/fx/mta-helper.fx" type="client" />
+    
+    <file src="shaders/Detail/media/dirty.png" type="client" />
+    <file src="shaders/Detail/media/detail04.png" type="client" />
+    <file src="shaders/Detail/media/detail22.png" type="client" />
+    <file src="shaders/Detail/media/detail29.png" type="client" />
+    <file src="shaders/Detail/media/detail35T.png" type="client" />
+    <file src="shaders/Detail/media/detail55.png" type="client" />
+    <file src="shaders/Detail/media/detail58.png" type="client" />
+    <file src="shaders/Detail/media/detail63.png" type="client" />
+    <file src="shaders/Detail/media/detail68.png" type="client" />
+    <!-- Exports -->
+    <export function="getSettingEnabled" type="client" />
+    <export function="createSetting" type="client" />
+    <export function="getSettingElement" type="client" />
+    <export function="removeSetting" type="server" />
+    <export function="prepareSetting" type="server" />
+    <export function="getSettingEnabled" type="server" />
+    <min_mta_version client="1.3.0-9.03931" />
+</meta>

@@ -1,0 +1,246 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 11 Aug 2014
+-- Resource: GTIhijack/hijack.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local hijack 		-- Hijack vehicle
+local oldLoc		-- Previous Spawn Point
+local oldModel		-- Previous vehicle model
+local startTime		-- Time of Hijack Start
+local hiBlip		-- Hijack blip
+local delMarker		-- Delivery Marker
+local delBlip		-- Delivery Blip
+local distance		-- Distance (for payment)
+local timer			-- Kill Mission Timer
+local waterTimer	-- Checks if the hijack vehicle is in the water
+
+local hijackers = {}
+
+local KILL_MISSION_TIME = 800000
+local PAY_PER_METER = 1.912
+	-- Distance/Hour: 21,940 meters
+local NEXT_MISSION_TIME = 30000
+
+--local totDist = 0
+
+-- Spawn Hijack
+---------------->>
+
+function spawnHijack()
+	if (isElement(hijack)) then destroyElement(hijack) end
+	repeat loc = math.random(#hijack_spawns) until loc ~= oldLoc
+	local x, y, z, rot = unpack(hijack_spawns[loc])
+	
+	repeat model = math.random(#hijack_models) until model ~= oldModel
+	hijack = createVehicle(hijack_models[model], x, y, z+1, 0, 0, rot)
+	setElementData(hijack, "hijack", true)
+	addEventHandler("onVehicleEnter", hijack, enterHijackVehicle)
+	addEventHandler("onVehicleStartEnter", hijack, blockEnterance)
+	addEventHandler("onVehicleExit", hijack, exitHijackVehicle)
+	hiBlip = createBlipAttachedTo(hijack, 12)
+	
+	local d_loc = math.random(#hijack_dropoffs)
+	local x, y, z = unpack(hijack_dropoffs[d_loc])
+	delMarker = createMarker(x, y, z, "checkpoint", 4, 175, 25, 25, 150)
+	addEventHandler("onMarkerHit", delMarker, completeHijack)
+	delBlip = createBlipAttachedTo(delMarker, 41)
+	
+	distance = exports.GTIutil:getDistanceBetweenElements3D(hijack, delMarker)
+	--totDist = totDist + distance
+	--outputDebugString("Total Distance: "..string.format("%.3f", totDist))
+	
+	setElementVisibleTo(delMarker, root, false)
+	setElementVisibleTo(delBlip, root, false)
+	setElementVisibleTo(hiBlip, root, false)
+	
+	--[[ for i,player in ipairs(getPlayersInTeam(getTeamFromName("Criminals"))) do
+		if (not exports.GTIgangTerritories:isGangster(player)) then
+			setElementVisibleTo(hiBlip, player, true)
+		end
+	end ]]
+	
+	for i, player in ipairs ( getElementsByType ( "player" ) ) do
+		if exports.AresMisc:isAbleToCrime ( player ) then
+			setElementVisibleTo(hiBlip, player, true)
+		end
+	end
+	
+	exports.GTIhud:dm("HIJACK: A "..getVehicleNameFromModel(hijack_models[model]).." has been requested for export. Go find and steal the one marked on radar.", getCriminals(), 175, 25, 25)
+	
+	timer = setTimer(function()
+		endHijackMission()
+		exports.GTIhud:dm("HIJACK: The hijack vehicle is no longer of interest. However, a new order is on the way.", getCriminals(), 175, 25, 25)
+		setTimer(spawnHijack, NEXT_MISSION_TIME, 1)
+	end, KILL_MISSION_TIME, 1)
+	
+	waterTimer = setTimer(function()
+		if (isElementInWater(hijack)) then
+			lastDriver = getElementData(hijack,"previousDriver")
+			if not lastDriver then
+				message = "HIJACK: The hijack vehicle has been destroyed. A new order is on the way."
+			else
+				message = "HIJACK: The hijack vehicle has been destroyed by "..getPlayerName(lastDriver)..". A new order is on the way."
+			end
+			
+			exports.GTIhud:dm(message, getCriminals(), 255,0,0)
+			endHijackMission()
+			setTimer(spawnHijack,NEXT_MISSION_TIME,1)
+		end
+	end, 1000, 0)
+	
+	oldLoc = loc
+	oldModel = model
+	startTime = getRealTime().timestamp
+	hijackers = {}
+end
+addEventHandler("onResourceStart", resourceRoot, spawnHijack)
+--addCommandHandler("spawnHijack",spawnHijack)
+
+-- Enter/Exit Handler
+---------------------->>
+
+function enterHijackVehicle(player, seat, jacked)
+	if (not exports.AresMisc:isAbleToCrime ( player ) ) then cancelEvent() return end
+	setElementVisibleTo(delMarker, player, true)
+	setElementVisibleTo(delBlip, player, true)
+	if (not hijackers[player]) then
+		hijackers[player] = true
+		exports.GTIpoliceWanted:chargePlayer(player, 4)
+	end
+	setElementData(source,"previousDriver",player)
+	exports.GTIhud:dm("HIJACK: You have the target vehicle. Drive this vehicle to the drop-off point for payment. Beware of competing criminals.", player, 175, 25, 25)
+end
+
+function blockEnterance(player)
+	if (not exports.AresMisc:isAbleToCrime( player ) ) then
+		cancelEvent()
+		outputChatBox("* You cannot enter this vehicle.", player, 255, 25, 25)
+		return
+	end	
+end
+
+function exitHijackVehicle(player)
+	if (not isElement(player) or not isElement(delMarker) or not isElement(delBlip)) then return end
+	setElementVisibleTo(delMarker, player, false)
+	setElementVisibleTo(delBlip, player, false)
+	setTimer( function()
+	if isElement(hijack) and isElementInWater(hijack) then 
+	endHijackMission() 
+	setTimer(spawnHijack, NEXT_MISSION_TIME, 1)
+	end
+	end, 2000, 1 )
+end
+
+addEventHandler("onPlayerWasted", root, function()
+	if (not exports.AresMisc:isAbleToCrime ( source ) ) then return end
+	exitHijackVehicle(source)
+end)
+
+-- Complete Hijack Mission
+--------------------------->>
+
+function completeHijack(player, dim)
+	if (not isElement(player) or getElementType(player) ~= "player" or not dim) then return end
+	if (not isPedInVehicle(player)) then return end
+	if (getPedOccupiedVehicle(player) ~= hijack) then return end
+	if (not exports.AresMisc:isAbleToCrime ( player )) then return end
+	
+	local hrPay = exports.GTIcriminals:getHourlyPay()
+	local hrExp = exports.GTIcriminals:getHourlyReputation()
+	
+	local pay = math.floor(distance * PAY_PER_METER)
+	local Exp = math.ceil( (pay/hrPay)*hrExp )
+	
+	exports.GTIcriminals:modifyPlayerTaskProgress(player, "Hijack", 1)
+	exports.GTIcriminals:modifyPlayerCriminalRep(player, Exp, "Hijack")
+	exports.GTIcriminals:givePlayerTaskMoney(player, "Hijack", pay)
+	
+	endHijackMission()
+	exports.GTIhud:dm("HIJACK: You successfully delivered the hijack vehicle for export. Reward: $"..exports.GTIutil:tocomma(pay), player, 175, 25, 25)
+	exports.GTIpoliceWanted:chargePlayer(player, 28)
+	setTimer(spawnHijack, NEXT_MISSION_TIME, 1)
+end
+	
+-- End Hijack Mission
+---------------------->>
+
+function endHijackMission()
+	if (isElement(hijack)) then
+		removeEventHandler("onVehicleEnter", hijack, enterHijackVehicle)
+		removeEventHandler("onVehicleStartEnter", hijack, blockEnterance)
+		removeEventHandler("onVehicleExit", hijack, exitHijackVehicle)
+		destroyElement(hijack)
+		hijack = nil
+	end
+	
+	if (isElement(delMarker)) then
+		removeEventHandler("onMarkerHit", delMarker, completeHijack)
+		destroyElement(delMarker)
+		delMarker = nil
+	end
+	
+	if (isElement(delBlip)) then
+		destroyElement(delBlip)
+		delBlip = nil
+	end
+	
+	if (isElement(hiBlip)) then
+		destroyElement(hiBlip)
+		hiBlip = nil
+	end
+	
+	if (isTimer(timer)) then
+		killTimer(timer)
+		timer = nil
+	end
+	
+	if (isTimer(waterTimer)) then
+		killTimer(waterTimer)
+		waterTimer = nil
+	end
+	
+	distance = nil
+end
+
+-- Get/Quit Job
+---------------->>
+
+function check()
+	if getElementType ( source ) == "player" then
+		if not isElement(hiBlip) then return false end
+		setElementVisibleTo(hiBlip, source, exports.AresMisc:isAbleToCrime ( source ))
+	end
+end
+
+addCommandHandler ( "resign", 
+	function(player)
+		if not isElement(hiBlip) then return false end
+		setElementVisibleTo(hiBlip, player, exports.AresMisc:isAbleToCrime ( player ))
+	end
+)
+
+addEventHandler("onPlayerGetJob", root, check)
+addEventHandler("onPlayerQuitJob", root, check)
+addEventHandler("onElementModelChange", root, check)
+
+-- Utilities
+------------->>
+
+function getCriminals()
+	local crim = {}
+	for i,player in ipairs( getElementsByType ( "player" ) ) do
+		if (exports.AresMisc:isAbleToCrime(player)) then
+			table.insert(crim, player)
+		end
+	end
+	return crim
+end
+
+addEvent("GTIhijack.killPed", true)
+addEventHandler("GTIhijack.killPed", root, function(ped, killer, weapon)
+	killPed(ped, killer, weapon)
+end)
+	

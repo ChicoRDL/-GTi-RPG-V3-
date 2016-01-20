@@ -1,0 +1,16 @@
+<meta>
+    <info author="LilDolla" name="LilDolla Miscellaneous" autostart="true"></info>
+	
+	<script src="lildolla_s.lua" type="server" />
+	<script src="irc_s.lua" type="server" />
+	<script src="web.lua" type="server" />
+	
+	<script src="txd_replacements.luac" type="client" />
+	<file src="sw_library.txd" />
+	
+	<export function="remoteIRCOutput" type="server" http="true" />
+	<export function="queryIRCUser" type="server" http="true" />
+	<export function="getIRCServer" type="server" http="true" />
+	<export function="kaylaKick" type="server" http="true" />
+	<export function="getHouseLocation" type="server" http="true" />
+</meta>

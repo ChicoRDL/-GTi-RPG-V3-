@@ -1,0 +1,55 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(306, 53, 774, 658, "Market Interface", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 1.00)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(9, 24, 215, 234, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Inventory", 0.9)
+        GUIEditor.gridlist[2] = guiCreateGridList(229, 24, 532, 566, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Item", 0.3)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Amount/Price", 0.3)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Player", 0.3)
+        GUIEditor.button[1] = guiCreateButton(10, 339, 215, 29, "Put on sale", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[1], "default-bold-small")
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFFFFFFF")
+        GUIEditor.label[1] = guiCreateLabel(14, 269, 48, 15, "Amount: ", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-bold-small")
+        GUIEditor.edit[1] = guiCreateEdit(64, 264, 146, 24, "", false, GUIEditor.window[1])
+        GUIEditor.label[2] = guiCreateLabel(28, 303, 35, 15, "Price: ", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[2], "default-bold-small")
+        GUIEditor.button[2] = guiCreateButton(19, 605, 197, 37, "Remove From Sale", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[2], "default-bold-small")
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFE60A0A")
+        GUIEditor.edit[2] = guiCreateEdit(64, 298, 146, 24, "", false, GUIEditor.window[1])
+        GUIEditor.gridlist[3] = guiCreateGridList(9, 379, 215, 217, false, GUIEditor.window[1])
+        guiGridListAddColumn(GUIEditor.gridlist[3], "On Sale", 0.9)
+        GUIEditor.button[3] = guiCreateButton(707, 595, 57, 22, "Close", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[3], "default-bold-small")
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFFFFFFF")
+        GUIEditor.edit[3] = guiCreateEdit(287, 593, 128, 29, "", false, GUIEditor.window[1])
+        GUIEditor.label[3] = guiCreateLabel(232, 600, 50, 15, "Search:", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[3], "clear-normal")
+        guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[3], "center")
+        GUIEditor.edit[4] = guiCreateEdit(491, 593, 128, 29, "", false, GUIEditor.window[1])
+        GUIEditor.label[4] = guiCreateLabel(426, 598, 58, 17, "Amount:", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[4], "clear-normal")
+        guiLabelSetHorizontalAlign(GUIEditor.label[4], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[4], "center")
+        GUIEditor.button[4] = guiCreateButton(227, 630, 538, 17, "Buy", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[4], "default-bold-small")
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFFFFFFF")
+        GUIEditor.button[5] = guiCreateButton(648, 595, 57, 22, "Refresh", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.button[5], "default-bold-small")
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFFFFFFF")    
+    end
+)

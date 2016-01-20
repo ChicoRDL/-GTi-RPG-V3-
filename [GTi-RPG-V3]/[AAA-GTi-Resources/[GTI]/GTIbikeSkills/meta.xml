@@ -1,0 +1,5 @@
+<meta>
+    <info author="Emile" name="Motorcycle Skills" autostart="false" />
+    <script src="c.luac" type="client" />
+    <script src="s.lua" type="server" />
+</meta>

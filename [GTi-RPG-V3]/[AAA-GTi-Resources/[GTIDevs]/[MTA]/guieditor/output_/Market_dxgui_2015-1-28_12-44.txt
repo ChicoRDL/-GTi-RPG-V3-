@@ -1,0 +1,115 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    edit = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.edit[1] = guiCreateEdit(314, 350, 133, 34, "", false)
+
+
+        GUIEditor.edit[2] = guiCreateEdit(467, 350, 133, 34, "", false)
+
+
+        GUIEditor.edit[3] = guiCreateEdit(611, 624, 133, 34, "", false)
+
+
+        tosell = guiCreateGridList(314, 58, 286, 271, false)
+        guiGridListAddColumn(tosell, "Item", 0.5)
+        guiGridListAddColumn(tosell, "Amount", 0.5)
+        guiSetAlpha(tosell, 0.90)
+
+
+        GUIEditor.gridlist[1] = guiCreateGridList(611, 58, 447, 546, false)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Item", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Price", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Units", 0.2)
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Player", 0.2)
+        guiSetAlpha(GUIEditor.gridlist[1], 0.90)
+
+
+        GUIEditor.gridlist[2] = guiCreateGridList(314, 395, 286, 209, false)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Item", 0.5)
+        guiGridListAddColumn(GUIEditor.gridlist[2], "Amount", 0.5)
+        guiSetAlpha(GUIEditor.gridlist[2], 0.90)    
+    end
+)
+
+local dxfont0_myfont = dxCreateFont(":GTImarket/font/myfont.ttf", 10)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawLine(304 - 1, 18 - 1, 304 - 1, 668, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(1068, 18 - 1, 304 - 1, 18 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(304 - 1, 668, 1068, 668, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(1068, 668, 1068, 18 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawRectangle(304, 18, 764, 650, tocolor(0, 0, 0, 200), false)
+        dxDrawLine(304 - 1, 17 - 1, 304 - 1, 48, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(1068, 17 - 1, 304 - 1, 17 - 1, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(304 - 1, 48, 1068, 48, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(1068, 48, 1068, 17 - 1, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawRectangle(304, 17, 764, 31, tocolor(255, 69, 0, 200), true)
+        dxDrawText("GTI - Market Interface", 304 - 1, 17 - 1, 1068 - 1, 48 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("GTI - Market Interface", 304 + 1, 17 - 1, 1068 + 1, 48 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("GTI - Market Interface", 304 - 1, 17 + 1, 1068 - 1, 48 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("GTI - Market Interface", 304 + 1, 17 + 1, 1068 + 1, 48 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("GTI - Market Interface", 304, 17, 1068, 48, tocolor(255, 255, 255, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawLine(754 - 1, 624 - 1, 754 - 1, 658, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(1058, 624 - 1, 754 - 1, 624 - 1, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(754 - 1, 658, 1058, 658, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(1058, 658, 1058, 624 - 1, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawRectangle(754, 624, 304, 34, tocolor(255, 125, 0, 200), true)
+        dxDrawLine(467 - 1, 350 - 1, 467 - 1, 384, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(600, 350 - 1, 467 - 1, 350 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(467 - 1, 384, 600, 384, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(600, 384, 600, 350 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawRectangle(467, 350, 133, 34, tocolor(255, 255, 255, 79), false)
+        dxDrawLine(314 - 1, 350 - 1, 314 - 1, 384, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(447, 350 - 1, 314 - 1, 350 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(314 - 1, 384, 447, 384, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(447, 384, 447, 350 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawRectangle(314, 350, 133, 34, tocolor(255, 255, 255, 79), false)
+        dxDrawText("Amount", 314 - 1, 329 - 1, 447 - 1, 350 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Amount", 314 + 1, 329 - 1, 447 + 1, 350 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Amount", 314 - 1, 329 + 1, 447 - 1, 350 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Amount", 314 + 1, 329 + 1, 447 + 1, 350 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Amount", 314, 329, 447, 350, tocolor(255, 125, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Price", 467 - 1, 329 - 1, 600 - 1, 350 - 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Price", 467 + 1, 329 - 1, 600 + 1, 350 - 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Price", 467 - 1, 329 + 1, 600 - 1, 350 + 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Price", 467 + 1, 329 + 1, 600 + 1, 350 + 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Price", 467, 329, 600, 350, tocolor(255, 125, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawLine(611 - 1, 624 - 1, 611 - 1, 658, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(744, 624 - 1, 611 - 1, 624 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(611 - 1, 658, 744, 658, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawLine(744, 658, 744, 624 - 1, tocolor(0, 0, 0, 255), 1, false)
+        dxDrawRectangle(611, 624, 133, 34, tocolor(255, 255, 255, 79), false)
+        dxDrawText("Buy", 754 - 1, 624 - 1, 1058 - 1, 658 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Buy", 754 + 1, 624 - 1, 1058 + 1, 658 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Buy", 754 - 1, 624 + 1, 1058 - 1, 658 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Buy", 754 + 1, 624 + 1, 1058 + 1, 658 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Buy", 754, 624, 1058, 658, tocolor(255, 255, 255, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Units", 610 - 1, 603 - 1, 743 - 1, 624 - 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Units", 610 + 1, 603 - 1, 743 + 1, 624 - 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Units", 610 - 1, 603 + 1, 743 - 1, 624 + 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Units", 610 + 1, 603 + 1, 743 + 1, 624 + 1, tocolor(0, 0, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawText("Units", 610, 603, 743, 624, tocolor(255, 125, 0, 255), 1.00, userdata: 00024D73, "center", "center", false, false, true, false, false)
+        dxDrawLine(314 - 1, 626 - 1, 314 - 1, 657, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(600, 626 - 1, 314 - 1, 626 - 1, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(314 - 1, 657, 600, 657, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawLine(600, 657, 600, 626 - 1, tocolor(0, 0, 0, 255), 1, true)
+        dxDrawRectangle(314, 626, 286, 31, tocolor(255, 125, 0, 200), true)
+        dxDrawText("Remove Selected", 313 - 1, 626 - 1, 600 - 1, 658 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Remove Selected", 313 + 1, 626 - 1, 600 + 1, 658 - 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Remove Selected", 313 - 1, 626 + 1, 600 - 1, 658 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Remove Selected", 313 + 1, 626 + 1, 600 + 1, 658 + 1, tocolor(0, 0, 0, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+        dxDrawText("Remove Selected", 313, 626, 600, 658, tocolor(255, 255, 255, 255), 1.00, dxfont0_myfont, "center", "center", false, false, true, false, false)
+    end
+)

@@ -1,0 +1,7 @@
+<meta>
+<info author="Mitch" name="Ammu-Nation Robbery" autostart="true" />
+<script src="ammunationRobbery_c.lua" type="client" cache="false"/>
+<script src="ammunationRobbery_s.lua" type="server" />
+
+<export function="isPlayerRobbing" type="client" />
+</meta>

@@ -1,0 +1,38 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(557, 250, 250, 350, "Pending Sales", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 1.00)
+
+GUIEditor.label[1] = guiCreateLabel(10, 25, 78, 15, "Vehicle Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 200, 0, 255)
+GUIEditor.label[2] = guiCreateLabel(10, 49, 73, 15, "Vehicle Cost:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 200, 0, 255)
+GUIEditor.label[3] = guiCreateLabel(10, 74, 42, 15, "Health:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 200, 0, 255)
+GUIEditor.label[4] = guiCreateLabel(10, 98, 35, 15, "Seller:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 200, 0, 255)
+GUIEditor.label[5] = guiCreateLabel(93, 24, 147, 15, "<Vehicle Name>", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "clear-normal")
+GUIEditor.label[6] = guiCreateLabel(88, 48, 147, 15, "$9,999,999", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "clear-normal")
+GUIEditor.label[7] = guiCreateLabel(58, 73, 147, 15, "100.0%", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "clear-normal")
+GUIEditor.label[8] = guiCreateLabel(51, 97, 188, 15, "<Player Name>", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "clear-normal")
+GUIEditor.label[9] = guiCreateLabel(9, 108, 234, 15, "_____________________________________", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(36, 320, 87, 21, "Buy Vehicle", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(129, 320, 87, 21, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.gridlist[1] = guiCreateGridList(9, 129, 232, 184, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.9)

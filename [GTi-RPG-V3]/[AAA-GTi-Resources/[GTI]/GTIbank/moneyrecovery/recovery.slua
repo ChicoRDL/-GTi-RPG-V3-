@@ -1,0 +1,47 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: Ares
+-- Date: 06 Dec 2015
+-- Resource: GTIbank/moneyrecovery/recovery.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local LAST_TRANSACTION_BEFORE_THIS_SHIT_HAPPENED = 1449331511
+
+addCommandHandler("recover-money",
+	function (player)
+		local account, accountName = getPlayerAccount(player), getAccountName(getPlayerAccount(player))
+		if ( not isGuestAccount(account) ) then
+			if ( not exports.GTIaccounts:GAD(account, "money-recovery") ) then
+				outputChatBox("Money Recovery: Recovering your lost money...", player, 0, 255, 0)
+				getAccountLogs(player, accountName, "bank", true)
+			else
+				outputChatBox("Money Recovery: You've recovered your money already", player, 255, 0, 0)
+			end
+		end
+	end
+)
+
+function recoveryCallback(qh, player)
+	local result = dbPoll(qh, 0)
+		local latest = -math.huge
+		for _, row in ipairs (result) do
+			for column, value in pairs (row) do
+				if column == "timestamp" then
+					if value < LAST_TRANSACTION_BEFORE_THIS_SHIT_HAPPENED then
+						if ( latest < value ) then
+							latest = value
+						end
+					end
+				end
+			end
+		end
+	dbQuery(
+		function (qh, player)
+			local balance = dbPoll(qh, 0)[1]['balance']
+			if ( not tonumber(balance) ) then outputChatBox("Money Recovery: Couldn't recover money, contact some Developer", player, 255, 0, 0) return false end
+			exports.GTIaccounts:SAD(getPlayerAccount(player), "money-recovery", 1)
+			setBankData(getPlayerAccount(player), "balance", tonumber(balance))
+			outputChatBox("Money Recovery: Recovered $"..exports.GTIutil:tocomma(balance), player, 0, 255, 0)
+		end, {player}, getDatabaseLogs(), "SELECT * FROM `log_bank` WHERE `account`=? and `timestamp`=? LIMIT 1", getAccountName(getPlayerAccount(player)), latest)
+end

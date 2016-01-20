@@ -1,0 +1,4 @@
+<meta>
+ <info author="MrBrutus" name="Smoke Cigarettes" autostart="true"/>
+	<script src="Smoke.lua" type="server" />
+</meta>

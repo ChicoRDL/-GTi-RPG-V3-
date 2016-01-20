@@ -1,0 +1,171 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 29 Jun 2014
+-- Resource: GTIgroups/stats.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local MAX_LEVEL = 13		-- Highest Group Level
+local TIME_REQ = 2.22974e6	-- Required Existence Time
+
+-- max_members * 10000 (XP/Hour) * 35 Hours/month
+--[[local exp_requirement = {
+	[1] = -1,			[2] = 3500000,
+	[3] = 8750000,		[4] = 15750000,
+	[5] = 24500000,		[6] = 35000000,
+	[7] = 45500000,		[8] = 56000000,
+	[9] = 66500000,		[10] = 78750000,
+	[11] = 92750000,	[12] = 108500000,
+	[13] = 124250000,	
+}]]--
+local exp_requirement = {
+	[1] = -1,			[2] = 1750000,
+	[3] = 4375000,		[4] = 7875000,
+	[5] = 12250000,		[6] = 17500000,
+	[7] = 22750000,		[8] = 28000000,
+	[9] = 33250000,		[10] = 39375000,
+	[11] = 46375000,	[12] = 54250000,
+	[13] = 62125000,	[14] = 70000000,
+	[15] = 77875000,	[16] = 85750000,
+	[17] = 93625000,	[18] = 101500000,
+	[19] = 109375000,	[20] = 117250000,
+	[21] = 125125000,	[22] = 133000000,
+	[100] = math.huge,
+}
+
+-- max_members * 35 Hours/month * 1.2
+local playtime_req = {
+	[1] = -1,		[2] = 80,
+	[3] = 200,		[4] = 400,
+	[5] = 800,		[6] = 1600,
+	[7] = 3200,		[8] = 5400,
+	[9] = 7000,		[10] = 9450,
+	[11] = 10130,	[12] = 12020,
+	[13] = 13910,
+}
+
+-- Group Levels and Experience
+------------------------------->>
+
+function getGroupExperience(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	local exp_ = getGroupData(groupID, "experience")
+	return exp_ or 0
+end
+
+function modifyGroupExperience(groupID, amount)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	if (not amount or type(amount) ~= "number") then return false end
+	local exp_ = getGroupData(groupID, "experience") or 0
+	setGroupData(groupID, "experience", exp_+amount)
+	return true
+end
+
+function getGroupLevel(groupID)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	
+	local level
+		-- XP Check
+	local groupXP = getGroupExperience(groupID) or 0
+	for i,xp in ipairs(exp_requirement) do
+		if (xp >= groupXP) then
+			level = i-1
+			break
+		end
+	end
+
+		-- Playtime Check
+	local playtime = getGroupStat(groupID, "playtime") or 0
+	for i,ptime in ipairs(playtime_req) do
+		if (ptime >= playtime) then
+			if (level > i-1) then
+				level = i-1
+				break
+			end
+		end
+	end
+	
+		-- Existence Check
+	local creation = getGroupData(groupID, "creation_date")
+	for i=1,MAX_LEVEL do
+		if ((((i-1)*TIME_REQ) + creation) > getRealTime().timestamp) then
+			if (level > i-1) then
+				level = i-1
+				break
+			end
+		end
+	end
+	return level
+end
+
+function getGroupLevelXPRequirement(level)
+	if (not level or type(level) ~= "number") then return false end
+	if (level > MAX_LEVEL) then level = MAX_LEVEL end
+	if (level < 1) then level = 1 end
+	return exp_requirement[level]
+end
+
+function getGroupLevelPlaytimeRequirement(level)
+	if (not level or type(level) ~= "number") then return false end
+	if (level > MAX_LEVEL) then level = MAX_LEVEL end
+	if (level < 1) then level = 1 end
+	return playtime_req[level]
+end
+
+function getGroupLevelExistenceRequirement(level)
+	if (not level or type(level) ~= "number") then return false end
+	if (level > MAX_LEVEL) then level = MAX_LEVEL end
+	if (level < 1) then level = 1 end
+	return TIME_REQ*(level-1)
+end
+
+-- Group Stats
+--------------->>
+
+function getGroupStat(groupID, stat)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	if (not stat or type(stat) ~= "string") then return false end
+	return getGroupData(groupID, stat)
+end
+
+function modifyGroupStat(groupID, stat, amount)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	if (not stat or type(stat) ~= "string" or not amount or type(amount) ~= "number") then return false end
+	local stat_amt = getGroupData(groupID, stat) or 0
+	if (type(stat_amt) ~= "number") then return false end
+	setGroupData(groupID, stat, stat_amt+amount)
+	return true
+end
+
+function setGroupStat(groupID, stat, amount)
+	if (not groupID or type(groupID) ~= "number" or groupID >= getNextGroupSlot()) then return false end
+	if (not stat or type(stat) ~= "number" or not amount or type(amount) ~= "number") then return false end
+	setGroupData(groupID, stat, amount)
+	return true
+end
+
+-- Default Stats Recording
+--------------------------->>
+
+function recordKillsandDeaths(_, killer)
+		-- Record Kills
+	if (isElement(killer)) then
+		if (getElementType(killer) == "player" and isPlayerInGroup(killer)) then
+			local groupID = getPlayerGroup(killer)
+			modifyGroupStat(groupID, "kills", 1)
+		elseif (getElementType(killer) == "vehicle") then
+			local killer = getVehicleOccupant(killer)
+			if (killer and isPlayerInGroup(killer)) then
+				local groupID = getPlayerGroup(killer)
+				modifyGroupStat(groupID, "kills", 1)
+			end
+		end
+	end
+		-- Record Deaths
+	if (isPlayerInGroup(source)) then
+		local groupID = getPlayerGroup(source)
+		modifyGroupStat(groupID, "deaths", 1)
+	end
+end
+addEventHandler("onPlayerWasted", root, recordKillsandDeaths)

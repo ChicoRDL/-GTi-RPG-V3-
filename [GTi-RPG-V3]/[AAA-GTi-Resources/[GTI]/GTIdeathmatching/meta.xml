@@ -1,0 +1,6 @@
+<meta>
+	<info author="LilDolla, Emile" version="1.0" name="DM Areas" autostart="true"/>
+	<script src="dm.lua" type="server" />
+	
+	<export function="isPlayerInDMArea" 				type="server" />
+</meta>

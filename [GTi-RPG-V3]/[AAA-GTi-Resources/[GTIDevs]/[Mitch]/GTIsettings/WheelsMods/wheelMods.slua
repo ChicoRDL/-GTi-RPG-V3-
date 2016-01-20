@@ -1,0 +1,4 @@
+function setMods ( )
+	triggerClientEvent ( source, "GTIsettings_setWheelsMods", source )
+end
+addEventHandler ("onPlayerLogin", root, setMods )

@@ -1,0 +1,190 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 03 Feb 2015
+-- Resource: GTIstats/stats.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Show Stats Panel
+-------------------->>
+
+addEvent("GTIstats.showStatsPanel", true)
+addEventHandler("GTIstats.showStatsPanel", root, function()
+	triggerClientEvent(client, "GTIstats.showStatsPanel", resourceRoot, stats)
+end)
+
+-- Update Stat Info
+-------------------->>
+
+addEvent("GTIstats.updateStatInfo", true)
+addEventHandler("GTIstats.updateStatInfo", root, function(player)
+	triggerClientEvent(client, "GTIstats.updateStatInfo", resourceRoot, player, getAllStatSettings(player), 
+		getTabInfo(player, 1), getTabInfo(player, 2), getTabInfo(player, 3), getTabInfo(player, 4), getTabInfo(player, 5), getTabInfo(player, 6))
+end)
+
+-- General Tab
+--------------->>
+
+function getTabInfo(player, tab)
+	if (not isElement(player)) then return false end
+	local stat_tbl
+	if (tab == 1) then stat_tbl = stats.general
+	elseif (tab == 2) then stat_tbl = stats.finance
+	elseif (tab == 3) then stat_tbl = stats.weapons
+	elseif (tab == 4) then stat_tbl = stats.crimes
+	elseif (tab == 5) then stat_tbl = stats.mission
+	elseif (tab == 6) then stat_tbl = stats.misc
+	end
+	
+	-- Civilian Pay Total (Special)
+	local civ_pay = 0;
+	local civ_ind;
+	local civ_count;
+	
+	-- Criminal Pay Total (Special)
+	local crim_pay = 0;
+	local crim_ind;
+	local crim_count;
+	
+	local gen_stats = {}
+	for i,v in ipairs(stat_tbl) do
+		if (v[2]) then
+			local value = getStat(player, v[2], v[3], v[4], v[1])
+			table.insert(gen_stats, {v[1], value})
+			
+			-- Civ Pay
+			if (v[1] == "Cash Earned as a Civilian") then
+				civ_count = true
+				civ_ind = i
+			elseif (v[1] == "Cash Earned as a Criminal") then
+				crim_count = true
+				civ_count = nil
+				crim_ind = i
+			end
+			
+			if (civ_count) then
+				value = string.gsub(value, "[$,]", "")
+				civ_pay = civ_pay + math.floor( tonumber( value ) )
+			elseif (crim_count) then
+				value = string.gsub(value, "[$,]", "")
+				crim_pay = crim_pay + math.floor( tonumber( value ) )
+			end			
+		else
+			table.insert(gen_stats, {v[1]})
+		end
+	end
+	
+	if (civ_pay and crim_count) then
+		gen_stats[civ_ind] = {"Cash Earned as a Civilian", "$"..exports.GTIutil:tocomma(civ_pay)}
+		gen_stats[crim_ind] = {"Cash Earned as a Criminal", "$"..exports.GTIutil:tocomma(crim_pay)}
+	end
+	
+	return gen_stats
+end
+
+-- Get Stat
+------------>>
+
+function getStat(player, s_type, key, ...)
+	if (not isElement(player)) then return false end
+	local args = {...}	-- Datatype
+	local value			-- Stat Data
+	
+		-- Get Stat Value
+	if (s_type == "MTA") then
+		value = _G[key](player)
+	
+	elseif (string.find(s_type, ":")) then
+		local s_type = split(s_type, ":")
+		if (key == "player") then
+			value = call(getResourceFromName(s_type[1]), s_type[2], player) or 0
+		else
+			value = call(getResourceFromName(s_type[1]), s_type[2], getPlayerAccount(player), key) or 0
+		end
+		
+	elseif (s_type == "custom") then
+		
+		if (key == "account_name") then
+			return getAccountName(getPlayerAccount(player))
+		
+		elseif (key == "weapons") then
+			local weaps = {}
+			for slot=1,11 do
+				local weapon = getPedWeapon(player, slot)
+				if (getPedTotalAmmo(player, slot) > 0) then
+					table.insert(weaps, getWeaponNameFromID(weapon))
+				end
+			end
+			if (#weaps == 0) then return "N/A" end
+			return table.concat(weaps, ", ")
+		
+		elseif (key == "group_name") then
+			local group = exports.GTIgroups:getPlayerGroup(player, true)
+			if (not group) then return "N/A" end
+			return group
+			
+		elseif (key == "group_rank") then
+			return exports.GTIgroups:getRankName( exports.GTIgroups:getPlayerGroupRank(player) ) or "N/A"
+		
+		elseif (key == "weapon_skill") then
+			return (getPedStat(player, args[1])/10).."%"
+		
+		elseif (key == "kdr") then
+			local kills = getStatData(getPlayerAccount(player), "kills") or 0
+			local deaths = getStatData(getPlayerAccount(player), "deaths") or 0
+			return string.format("%.3f", kills/deaths)
+		
+		elseif (key == "civilian_level") then
+			return exports.GTIemployment:getPlayerEmploymentLevel(player)
+		
+		elseif (key == "criminal_level") then
+			return exports.GTIcriminals:getPlayerCriminalLevel(player)
+		
+		end
+	end
+	
+		-- Format Value by Datatype
+	value = tonumber(value) or value
+	if (args[1] == "date") then
+		local d,m,y = exports.GTIutil:todate(value or getRealTime().timestamp)
+		local m = exports.GTIutil:getMonthName(m, 3)
+		return string.format("%02d", d).." "..m.." "..y
+	
+	elseif (args[1] == "percent") then
+		return (value or 0).."%"
+	
+	elseif (args[1] == "hours") then
+		return math.floor((value or 0)/60).." hours"
+	
+	elseif (args[1] == "sec2hours") then
+		return string.format("%.1f",(value or 0)/3600).." hours"
+	
+	elseif (args[1] == "cash") then 
+		return "$"..exports.GTIutil:tocomma(math.floor(value or 0))
+	
+	elseif (args[1] == "job") then
+		local job = args[2]
+		local job = string.gsub(job, " Progress", "")
+		value = exports.GTIutil:tocomma(value or 0)
+		return tostring(value).." "..tostring(exports.GTIemployment:getJobUnitName(job))
+	
+	elseif (args[1] == "task") then
+		local job = args[2]
+		local job = string.gsub(job, " Tasks Complete", "")
+		if (job == "Ammu Robbery") then job = "Ammu-Nation Robbery" end
+		value = exports.GTIutil:tocomma(value or 0)
+		return value.." "..exports.GTIcriminals:getTaskUnitName(job)
+	
+	elseif (args[1] == "dist") then
+		return exports.GTIutil:tocomma(value).." meters"
+	
+	elseif (args[1] == "stars") then
+		return exports.GTIutil:tocomma(value/10).." stars"
+	
+	elseif (type(value) == "number") then 
+		return exports.GTIutil:tocomma(value or 0)
+	
+	end
+	return value
+end

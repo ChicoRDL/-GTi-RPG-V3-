@@ -1,0 +1,117 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 12 Jan 2014
+-- Resource: GTIlogs/log_files.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local title = [[
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: ~day ~month ~year
+-- Category: ~category
+----------------------------------------->>
+]]
+
+function outputServerLog(text, category, player)
+	if (not text or not category) then return false end
+	if (type(text) ~= "string" or type(category) ~= "string") then return false end
+	
+	local timestamp = getRealTime().timestamp
+	local day,month,year = exports.GTIutil:todate(timestamp)
+	local day,month = string.format("%02d", day), string.format("%02d", month)
+	local hrs,mins,secs = exports.GTIutil:totime(timestamp)
+	local hrs,mins,secs = string.format("%02d", hrs), string.format("%02d", mins), string.format("%02d", secs)
+	
+	local directory = "/logs/"..category.."/"..year.."-"..month.."/"..day..".log"
+	
+	local log_file			-- Server log
+	local log_text = ""		-- Server log text
+	
+	if (fileExists(directory)) then
+		log_file = fileOpen(directory)
+	else
+		log_file = fileCreate(directory)
+			-- Add Title to top
+		log_text = title
+		log_text = string.gsub(log_text, "~day", day)
+		log_text = string.gsub(log_text, "~month", exports.GTIutil:getMonthName(tonumber(month), 3))
+		log_text = string.gsub(log_text, "~year", year)
+		log_text = string.gsub(log_text, "~category", category)
+	end
+	
+	local size = fileGetSize(log_file)
+	if (size > 0) then
+		fileSetPos(log_file, size)
+	end
+	
+	local tstamp = year.."-"..month.."-"..day.." "..hrs..":"..mins..":"..secs
+	
+	log_text = log_text.."\n"..tstamp.." "..text
+	
+	if (isElement(player)) then
+		local account = getPlayerAccount(player)
+		if (not isGuestAccount(account)) then
+			log_text = log_text.." <"..getAccountName(account)..">"
+			outputAccountLog(text, player)
+		end
+	end
+	
+	fileWrite(log_file, log_text)
+	fileClose(log_file)
+	return true	
+end
+
+function outputAccountLog(text, player)
+	if (not text or not player) then return false end
+	if (type(text) ~= "string" or not isElement(player) or getElementType(player) ~= "player") then return false end
+	local account = getPlayerAccount(player)
+	if (isGuestAccount(account)) then return false end
+	local account = getAccountName(account)
+	
+	local timestamp = getRealTime().timestamp
+	local day,month,year = exports.GTIutil:todate(timestamp)
+	local day,month = string.format("%02d", day), string.format("%02d", month)
+	local hrs,mins,secs = exports.GTIutil:totime(timestamp)
+	local hrs,mins,secs = string.format("%02d", hrs), string.format("%02d", mins), string.format("%02d", secs)
+	
+	local first_letter = string.upper( string.sub(account, 1, 1) )
+	local directory = "/logs/accounts/"..first_letter.."/"..account..".log"
+	
+	local log_file			-- Server log
+	local log_text = ""		-- Server log text
+	
+	if (fileExists(directory)) then
+		log_file = fileOpen(directory)
+	else
+		log_file = fileCreate(directory)
+			-- Add Title to top
+		log_text = title
+		log_text = string.gsub(log_text, "~day", day)
+		log_text = string.gsub(log_text, "~month", exports.GTIutil:getMonthName(tonumber(month), 3))
+		log_text = string.gsub(log_text, "~year", year)
+		log_text = string.gsub(log_text, "~category", account)
+		log_text = string.gsub(log_text, "Category", "Account Name")
+	end
+	
+	local size = fileGetSize(log_file)
+	if (size > 0) then
+		fileSetPos(log_file, size)
+	end
+	
+	local tstamp = year.."-"..month.."-"..day.." "..hrs..":"..mins..":"..secs
+	
+	log_text = log_text.."\n"..tstamp.." "..text
+	
+	if (isElement(player)) then
+		local account = getPlayerAccount(player)
+		if (not isGuestAccount(account)) then
+			log_text = log_text.." <"..getAccountName(account)..">"
+		end
+	end
+	
+	fileWrite(log_file, log_text)
+	fileClose(log_file)
+	return true	
+end

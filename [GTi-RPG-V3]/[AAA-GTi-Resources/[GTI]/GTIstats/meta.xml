@@ -1,0 +1,23 @@
+<meta>
+	<info author="JTPenn"	name="GTI Global Stats System"	autostart="true"	/>
+	<file src="images/search.png" />
+	
+	<script src="stats/stats_gui.luac" 	type="client" />
+	<script src="stats/stats.luac" 		type="client" />
+	<script src="stats/stats.slua" 		/>
+	
+	<script src="settings/settings.luac"		type="client" />
+	<script src="settings/settings.slua"		/>
+	
+	<script src="stats.luac" 		type="client" />
+	<script src="database.slua" 	/>
+	<script src="stats.slua" 		/>
+	<script src="stats_table.slua"	/>
+	
+	<export function="getStatData"			type="server" />
+	<export function="modifyStatData"		type="server" />
+	<export function="modifyPlayerStatData"	type="server" />
+	<export function="setStatData"			type="server" />
+	<export function="getPlayerNetWorth"	type="server" />
+	<export function="getPlayerPlaytime"	type="server" />
+</meta>

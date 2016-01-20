@@ -1,0 +1,86 @@
+<meta>
+	<info author="JTPenn" version="1.0" name="Custom HUD and HUD Functions" autostart="true" />
+	
+	<!--Custom HUD-->
+	<script src="hud.lua" 		type="client"	/>
+	<script src="draw.lua" 						/>
+	
+	<!--HUD Function Scripts-->
+	<script src="dm/displayMessage.lua" 					type="client" />
+	<script src="drawNote/drawNotification.lua" 			type="client" />
+	<script src="drawStat/drawStat.lua" 					type="client" />
+	<script src="drawMissionText/drawMissionText.lua" 		type="client" />
+	<script src="drawMissionEvent/drawMissionEvent.lua" 	type="client" />
+	
+	<!--HUD Function Exports-->
+	<export function="isCustomHudEnabled" 	type="client" />
+	<export function="showHud" 				type="client" />
+	<export function="dm" 					type="client" />
+	<export function="drawMissionText" 		type="client" />
+	<export function="drawNote" 			type="client" />
+	<export function="drawProgressBar" 		type="client" />
+	<export function="drawStat" 			type="client" />
+	<export function="drawMissionEvent"		type="client" />
+	
+	<export function="showHud" 				type="server" />
+	<export function="dm" 					type="server" />
+	<export function="drawMissionText" 		type="server" />
+	<export function="drawNote" 			type="server" />
+	<export function="drawProgressBar" 		type="server" />
+	<export function="drawStat" 			type="server" />
+	<export function="drawMissionEvent"		type="server" />
+	
+	<!--Audio-->
+	<file src="audio/story_miss_complete.mp3" />
+	<file src="audio/side_miss_complete.mp3" />
+	<!--Fonts-->
+	<file src="fonts/cambria.ttf" />
+	<file src="fonts/signpainter.ttf" />
+	<file src="fonts/verdana.ttf" />
+	<!--Weapon Icons-->
+	<file src="weaps/2.png" />
+	<file src="weaps/3.png" />
+	<file src="weaps/4.png" />
+	<file src="weaps/5.png" />
+	<file src="weaps/6.png" />
+	<file src="weaps/7.png" />
+	<file src="weaps/8.png" />
+	<file src="weaps/9.png" />
+	<file src="weaps/10.png" />
+	<file src="weaps/11.png" />
+	<file src="weaps/12.png" />
+	<file src="weaps/14.png" />
+	<file src="weaps/15.png" />
+	<file src="weaps/16.png" />
+	<file src="weaps/17.png" />
+	<file src="weaps/18.png" />
+	<file src="weaps/22.png" />
+	<file src="weaps/23.png" />
+	<file src="weaps/24.png" />
+	<file src="weaps/25.png" />
+	<file src="weaps/26.png" />
+	<file src="weaps/27.png" />
+	<file src="weaps/28.png" />
+	<file src="weaps/29.png" />
+	<file src="weaps/30.png" />
+	<file src="weaps/31.png" />
+	<file src="weaps/32.png" />
+	<file src="weaps/33.png" />
+	<file src="weaps/34.png" />
+	<file src="weaps/35.png" />
+	<file src="weaps/36.png" />
+	<file src="weaps/37.png" />
+	<file src="weaps/38.png" />
+	<file src="weaps/39.png" />
+	<file src="weaps/40.png" />
+	<file src="weaps/41.png" />
+	<file src="weaps/42.png" />
+	<file src="weaps/43.png" />
+	<file src="weaps/44.png" />
+	<file src="weaps/45.png" />
+	<file src="weaps/46.png" />
+	<!--Wanted Stars-->
+	<file src="wanted/wanted_active.png" />
+	<file src="wanted/wanted_active2.png" />
+	<file src="wanted/wanted_inactive.png" />
+</meta>

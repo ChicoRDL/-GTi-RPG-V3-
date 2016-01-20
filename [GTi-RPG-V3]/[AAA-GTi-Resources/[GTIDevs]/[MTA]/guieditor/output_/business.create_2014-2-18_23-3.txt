@@ -1,0 +1,50 @@
+
+GUIEditor = {
+    checkbox = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(620, 290, 342, 271, "Dept. of Commerce — Business Creation", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(93, 25, 150, 15, "Personal Information", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 200, 0)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(9, 47, 75, 15, "Player Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 255, 200, 0)
+GUIEditor.label[3] = guiCreateLabel(93, 47, 155, 15, "[ABC]Player>123", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+GUIEditor.label[4] = guiCreateLabel(9, 76, 86, 15, "Account Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 255, 200, 0)
+GUIEditor.label[5] = guiCreateLabel(104, 76, 155, 15, "PlayerAccount", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "clear-normal")
+GUIEditor.label[6] = guiCreateLabel(9, 106, 63, 15, "Total Cash:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 255, 200, 0)
+GUIEditor.label[7] = guiCreateLabel(82, 106, 155, 15, "$500,000", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "clear-normal")
+GUIEditor.label[8] = guiCreateLabel(23, 129, 293, 15, "* $50,000 is required to create a business", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[8], 255, 200, 0)
+guiLabelSetHorizontalAlign(GUIEditor.label[8], "center", false)
+GUIEditor.label[9] = guiCreateLabel(8, 142, 328, 15, "_________________________________________________________", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[9], "clear-normal")
+GUIEditor.label[10] = guiCreateLabel(93, 164, 150, 15, "Business Information", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 255, 200, 0)
+guiLabelSetHorizontalAlign(GUIEditor.label[10], "center", false)
+GUIEditor.label[11] = guiCreateLabel(9, 187, 88, 15, "Business Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[11], 255, 200, 0)
+GUIEditor.edit[1] = guiCreateEdit(103, 184, 227, 22, "", false, GUIEditor.window[1])
+GUIEditor.checkbox[1] = guiCreateCheckBox(27, 214, 300, 15, "I accept the $50,000 cost to create my business", false, false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(48, 238, 124, 24, "Create Business", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(178, 238, 124, 24, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

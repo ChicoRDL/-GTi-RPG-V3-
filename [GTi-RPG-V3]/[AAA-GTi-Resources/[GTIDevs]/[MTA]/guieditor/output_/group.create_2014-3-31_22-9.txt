@@ -1,0 +1,47 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    combobox = {}
+}
+GUIEditor.window[1] = guiCreateWindow(584, 268, 449, 341, "GTI Group Creation Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.label[1] = guiCreateLabel(18, 32, 186, 15, "Group Name:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.edit[1] = guiCreateEdit(17, 51, 188, 24, "", false, GUIEditor.window[1])
+GUIEditor.label[2] = guiCreateLabel(224, 53, 201, 15, "The Display Name of your group.", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", false)
+GUIEditor.label[3] = guiCreateLabel(226, 98, 197, 56, "When your group is created, a group account will also be created. The password here will be that group account's password, which you'll need in order to access critical group account settings.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", true)
+GUIEditor.label[4] = guiCreateLabel(17, 103, 187, 15, "Group Account Password:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[4], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[4], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "center", false)
+GUIEditor.edit[2] = guiCreateEdit(17, 123, 188, 24, "", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(8, 74, 433, 15, "____________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[6] = guiCreateLabel(8, 152, 433, 15, "____________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[7] = guiCreateLabel(17, 177, 187, 15, "Group Type", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+GUIEditor.combobox[1] = guiCreateComboBox(17, 197, 188, 24, "", false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(224, 177, 201, 45, "Your group type, which will determine what your group can and can't do (e.g.—turf).", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[8], "center", true)
+GUIEditor.label[9] = guiCreateLabel(8, 223, 433, 15, "____________________________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[10] = guiCreateLabel(12, 245, 424, 28, "You will be set as the group owner will full access permissions when you create your group.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[10], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[10], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[10], "center", true)
+GUIEditor.button[1] = guiCreateButton(126, 285, 203, 41, "Create Group", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[11] = guiCreateLabel(406, 314, 32, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[11], "default-small")
+guiLabelSetHorizontalAlign(GUIEditor.label[11], "center", false)

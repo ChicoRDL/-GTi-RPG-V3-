@@ -1,0 +1,160 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    button = {},
+    window = {},
+    staticimage = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(480, 134, 363, 381, "Welcome to Burger Shot", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 1.00)
+        guiSetProperty(GUIEditor.window[1], "CaptionColour", "FF00A107")
+
+        GUIEditor.staticimage[1] = guiCreateStaticImage(9, 22, 345, 61, ":guiEditorImages/GTIBurgerLogo.png", false, GUIEditor.window[1])
+        GUIEditor.button[1] = guiCreateButton(12, 101, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[2] = guiCreateStaticImage(3, 5, 60, 51, ":guiEditorImages/GTIHamburger.png", false, GUIEditor.button[1])
+
+        GUIEditor.button[2] = guiCreateButton(98, 101, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[3] = guiCreateStaticImage(12, 155, 61, 54, ":guiEditorImages/GTIBBQBurger.png", false, GUIEditor.button[2])
+        GUIEditor.staticimage[4] = guiCreateStaticImage(2, 3, 62, 55, ":guiEditorImages/GTIBBQBurger.png", false, GUIEditor.button[2])
+
+        GUIEditor.button[3] = guiCreateButton(181, 101, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[5] = guiCreateStaticImage(2, 2, 61, 55, ":guiEditorImages/GTIBaconBurger.png", false, GUIEditor.button[3])
+
+        GUIEditor.button[4] = guiCreateButton(268, 101, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[4], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[6] = guiCreateStaticImage(-34, 180, 84, 62, ":guiEditorImages/Sprunk.png", false, GUIEditor.button[4])
+        GUIEditor.staticimage[7] = guiCreateStaticImage(3, 3, 61, 56, ":guiEditorImages/VeggieBurger.png", false, GUIEditor.button[4])
+
+        GUIEditor.button[5] = guiCreateButton(13, 185, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[5], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[8] = guiCreateStaticImage(4, 3, 60, 55, ":guiEditorImages/ChickenSandwich.png", false, GUIEditor.button[5])
+
+        GUIEditor.button[6] = guiCreateButton(100, 185, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[6], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[9] = guiCreateStaticImage(3, 6, 59, 51, ":guiEditorImages/ChickenNuggets.png", false, GUIEditor.button[6])
+
+        GUIEditor.button[7] = guiCreateButton(184, 184, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[7], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[10] = guiCreateStaticImage(3, 3, 61, 56, ":guiEditorImages/ChickenStrips.png", false, GUIEditor.button[7])
+
+        GUIEditor.button[8] = guiCreateButton(268, 185, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[8], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[11] = guiCreateStaticImage(3, 4, 59, 54, ":guiEditorImages/ChickenWings.png", false, GUIEditor.button[8])
+
+        GUIEditor.button[9] = guiCreateButton(13, 269, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[9], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[12] = guiCreateStaticImage(3, 4, 58, 56, ":guiEditorImages/Sprunk.png", false, GUIEditor.button[9])
+
+        GUIEditor.button[10] = guiCreateButton(102, 270, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[10], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[13] = guiCreateStaticImage(3, 5, 61, 53, ":guiEditorImages/Fanta.png", false, GUIEditor.button[10])
+
+        GUIEditor.button[11] = guiCreateButton(184, 270, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[11], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[14] = guiCreateStaticImage(2, 3, 62, 56, ":guiEditorImages/Coke.png", false, GUIEditor.button[11])
+
+        GUIEditor.button[12] = guiCreateButton(268, 270, 66, 62, "", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[12], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[15] = guiCreateStaticImage(5, 3, 56, 57, ":guiEditorImages/Pepsi.png", false, GUIEditor.button[12])
+
+        GUIEditor.label[1] = guiCreateLabel(324, 360, 36, 15, "Close", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "default-small")
+
+
+        GUIEditor.window[2] = guiCreateWindow(480, 134, 363, 381, "Welcome to Burger Shot", false)
+        guiWindowSetSizable(GUIEditor.window[2], false)
+        guiSetAlpha(GUIEditor.window[2], 1.00)
+        guiSetProperty(GUIEditor.window[2], "CaptionColour", "FF00A107")
+
+        GUIEditor.staticimage[16] = guiCreateStaticImage(9, 22, 345, 61, ":guiEditorImages/GTIBurgerLogo.png", false, GUIEditor.window[2])
+        GUIEditor.button[13] = guiCreateButton(12, 101, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[13], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[17] = guiCreateStaticImage(3, 5, 60, 51, ":guiEditorImages/GTIHamburger.png", false, GUIEditor.button[13])
+
+        GUIEditor.button[14] = guiCreateButton(98, 101, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[14], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[18] = guiCreateStaticImage(12, 155, 61, 54, ":guiEditorImages/GTIBBQBurger.png", false, GUIEditor.button[14])
+        GUIEditor.staticimage[19] = guiCreateStaticImage(2, 3, 62, 55, ":guiEditorImages/GTIBBQBurger.png", false, GUIEditor.button[14])
+
+        GUIEditor.button[15] = guiCreateButton(181, 101, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[15], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[20] = guiCreateStaticImage(2, 2, 61, 55, ":guiEditorImages/GTIBaconBurger.png", false, GUIEditor.button[15])
+
+        GUIEditor.button[16] = guiCreateButton(268, 101, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[16], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[21] = guiCreateStaticImage(-33, 180, 84, 62, ":guiEditorImages/Sprunk.png", false, GUIEditor.button[16])
+        GUIEditor.staticimage[22] = guiCreateStaticImage(3, 3, 61, 56, ":guiEditorImages/VeggieBurger.png", false, GUIEditor.button[16])
+
+        GUIEditor.button[17] = guiCreateButton(13, 185, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[17], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[23] = guiCreateStaticImage(4, 3, 60, 55, ":guiEditorImages/ChickenSandwich.png", false, GUIEditor.button[17])
+
+        GUIEditor.button[18] = guiCreateButton(100, 185, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[18], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[24] = guiCreateStaticImage(3, 6, 59, 51, ":guiEditorImages/ChickenNuggets.png", false, GUIEditor.button[18])
+
+        GUIEditor.button[19] = guiCreateButton(184, 184, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[19], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[25] = guiCreateStaticImage(3, 3, 61, 56, ":guiEditorImages/ChickenStrips.png", false, GUIEditor.button[19])
+
+        GUIEditor.button[20] = guiCreateButton(268, 185, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[20], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[26] = guiCreateStaticImage(3, 4, 59, 54, ":guiEditorImages/ChickenWings.png", false, GUIEditor.button[20])
+
+        GUIEditor.button[21] = guiCreateButton(13, 269, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[21], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[27] = guiCreateStaticImage(3, 4, 58, 56, ":guiEditorImages/Sprunk.png", false, GUIEditor.button[21])
+
+        GUIEditor.button[22] = guiCreateButton(102, 270, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[22], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[28] = guiCreateStaticImage(3, 5, 61, 53, ":guiEditorImages/Fanta.png", false, GUIEditor.button[22])
+
+        GUIEditor.button[23] = guiCreateButton(184, 270, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[23], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[29] = guiCreateStaticImage(2, 3, 62, 56, ":guiEditorImages/Coke.png", false, GUIEditor.button[23])
+
+        GUIEditor.button[24] = guiCreateButton(268, 270, 66, 62, "", false, GUIEditor.window[2])
+        guiSetProperty(GUIEditor.button[24], "NormalTextColour", "FFAAAAAA")
+
+        GUIEditor.staticimage[30] = guiCreateStaticImage(5, 3, 56, 57, ":guiEditorImages/Pepsi.png", false, GUIEditor.button[24])
+
+        GUIEditor.label[2] = guiCreateLabel(324, 360, 36, 15, "Close", false, GUIEditor.window[2])
+        guiSetFont(GUIEditor.label[2], "default-small")    
+    end
+)

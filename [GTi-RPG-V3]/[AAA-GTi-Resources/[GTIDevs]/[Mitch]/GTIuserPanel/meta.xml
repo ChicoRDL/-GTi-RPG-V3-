@@ -1,0 +1,20 @@
+<meta>
+	<info author="Mitch" name="User Panel System" autostart="true" />
+	
+	<script src="client.luac" type="client" />
+	<script src="server.lua" type="server" />
+	<script src="markATM_c.luac" type="client" />
+	<script src="picker_client.lua" type="client" />
+	<script src="weaponLaser/laser_s.lua" type="server" />
+	<script src="weaponLaser/laser_c.lua" type="client" />
+	<script src="achievements_s.lua" type="server" />
+	<script src="achievements_c.lua" type="client" />
+	
+	<file src="cursor.png" />
+	<file src="h.png" />
+	<file src="sv.png" />
+	<file src="blank.png" />
+	
+	<export function="openPicker" type="client" />  
+	<export function="closePicker" type="client" />  
+</meta>

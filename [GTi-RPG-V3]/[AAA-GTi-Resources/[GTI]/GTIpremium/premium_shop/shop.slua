@@ -1,0 +1,128 @@
+----------------------------------------->>
+-- Grand Theft International (GTI)
+-- Author: JT Pennington (JTPenn)
+-- Date: 09 Jan 2015
+-- Resource: GTIpremium/shop.slua
+-- Type: Server Side
+----------------------------------------->>
+
+local shop_locs = {
+	{285.152, 156.694, 193.911, 1, 124},	
+	{285.152, 156.694, 193.911, 1, 125},
+	{285.152, 156.694, 193.911, 1, 126},
+}
+
+local blip_locs = {
+	{1651.778, -1246.738},
+	{-1897.012, 487.131}, 
+	{2007.565, 1167.470},
+}
+
+-- Start Shops
+--------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	--if (getServerPort() == 22003) then return end
+	for i,v in ipairs(shop_locs) do
+		local marker = createMarker(v[1], v[2], v[3], "cylinder", 1.1, 0, 178, 240, 50)
+		setElementInterior(marker, v[4] or 0)
+		setElementDimension(marker, v[5] or 0)
+	end
+end)
+
+addEvent("GTIpremium.createBlips", true)
+addEventHandler("GTIpremium.createBlips", root, function()
+	--if (getServerPort() == 22003) then return end
+	for i,v in ipairs(blip_locs) do
+		triggerClientEvent(client, "GTIpremium.createBlips", resourceRoot, v[1], v[2])
+	end
+end)
+
+-- Open Shop
+------------->>
+
+addEventHandler("onMarkerHit", resourceRoot, function(player, dim)
+	if (not isElement(player) or getElementType(player) ~= "player" or not dim) then return end
+	triggerClientEvent(player, "GTIpremium.openShop", resourceRoot, 
+		getPlayerTokens(player), 
+		getPlayerTokens(player, true),
+		getPlayerPremiumItems(player), 
+		getPremiumItems(), 
+		getPremiumTime(), 
+		getRealTime().timestamp, 
+		getTokenCost()
+	)
+end)
+
+-- Purchase Item
+----------------->>
+
+addEvent("GTIpremium.purchaseItem", true)
+addEventHandler("GTIpremium.purchaseItem", root, function(desc, use_tokens, skip_conflict)
+	local item = getPremiumItemFromDesc(desc)
+	if (not item) then
+		exports.GTIhud:dm("Error: Premium Feature not found.", client, 255, 25, 25)
+		return
+	end
+	
+	local cost = getPremiumItemCost(item)
+	local tokens = getPlayerTokens(client)
+	if (use_tokens and cost > tokens) then
+		exports.GTIhud:dm("You cannot afford to purchase this premium item ("..cost-tokens.." Ŧokens needed)", client, 255, 125, 0)
+		return
+	end
+	
+	local p_tokens = getPlayerTokens(client, true)
+	if (not use_tokens and cost > p_tokens) then
+		exports.GTIhud:dm("You cannot afford to purchase this premium item ("..cost-p_tokens.." Permanent Ŧokens needed)", client, 255, 125, 0)
+		return
+	end
+	
+	if (isPremium(client, item)) then
+		exports.GTIhud:dm("You have already purchased this item. You cannot renew it until it has expired.", client, 255, 125, 0)
+		return
+	end
+	
+	local conflicts = getPremiumItemConflicts(item)
+	if (not skip_conflict and conflicts) then
+		for i,v in ipairs(conflicts) do
+			if (isPremium(client, v)) then
+				triggerClientEvent(client, "GTIpremium.conflictWarning", resourceRoot, getPremiumItemDesc(v), use_tokens)
+				return
+			end
+		end
+	end
+	
+	addPremiumItem(client, item, not use_tokens)
+	removeTokens(getPlayerAccount(client), cost, not use_tokens)
+	exports.GTIhud:dm("PREMIUM: You have successfully purchased this premium feature!", client, 0, 178, 255)
+	outputChatBox("You successfully bought '"..desc.."'", client, 0, 178, 255)
+	exports.GTIlogs:outputLog("PREMIUM: "..getPlayerName(client).." has purchased '"..item.."' for "..cost.." "..(not use_tokens and "Premium " or "").."Ŧokens", "premium", client)
+	triggerClientEvent(client, "GTIpremium.closePanel", resourceRoot)
+end)
+
+-- Purchase Tokens
+------------------->>
+
+addEvent("GTIpremium.purchaseTokens", true)
+addEventHandler("GTIpremium.purchaseTokens", root, function(amount)
+	local cost = getTokenCost() * amount
+	local cash = getPlayerMoney(client)
+	local bank = exports.GTIbank:getPlayerBankBalance(client)
+	if (cost > cash) then
+		if (cost > bank) then
+			exports.GTIhud:dm("Purchase failed. You do not have enough cash on hand or in the bank to make this purchase.", client, 255, 125, 0)
+			return
+		else
+			exports.GTIbank:modifyPlayerBankBalance(client, -cost, "Premium: "..amount.." Ŧokens Purchased.")
+		end
+	else
+		exports.GTIbank:TPM(client, cost, "Premium: "..amount.." Ŧokens Purchased.")
+	end
+	
+	local account = getPlayerAccount(client)
+	addTokens(account, amount)
+	exports.GTIhud:dm("PREMIUM: You have successfully purchased "..exports.GTIutil:tocomma(amount).." Premium Ŧokens.", client, 0, 178, 255)
+	exports.GTIlogs:outputLog("PREMIUM: "..getPlayerName(client).." has purchased "..amount.." Premium Ŧokens for $"..cost, "premium", acc_name)
+	triggerClientEvent(client, "GTIpremium.closePanel", resourceRoot)
+end)

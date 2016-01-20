@@ -1,0 +1,319 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 18 Aug 2013
+-- Resource: GTIcrimTable/ranks.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Job Ranks
+------------->>
+
+Ranks = {
+--[[
+	Example Table:
+["Task Name"] = {
+	[0] = {name="Rank Level 0", 	promoTime=0},
+	[1] = {name="Rank Level 1",		promoTime=1.25},
+	[2] = {name="Rank Level 2",		promoTime=2.5},
+	[3] = {name="Rank Level 3",		promoTime=5},
+	[4] = {name="Rank Level 4",		promoTime=11},
+	[5] = {name="Rank Level 5",		promoTime=22},
+	[6] = {name="Rank Level 6",		promoTime=44},
+},
+
+** Keep Task Names in Alphabetical Order (A-B-C)
+** promoTime = Time it takes to reach that level (in hours)
+** promoTime is NOT progress, that's in the SECOND table below
+--]]
+
+["Ammu-Nation Robbery"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},	
+},
+
+["ATM Robbery"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["Bank Heist"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["Hijack"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["Illegal Trucker"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["CnR Robbery"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["House Robbery"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["Arms Trafficking"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+},
+
+["Police Killing"] = {
+	[0] = {name="Rank Level 0", 	promoTime=0},
+	[1] = {name="Rank Level 1", 	promoTime=0.75},
+	[2] = {name="Rank Level 2", 	promoTime=3},
+	[3] = {name="Rank Level 3", 	promoTime=7},
+	[4] = {name="Rank Level 4", 	promoTime=13},
+	[5] = {name="Rank Level 5", 	promoTime=20},
+	[6] = {name="Rank Level 6", 	promoTime=30},
+	[7] = {name="Rank Level 7", 	promoTime=43},
+	[8] = {name="Rank Level 8", 	promoTime=60},
+	[9] = {name="Rank Level 9", 	promoTime=85},
+	[10] = {name="Rank Level 10", 	promoTime=100},
+	[11] = {name="Rank Level 11",		promoTime=115},
+	[12] = {name="Rank Level 12",		promoTime=150},
+	[13] = {name="Rank Level 13",		promoTime=180},
+	[14] = {name="Rank Level 14",		promoTime=210},
+	[15] = {name="Rank Level 15",		promoTime=250},
+	[16] = {name="Rank Level 16",		promoTime=285},
+	[17] = {name="Rank Level 17",		promoTime=325},
+	[18] = {name="Rank Level 18",		promoTime=400},	
+	[19] = {name="Rank Level 19",		promoTime=500},
+	[20] = {name="Rank Level 20",		promoTime=650},
+},
+
+["Store Robbery"] = {
+	[0] = {name="Rank Level 0", 		promoTime=0},
+	[1] = {name="Rank Level 1", 		promoTime=1.25},
+	[2] = {name="Rank Level 2", 		promoTime=2.5},
+	[3] = {name="Rank Level 3", 		promoTime=5},
+	[4] = {name="Rank Level 4", 		promoTime=11},
+	[5] = {name="Rank Level 5",			promoTime=22},
+	[6] = {name="Rank Level 6",			promoTime=45},
+	[7] = {name="Rank Level 7",			promoTime=60},
+	[8] = {name="Rank Level 8",			promoTime=80},
+	[9] = {name="Rank Level 9",			promoTime=100},
+	[10] = {name="Rank Level 10",		promoTime=125},
+	[11] = {name="Rank Level 11",		promoTime=150},
+	[12] = {name="Rank Level 12",		promoTime=200},
+	[13] = {name="Rank Level 13",		promoTime=230},
+	[14] = {name="Rank Level 14",		promoTime=260},
+	[15] = {name="Rank Level 15",		promoTime=290},
+	[16] = {name="Rank Level 16",		promoTime=310},
+	[17] = {name="Rank Level 17",		promoTime=340},
+	[18] = {name="Rank Level 18",		promoTime=370},	
+	[19] = {name="Rank Level 19",		promoTime=400},
+	[20] = {name="Rank Level 20",		promoTime=450},
+}
+
+}
+
+-- Task And Progress Auto-Balance
+---------------------------------->>
+
+RankBase = {
+--[[
+	Example Table:
+["Task Name"] = 	{hProg=35,	uName="Missions Complete",	basePay=1,	floorProg=true},
+},
+
+** Keep Task Names in Alphabetical Order (A-B-C)
+** This part of the script automatically creates balanced job progress and payment so you don't have to do the math yourself
+
+** hProg = Progress an average player working this job is expected to make per hour
+** uName = Name of the task being done, usually a past tense verb (Looks like example: 999 Fish Caught; uName = "Fish Caught")
+** basePay = The pay a person earned per unit of something at Level 0
+** floorProg = Optional. Should the progress be an integer? (Only if the way it goes about adding progress has decimals in it)
+--]]
+	["Hijack"] 				= {hProg=11,	uName="Stolen Vehicles", 	basePay=0.912},
+	["House Robbery"] 		= {hProg=20, 	uName="Houses Robbed",		basePay=1},
+	["Ammu-Nation Robbery"] = {hProg=9, 	uName="Ammu-Nations Robbed",basePay=1},
+	["ATM Robbery"] 		= {hProg=10, 	uName="ATMs Robbed",	 	basePay=1},
+	["CnR Robbery"]			= {hProg=35,	uName="Robberies Compete",	basePay=1},
+	["Arms Trafficking"] 	= {hProg=35, 	uName="Arms Trafficked",	basePay=1},
+	["Police Killing"] 		= {hProg=25, 	uName="Officers Killed", 	basePay=1},
+	["Store Robbery"]       = {hProg=9,	    uName="Stores Robbed",	    basePay=1},
+	["Illegal Trucker"]     = {hProg=20,	uName="Deliveries",	        basePay=1},
+	["Pimp"]                = {hProg=11,	uName="Deliveries",	        basePay=1},
+	["Bank Heist"]          = {hProg=10,	uName="Robberies Compete",	basePay=1},
+}
+
+for job,_ in pairs(Ranks) do
+	for lvl,tbl in pairs(Ranks[job]) do
+		-- Insert Progress
+		Ranks[job][lvl].progress = (RankBase[job].hProg)*tbl.promoTime
+		Ranks[job][lvl].progress = math.floor(Ranks[job][lvl].progress)
+		-- Insert Payment
+		Ranks[job][lvl].pay = (RankBase[job].basePay)*tbl.promoTime
+		Ranks[job][lvl].pay = tonumber(string.format("%.3f", Ranks[job][lvl].pay))
+	end
+end
+
+function getRanks()
+	return Ranks
+end
+
+function getRankBase()
+	return RankBase
+end

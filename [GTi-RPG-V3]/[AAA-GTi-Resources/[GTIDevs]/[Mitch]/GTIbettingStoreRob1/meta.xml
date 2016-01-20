@@ -1,0 +1,5 @@
+<meta>
+	<info author="Emile" name="Betting Store Robbery" autostart="true" />
+	<script src="c.luac" type="client" />
+	<script src="s.lua" type="server" />
+</meta>

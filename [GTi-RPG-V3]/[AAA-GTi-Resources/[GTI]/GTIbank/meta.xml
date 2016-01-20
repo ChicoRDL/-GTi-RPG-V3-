@@ -1,0 +1,51 @@
+<meta>
+	<info author="JTPenn" name="Finance and Banking System" autostart="true" />
+	<script src="bank/bank_gui.luac"	type="client" />
+	<script src="bank/bank.luac"		type="client" />
+	<script src="bank/bank.slua"		/>
+	
+	<script src="atm/atm_gui.luac"	type="client" />
+	<script src="atm/atm.luac"		type="client" />
+	<script src="atm/atm.slua"		/>
+	
+	<script src="recovery/recovery_gui.luac"	type="client" />
+	<script src="recovery/recovery.luac"		type="client" />
+	<script src="recovery/recovery.slua"		/>
+	
+	<script src="security/security_gui.luac"	type="client" />
+	<script src="security/security.luac"		type="client" />
+	<script src="security/security.slua"		/>
+
+	<!-- script src="moneyrecovery/recovery.slua"	type="server" /> -->
+	
+	<script src="database.slua" />
+	<script src="accounts.slua" />
+	<script src="locations.slua" />
+	
+	<export function="GPM"							type="server" />
+	<export function="TPM"							type="server" />
+	<export function="getBankData"					type="server" />
+	<export function="setBankData"					type="server" />
+	<export function="getPlayerBankBalance"			type="server" />
+	<export function="modifyPlayerBankBalance"		type="server" />
+	<export function="modifyAccountBankBalance"		type="server" />
+	<export function="getPlayerLastBankTransaction"	type="server" />
+	<export function="getGroupBankBalance"			type="server" />
+	<export function="modifyGroupBankBalance"		type="server" />
+	<export function="getGroupLastBankTransaction"	type="server" />
+	<export function="getATMsTable"					type="server" />
+
+	<file src="files/ATM.png" />
+	<file src="files/ls_bank.png" />
+	<file src="files/sf_bank.png" />
+	<file src="files/lv_bank.png" />
+	<!--<file src="files/cash.png" />
+	<file src="files/debit.png" />-->
+	
+	<aclrequest>
+        <right name="function.callRemote" 		access="true" />
+		<right name="function.givePlayerMoney" 	access="true" />
+		<right name="function.takePlayerMoney" 	access="true" />
+		<right name="function.setPlayerMoney" 	access="true" />
+    </aclrequest>
+</meta>

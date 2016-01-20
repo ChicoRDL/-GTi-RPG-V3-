@@ -1,0 +1,5 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Interiors Table" autostart="true" />
+    <script src="interiorsTable.lua" />
+    <export function="getInteriorsTable" type="server" />
+</meta>

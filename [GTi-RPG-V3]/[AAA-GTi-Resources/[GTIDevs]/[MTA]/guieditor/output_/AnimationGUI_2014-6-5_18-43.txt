@@ -1,0 +1,31 @@
+
+GUIEditor = {
+    window = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(283, 166, 188, 324, "Animations GTI", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.70)    
+    end
+)
+
+addEventHandler("onClientRender", root,
+    function()
+        dxDrawText(" Start", 294, 469, 329, 481, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Start", 294, 467, 329, 479, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Start", 292, 469, 327, 481, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Start", 292, 467, 327, 479, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Start", 293, 468, 328, 480, tocolor(0, 155, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Stop", 333, 469, 368, 481, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Stop", 333, 467, 368, 479, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Stop", 331, 469, 366, 481, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Stop", 331, 467, 366, 479, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Stop", 332, 468, 367, 480, tocolor(161, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Close", 431, 189, 466, 201, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Close", 431, 187, 466, 199, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Close", 429, 189, 464, 201, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Close", 429, 187, 464, 199, tocolor(0, 0, 0, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+        dxDrawText(" Close", 430, 188, 465, 200, tocolor(212, 6, 181, 255), 1.00, "default", "left", "top", false, false, true, false, false)
+    end
+)

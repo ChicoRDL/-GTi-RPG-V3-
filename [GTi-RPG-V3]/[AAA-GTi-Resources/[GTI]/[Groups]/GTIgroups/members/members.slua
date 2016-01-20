@@ -1,0 +1,371 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 01 Apr 2014
+-- Resource: GTIgroupPanel/panel_members.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+-- Member Tab Info
+------------------->>
+
+function getMembersTabInfo(player)
+	if (not client) then player = client end
+	local groupID = getPlayerGroup(client)
+	local members = getGroupMembers(groupID)
+		-- Get Data for Labels
+	local member_count = #members
+	local member_max = getGroupMemberLimit(groupID)
+	local account = getPlayerAccount(client)
+	local member_since = getGroupMemberData(account, "join_time") or getTickCount()
+	local my_rank = getRankName( getGroupMemberData(account, "rank_id") )
+	
+		-- Get Data for Gridlist
+	local member_data = {}
+	for i,member in ipairs(members) do
+		local m_data = {}
+		local account = getAccount(member)
+		if (account) then
+				-- Get Member Account Name
+			m_data["account_name"] = member
+				-- Get Last Active
+			m_data["last_active"] = exports.GTIaccounts:GAD(account, "lastLogin") or getTickCount()
+				-- Get Rank
+			m_data["rankID"] = getGroupMemberData(account, "rank_id") or 0
+			m_data["rank"] = getRankName(m_data["rankID"]) or member
+				-- Get Member Name & Country
+			local player = getAccountPlayer(account)
+			if (player) then
+				local IP = getPlayerIP(player)
+				m_data["country"] = exports.GTIutil:getIpCountry(IP) or "N/A"
+				m_data["name"] = getPlayerName(player)
+				m_data["online"] = true
+			else
+				local IP = exports.GTIaccounts:GAD(account, "lastip")
+				if not IP then
+					m_data["country"] = "N/A"
+				else
+					m_data["country"] = exports.GTIutil:getIpCountry(IP)
+				end
+				m_data["name"] = exports.GTIaccounts:GAD(account, "lastname") or member
+				m_data["online"] = false
+			end
+			table.insert(member_data, m_data)
+		end
+	end
+
+		-- Categorize by Rank
+	local ranks_ = getGroupRanks(groupID, true)
+	local mem_data = {}
+	for i,rankID in ipairs(ranks_) do
+		local rankName = getRankName(rankID)
+		mem_data[i] = {rankName, {}}
+		for i2,v in ipairs(member_data) do
+			if (v["rankID"] == rankID) then
+				table.insert(mem_data[i][2], v)
+				--member_data[i2] = nil
+			end
+		end
+	end
+	member_data = mem_data
+		
+		-- Remove Empty Slots
+	for i,v in ipairs(member_data) do
+		if (v[2] == {} or #v[2] == 0) then
+			table.remove(member_data, i)
+		end
+	end
+		
+		-- Get Permissions
+	local perm_data = {}
+	if (hasMemberPermissionTo(client, "add_member")) then
+		perm_data["add_member"] = true
+	end
+	if (hasMemberPermissionTo(client, "del_member")) then
+		perm_data["del_member"] = true
+	end
+	if (hasMemberPermissionTo(client, "change_member_rank")) then
+		perm_data["change_member_rank"] = true
+	end	
+	perm_data["leave_group"] = true
+	local rankID = getPlayerGroupRank(client)
+	local leader = getGroupRankData(rankID, "isLeader")
+	local leaders = getGroupLeaders(groupID)
+	if (leader == 1 and #leaders == 1) then
+		perm_data["leave_group"] = nil
+	end
+	
+	local col = {getGroupColor(groupID)}
+	
+	triggerClientEvent(client, "GTIgroupPanel.setMemberTabInfo", resourceRoot, member_count, member_max, member_since, my_rank, member_data, perm_data, col)
+end
+addEvent("GTIgroupPanel.getMembersTabInfo", true)
+addEventHandler("GTIgroupPanel.getMembersTabInfo", root, getMembersTabInfo)
+
+-- Send Invite
+--------------->>
+
+addEvent("GTIgroupPanel.sendInviteNotice", true)
+addEventHandler("GTIgroupPanel.sendInviteNotice", root, function(player)
+	local player = getPlayerFromName(player)
+	if (not isElement(player)) then
+		exports.GTIhud:dm("A player by the name of '"..getPlayerName(player).."' was not found.", 255, 125, 0)
+		return
+	end
+	
+	local groupID = getPlayerGroup(client)
+	
+	local members = #getGroupMembers(groupID)
+	local limit = getGroupMemberLimit(groupID)
+	if (members >= limit) then
+		local level = getGroupLevel(groupID)
+		exports.GTIhud:dm("GROUP: A level "..level.." group has an invite limit of "..limit.." players. You have already reached this limit.", client, 255, 100, 100)
+		return
+	end
+	
+	local invites = getGroupInvites(player)
+	for groupID_ in pairs(invites) do
+		if (groupID_ == groupID) then
+			exports.GTIhud:dm("This player currently has a pending invitation from your group.", client, 255, 125, 0)
+			return
+		end
+	end
+	
+	invitePlayer(player, groupID)
+	outputGroupChat("* GROUP INVITE: "..getPlayerName(player).." has been invited to the group by "..getPlayerName(client), groupID)
+	addLogToDatabase(getPlayerName(player).." has been invited to the group by "..getPlayerName(client), client, groupID)
+	exports.GTIhud:dm("You have invited "..getPlayerName(player).." to join your group.", client, 255, 100, 100)
+	exports.GTIhud:dm("GROUP INVITE: You have been invited to join "..getGroupName(groupID)..". Press F2 to view group invites.", player, 255, 100, 100)
+	outputChatBox("GROUP INVITE: You have been invited to join "..getGroupName(groupID)..". Press F2 to view group invites.", player, 255, 100, 100)
+end)
+
+-- Manage Invites
+------------------>>
+
+addEvent("GTIgroupPanel.getGroupInvites", true)
+addEventHandler("GTIgroupPanel.getGroupInvites", root, function(player)
+	if (not client) then client = player end
+	local invites_ = getGroupInvites(client)
+	local invites = {}
+	for groupID in pairs(invites_) do
+		local groupName = getGroupName(groupID)
+		table.insert(invites, groupName)
+	end
+	triggerClientEvent(client, "GTIgroupPanel.returnGroupInvites", resourceRoot, invites)
+end)
+
+addEvent("GTIgroupPanel.manageGroupInvites", true)
+addEventHandler("GTIgroupPanel.manageGroupInvites", root, function(group, accept)
+	if (not group and not accept) then
+		-- Deny All
+		local invites = getGroupInvites(client)
+		for groupID in pairs(invites) do
+			outputGroupChat("* GROUP INVITE: "..getPlayerName(client).." has declined the group invitation.", groupID)
+			addLogToDatabase(getPlayerName(client).." has declined the group invitation.", client, groupID)
+		end
+		clearAllInvites(client)
+		getGroupInvites(client)
+		exports.GTIhud:dm("You have declined all current group invites.", client, 255, 100, 100)
+		return
+	end
+	
+	local invites = getGroupInvites(client)
+	local groupID
+	for groupID_ in pairs(invites) do
+		if (getGroupName(groupID_) == group) then
+			groupID = groupID_
+		end
+	end
+	if (not groupID) then
+		exports.GTIhud:dm("A group with the name '"..group.."' could not be found.", client, 255, 25, 25)
+		return
+	end
+		
+	if (not accept) then
+		-- Deny One
+		outputGroupChat("* GROUP INVITE: "..getPlayerName(client).." has declined the group invitation.", groupID)
+		addLogToDatabase(getPlayerName(client).." has declined the group invitation.", client, groupID)
+		clearGroupInvite(client, groupID)
+		getGroupInvites(client)
+		exports.GTIhud:dm("You have declined the group invite from "..group, client, 255, 100, 100)
+	elseif (accept) then
+		-- Accept
+		clearAllInvites(client)
+		getGroupInvites(client)
+		local rank = getDefaultRank(groupID)
+		addMember(groupID, client, rank)
+		exports.GTIhud:dm("You are now a member of "..group, client, 255, 100, 100)
+		outputGroupChat("* GROUP INVITE: "..getPlayerName(client).." has joined the group!", groupID)
+		addLogToDatabase(getPlayerName(client).." has joined the group", client, groupID)
+		triggerClientEvent(client, "GTIgroupPanel.hideGroupCreatePanel", resourceRoot, "left", "up")
+	end
+end)
+
+-- Leave Group
+--------------->>
+
+addEvent("GTIgroupPanel.leaveGroup", true)
+addEventHandler("GTIgroupPanel.leaveGroup", root, function()
+	local rankID = getPlayerGroupRank(client)
+	local leader = getGroupRankData(rankID, "isLeader")
+	if (leader == 1) then
+		exports.GTIhud:dm("You cannot leave this group because you are the leader! The only way for you to leave is to delete your group.", client, 255, 100, 100)
+		return
+	end
+	
+	local groupID = getPlayerGroup(client)
+	outputGroupChat("* GROUP: "..getPlayerName(client).." has left the group.", groupID)
+	addLogToDatabase(getPlayerName(client).." has left the group", client, groupID)
+	deleteMember(getPlayerAccount(client))
+	triggerClientEvent(client, "GTIgroupPanel.closeGroupPanel", resourceRoot)
+end)
+
+-- Remove Member
+----------------->>
+
+addEvent("GTIgroupPanel.removePlayer", true)
+addEventHandler("GTIgroupPanel.removePlayer", root, function(player, acc_name, reason)
+	local groupID = getPlayerGroup(client)
+	local account = getAccount(acc_name)
+	if (not account) then
+		exports.GTIhud:dm("A player with the account name '"..acc_name.."' could not be found.", client, 255, 25, 25)
+		triggerClientEvent(client, "GTIgroupPanel.confirmPlayerRemoved", resourceRoot, true)
+		return
+	end
+	if (account == getPlayerAccount(client)) then
+		exports.GTIhud:dm("You can't remove yourself! To leave the group, click the 'Leave Group' button.", client, 255, 125, 0)
+		triggerClientEvent(client, "GTIgroupPanel.confirmPlayerRemoved", resourceRoot, true)
+		return
+	end
+	
+	local myRank = getPlayerGroupRank(client)
+	local plrRank = getGroupMemberData(account, "rank_id")
+	
+		-- Prevent Loss of Only Leader
+	if (getGroupRankData(plrRank, "isLeader") == 1) then
+		local leaders = getGroupLeaders(groupID)
+		if (#leaders == 1) then
+			exports.GTIhud:dm("ERROR: This person is the only group leader. Give someone else the leader rank first.", client, 255, 125, 0)
+			triggerClientEvent(client, "GTIgroupPanel.confirmPlayerRemoved", resourceRoot, true)
+			return
+		end
+	end
+	
+		-- Prevent Change of Rank if Ranks are the same
+	if (myRank == plrRank) then
+		exports.GTIhud:dm("You cannot remove someone with the same rank as you.", client, 255, 125, 0)
+		triggerClientEvent(client, "GTIgroupPanel.confirmPlayerRemoved", resourceRoot, true)
+		return
+	end
+	
+		-- Prevent Change of Rank if Changer is Inferior in Rank
+	if (getSeniorRank(groupID, myRank, plrRank) == plrRank) then
+		exports.GTIhud:dm("You cannot remove someone who is higher in rank than you.", client, 255, 125, 0)
+		triggerClientEvent(client, "GTIgroupPanel.confirmPlayerRemoved", resourceRoot, true)
+		return
+	end
+	
+	deleteMember(account)
+	outputGroupChat("* GROUP: "..player.." has been removed from the group by "..getPlayerName(client), groupID)
+	addLogToDatabase(player.." has been removed from the group by "..getPlayerName(client).." ("..reason..")", client, groupID)
+	outputGroupChat("* GROUP: Reason: "..reason, groupID)
+	exports.GTIhud:dm("GROUP: You have removed "..player.." from the group.", client, 255, 100, 100)
+	triggerClientEvent(client, "GTIgroupPanel.confirmPlayerRemoved", resourceRoot)
+	
+	local player = getAccountPlayer(account)
+	if (isElement(player)) then
+		exports.GTIhud:dm("* GROUP: You have been removed from "..getGroupName(groupID).." by "..getPlayerName(client), player, 255, 100, 100)
+		exports.GTIhud:dm("* GROUP: Reason: "..reason, player, 255, 100, 100)
+		outputChatBox("* GROUP: You have been removed from "..getGroupName(groupID).." by "..getPlayerName(client), player, 255, 100, 100)
+		outputChatBox("* GROUP: Reason: "..reason, player, 255, 100, 100)
+		triggerClientEvent(player, "GTIgroupPanel.closeGroupPanel", resourceRoot)
+		triggerClientEvent(getElementsByType("player"),"groupBlips:onPlayerRemoved",player,groupID)
+	end
+end)
+
+-- Change Group Rank
+--------------------->>
+
+addEvent("GTIgroupPanel.showChangeRankGUI", true)
+addEventHandler("GTIgroupPanel.showChangeRankGUI", root, function(accName)
+	local groupID = getPlayerGroup(client)
+	local account = getAccount(accName)
+	local rankID = getGroupMemberData(account, "rank_id")
+	local rankName = getRankName(rankID)
+
+	local ranks = {}	-- Ranks Table
+	local def_table		-- Default Rank Table
+	
+	for i,rankID in ipairs(getGroupRanks(groupID, true)) do
+		local rankName = getRankName(rankID)
+		table.insert(ranks, {rankID, rankName})
+		if (getGroupRankData(rankID, "isDefault") == 1) then
+			def_table = {rankID, rankName}
+			table.remove(ranks)
+		end
+	end
+	table.insert(ranks, def_table)
+	triggerClientEvent(client, "GTIgroupPanel.showChangeRankGUI", resourceRoot, ranks, accName, rankName)
+end)
+
+addEvent("GTIgroupPanel.changeMemberRank", true)
+addEventHandler("GTIgroupPanel.changeMemberRank", root, 
+	function(acc_name, oldRank, newRank)
+		local groupID = getPlayerGroup(client)
+		local account = getAccount(acc_name)
+		local plrRank = getPlayerGroupRank(client)
+		local oldRank = getGroupRankIDByName(groupID, oldRank)
+		local newRank = getGroupRankIDByName(groupID, newRank)
+		
+		if (not account) then
+			exports.GTIhud:dm("ERROR: This account does not exist.", client, 255, 25, 25)
+			return
+		end
+		
+			-- Prevent Loss of Only Leader
+		if (getGroupRankData(oldRank, "isLeader") == 1) then
+			local leaders = getGroupLeaders(groupID)
+			if (#leaders == 1) then
+				exports.GTIhud:dm("ERROR: This person is the only group leader. Give someone else the leader rank first.", client, 255, 125, 0)
+				return
+			end
+		end
+		
+			-- Prevent Change of Rank if Ranks are the same
+		if (plrRank == oldRank and getGroupRankData(plrRank, "isLeader") ~= 1) then
+			exports.GTIhud:dm("You cannot change the rank of someone with the same rank as you.", client, 255, 125, 0)
+			return
+		end
+		
+			-- Prevent Change of Rank if Changer is Inferior in Rank
+		if (getSeniorRank(groupID, plrRank, oldRank) == oldRank) then
+			exports.GTIhud:dm("You cannot change the rank of someone who is higher in rank than you.", client, 255, 125, 0)
+			return
+		end
+		
+			-- Prevent Change of Rank to a position higher than yours
+		if (getSeniorRank(groupID, plrRank, newRank) == newRank) then
+			exports.GTIhud:dm("You cannot change this person's rank to a position higher than yours.", client, 255, 125, 0)
+			return
+		end
+		
+		if (oldRank == newRank) then
+			exports.GTIhud:dm("You cannot change a person's group rank to the same rank.", client, 255, 125, 0)
+			return
+		end
+		
+		
+		setGroupMemberData(account, "rank_id", newRank)
+		local highOrLow = ""
+		if (getSeniorRank(groupID, newRank, oldRank) == newRank) then
+			highOrLow = "promoted"
+		else
+			highOrLow = "demoted"
+		end
+		local rankName = getRankName(newRank)
+		outputGroupChat("GROUP: "..exports.GTIaccounts:GAD(account, "lastname").." has been "..highOrLow.." to "..rankName, groupID)
+		exports.GTIircg:outputGroupChannel(groupID, "GROUP:", exports.GTIaccounts:GAD(account, "lastname").." has been "..highOrLow.." to "..rankName)
+		addLogToDatabase(exports.GTIaccounts:GAD(account, "lastname").." has been "..highOrLow.." to "..rankName.." by "..getPlayerName(client), client, groupID)
+		getMembersTabInfo(client)
+	end
+)

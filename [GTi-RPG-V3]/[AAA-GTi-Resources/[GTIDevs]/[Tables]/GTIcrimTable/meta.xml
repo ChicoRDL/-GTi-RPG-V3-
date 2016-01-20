@@ -1,0 +1,7 @@
+<meta>
+	<info author="JTPenn" 	version="1.0"	name="Criminal Respect System Table" autostart="true" />
+	<script src="ranks.slua" 	/>
+	
+	<export function="getRanks" 		type="server" />
+	<export function="getRankBase" 		type="server" />
+</meta>

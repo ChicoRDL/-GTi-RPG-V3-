@@ -1,0 +1,65 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 30 Jun 2014
+-- Resource: GTIgroupPanel/Stats/stats.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Stat Tab Info
+----------------->>
+
+addEvent("GTIgroupPanel.getStatsTabInfo", true)
+addEventHandler("GTIgroupPanel.getStatsTabInfo", root, function()
+	local groupID = getPlayerGroup(client)
+	local stats = {}
+		-- Founded
+	stats[19] = getGroupCreationDate(groupID)
+	local day,mon,year = exports.GTIutil:todate(stats[19])
+	local mon = exports.GTIutil:getMonthName(mon)
+	stats[19] = day.." "..mon.." "..year
+		-- Total Collective Playtime
+	stats[21] = getGroupStat(groupID, "playtime") or 0
+	local level = getGroupLevel(groupID)
+	local playtime_req = getGroupLevelPlaytimeRequirement(level+1)
+	stats[21] = exports.GTIutil:tocomma( math.floor(stats[21]/60) ) .. " / ".. exports.GTIutil:tocomma( playtime_req ) .." hours"
+		-- Group Kills
+	stats[23] = exports.GTIutil:tocomma( getGroupStat(groupID, "kills") or 0 )
+		-- Total Turfs Taken
+	stats[25] = exports.GTIutil:tocomma( getGroupStat(groupID, "turfs_taken") or 0 )
+		-- Total Arrests
+	stats[27] = exports.GTIutil:tocomma( getGroupStat(groupID, "arrests") or 0 )
+		-- Number of Members
+	stats[29] = #getGroupMembers(groupID) .. " / " .. getGroupMemberLimit(groupID)
+		-- Bank Account Balance
+	stats[31] = "$"..exports.GTIutil:tocomma( exports.GTIbank:getGroupBankBalance(groupID) )
+		-- Group Deaths
+	stats[33] = exports.GTIutil:tocomma( getGroupStat(groupID, "deaths") or 0 )
+		-- Turfs Defended
+	stats[37] = exports.GTIutil:tocomma( getGroupStat(groupID, "turfs_defended") or 0 )
+		-- Arrest Points
+	stats[39] = exports.GTIutil:tocomma( getGroupStat(groupID, "arrest_points") or 0 )
+		-- Lifetime Income
+	stats[41] = "$"..exports.GTIutil:tocomma( getGroupStat(groupID, "income") or 0 )
+		-- Lifetime Expenses
+	stats[43] = "$"..exports.GTIutil:tocomma( getGroupStat(groupID, "expenses") or 0 )
+		-- Earliest Level Up
+	stats[100] = getGroupCreationDate(groupID) + getGroupLevelExistenceRequirement(level+1)
+	local day,mon,year = exports.GTIutil:todate(stats[100])
+	local mon = exports.GTIutil:getMonthName(mon)
+	stats[100] = "The earliest that your group can level up is "..day.." "..mon.." "..year
+	
+		-- Experience Bar
+	prog_stats = {}
+	prog_stats[1] = getGroupLevel(groupID)
+	local xp_curlvl = getGroupLevelXPRequirement(prog_stats[1])
+	prog_stats[2] = getGroupExperience(groupID)
+	local xp_nextlvl = getGroupLevelXPRequirement(prog_stats[1]+1)
+	prog_stats[3] = (prog_stats[2]-xp_curlvl)/(xp_nextlvl-xp_curlvl)
+	prog_stats[4] = exports.GTIutil:tocomma(xp_nextlvl)
+	prog_stats[5] = exports.GTIutil:tocomma(prog_stats[2])
+	
+	local col = {getGroupColor(groupID)}
+	
+	triggerClientEvent(client, "GTIgroupPanel.setStatsTabInfo", resourceRoot, stats, prog_stats, col)
+end)

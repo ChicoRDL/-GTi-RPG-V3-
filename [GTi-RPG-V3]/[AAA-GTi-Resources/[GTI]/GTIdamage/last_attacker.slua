@@ -1,0 +1,78 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn), LilDolla
+-- Date: 20 Jun 2014
+-- Resource: GTIdamage/last_attacker.slua
+-- Version: 1.1
+----------------------------------------->>
+
+local lastAttacker = {}			-- Last Attacker by Victim
+local lastAttackerWeapon = {}	-- Last Attacker's Weapon by Victim
+local lastDMG = {}				-- Last Attacker's Damage by Victim
+local lastVictim = {}			-- Last Victim by Attacker
+local lastAttack = {}			-- Time of Last Attack by Attacker
+
+-- Set Last Attacker
+--------------------->>
+
+addEventHandler("onPlayerDamage", root,
+	function(attacker, attackerWeapon, bodyPart, loss)
+		-- Last Attacker
+		if (isElement(attacker) and getElementType(attacker) == "vehicle") then
+			-- Get Driver for Vehicle Attackers
+			attacker = getVehicleOccupant(attacker)
+		end
+		lastAttacker[source] = attacker or false
+		lastAttackerWeapon[source] = attackerWeapon or false
+		lastDMG[source] = math.floor(loss)
+		if (lastAttacker[source]) then
+			lastVictim[attacker] = source
+			lastAttack[attacker] = getTickCount()
+		end
+	end
+)
+
+addEventHandler("onPlayerWasted", root,
+	function()
+		lastDMG[source] = nil
+		lastVictim[source] = nil
+		lastAttacker[source] = nil
+		lastAttackerWeapon[source] = nil
+	end
+)
+
+-- Last Attacker Exports
+------------------------->>
+
+function getLastAttacker(element)
+	if (not isElement(element)) then return false end
+	return lastAttacker[element] or false
+end
+
+function getLastAttackedPlayer(element)
+	if (not isElement(element)) then return false end
+	return lastVictim[element] or false
+end
+
+function getLastAttackerWeapon(element)
+	if (not isElement(element)) then return false end
+	return lastAttackerWeapon[element] or false
+end
+
+function getPlayerDamage(element)
+	if (not isElement(element)) then return false end
+	return lastDMG[element] or false
+end
+
+function getPlayerTimeSinceDamaged(element)
+	if (not isElement(element)) then return false end
+	if (not lastDMG[element]) then return math.huge end
+	return getTickCount() - lastDMG[element] 
+end
+
+
+function getPlayerTimeSinceLastAttack(player)
+	if (not isElement(player)) then return false end
+	if (not lastAttack[player]) then return math.huge end
+	return getTickCount() - lastAttack[player]
+end

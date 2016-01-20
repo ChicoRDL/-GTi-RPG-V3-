@@ -1,0 +1,8 @@
+<meta>
+	<info author="Jack" name="Forum-Server Account Link" autostart="true" />
+	
+	<script src="auth.lua" type="server"/>
+	
+	<export function="getPlayerAuthKey" type="server"/>
+	<export function="generateAuthKey" type="server"/>
+</meta>

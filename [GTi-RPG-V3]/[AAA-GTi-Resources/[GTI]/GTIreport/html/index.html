@@ -1,0 +1,27 @@
+<html>
+   <head>
+      <* = call ( getResourceFromName("ajax"), "start", getResourceName(getThisResource()) ) *>
+   </head>
+   <body>
+   	<* 
+
+		if ( exports.GTIreport:getReports() ) >= 1 then
+			httpWrite ( "<table border='1'> <tr> <th> ID </th> <th> Reporter </th> <th> Reporter job </th> <th> Last attacker </th> <th> Attacker job </th> <th> Rule broken </th> <th> Screenshot </th> </tr>" )
+			for index, value in ipairs (  exports.GTIreport:getTableReports() ) do
+				httpWrite ( "<td> <center>" .. index .. " </td> <td> <center>" .. value[1] .. " </td> </center> <center> <td> " ..value[2] .. " </center> </td>")
+				if value[1] ~= value[3] then
+					httpWrite ( "<td> <center>" .. value[3] .. " </center> </td>  <center> <td> " ..value[4] .. " </center> </td>")
+				else
+					httpWrite ( "<td> <center> N/A </center> </td>  <td> <center> N/A </center> </td>")
+				end
+				httpWrite ( "<td> <center>" .. value[7] .. " </center> </td>")
+				httpWrite ( "<td> <center> <a target='_blank' href='http://ares.net16.net/GTi/GTIreport/screenshots/" .. value[5] ..".jpg'> <img width='100' height='100' src='http://ares.net16.net/GTi/GTIreport/screenshots/" .. value[5] ..".jpg'/> </a> </center> </td> </tr>")
+
+			end
+				httpWrite ( "</table>" )
+		else
+			httpWrite( "There are no pending reports" )
+		end
+	*>
+   </body>
+</html>

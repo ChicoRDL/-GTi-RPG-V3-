@@ -1,0 +1,16 @@
+
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        MainWindow = guiCreateWindow(10, 39, 776, 526, "GTi Chat Panel", false)
+        guiWindowSetSizable(MainWindow, false)
+        guiSetAlpha(MainWindow, 0.95)
+
+        MsgLabel = guiCreateLabel(10, 498, 56, 17, "Your Msg:", false, MainWindow)
+        guiSetFont(MsgLabel, "default-bold-small")
+        guiLabelSetColor(MsgLabel, 221, 241, 7)
+        TextBox = guiCreateEdit(72, 498, 597, 18, "", false, MainWindow)
+        TAB = guiCreateTabPanel(9, 27, 757, 462, false, MainWindow)
+
+        MainTAB = guiCreateTab("Tab", TAB)    
+    end
+)

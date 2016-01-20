@@ -1,0 +1,260 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 25 Dec 2013
+-- Resource: GTIvehicles/database.slua
+-- Version: 2.5
+----------------------------------------->>
+
+local SERVER_PORT = 22003
+
+local ipairs = ipairs
+local type = type
+local tonumber = tonumber
+
+function saveDataOnResourceStop()
+	for i,vehicle in ipairs(getElementsByType("vehicle", resourceRoot)) do
+		destroyElement(vehicle)
+	end
+end
+addEventHandler("onResourceStop", resourceRoot, saveDataOnResourceStop)
+
+-- Database Start
+------------------>>
+
+local db = dbConnect("mysql", "dbname=gti;host=127.0.0.1", "GTI", "")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `vehicles`(`ID` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(ID))")
+dbExec(db, "CREATE TABLE IF NOT EXISTS `vehicle_owners`(`id` INT NOT NULL AUTO_INCREMENT, `name` TEXT, PRIMARY KEY(id))")
+
+local database1_online	-- Is Vehicles Database Online?
+local database2_online	-- Is Vehicle Owners Database Online?
+
+vehicleData = {}		-- 'vehicles' Database Cache
+vehicleOwnerData = {}	-- 'vehicleOwners' Database Cache
+
+vehicles = {}			-- Script Spawned Vehicles
+activeVehicleIDs = {}	-- Active Vehicles IDs by key
+maxVehicleID = 0		-- Current Highest Value of 'ID'
+maxVehOwnerID = 0		-- Current highest value of 'slot'
+
+MAX_ALLOWED_VEHICLES = 2 	-- Maximum Number of Vehicles a Player Can Have Spawned
+
+addEvent("onDatabaseLoad", true)	-- Triggers when the database is ready
+
+-- Vehicle Data Cache
+---------------------->>
+
+addEventHandler("onResourceStart", resourceRoot, function()
+	dbQuery(cacheVehicleDatabase, {}, db, "SELECT * FROM `vehicles`")
+	dbQuery(cacheVehicleOwnerDatabase, {}, db, "SELECT * FROM `vehicle_owners`")
+end)
+
+function cacheVehicleDatabase(qh)
+	local result = dbPoll(qh, 0)
+	vehicleData[0] = {}
+	for i,row in ipairs(result) do
+		vehicleData[row.ID] = {}
+		for column,value in pairs(row) do
+			if (column ~= "ID") then
+				vehicleData[0][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				vehicleData[row.ID][column] = value
+				
+				if (maxVehicleID < row.ID) then
+					maxVehicleID = row.ID
+				end
+			end
+		end
+	end
+	database1_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "vehicles")
+end
+
+-- Vehicle Owner Data Cache
+---------------------------->>
+
+function cacheVehicleOwnerDatabase(qh)
+	local vehData = dbPoll(qh, 0)
+	vehicleOwnerData["Console"] = {}
+	for i,row in ipairs(vehData) do
+		vehicleOwnerData[row.name] = {}
+		for column,value in pairs(row) do
+			if (column ~= "id" or column ~= "name") then
+				vehicleOwnerData["Console"][column] = true
+				if (value == "true") then value = true end
+				if (value == "false") then value = false end
+				vehicleOwnerData[row.name][column] = value
+				local id = string.gsub(column, "vehicle", "")
+				local id = tonumber(id)
+				if (id and id > maxVehOwnerID) then maxVehOwnerID = id end
+			end
+		end
+	end
+	database2_online = true
+	triggerEvent("onDatabaseLoad", resourceRoot, "vehicle_owners")
+end
+
+-- Vehicle Data Exports
+------------------------>>
+
+function setVehicleData(ID, key, value)
+	if (not database1_online) then return false end
+	if (not ID or not key) then return false end
+	if (type(ID) ~= "number" or type(key) ~= "string") then return false end
+	if (type(vehicleData[ID]) ~= "table") then
+		vehicleData[ID] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `vehicles`(ID) VALUES(?)", ID)
+		end
+	end
+	
+	if (vehicleData[0][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `vehicles` ADD `??` text", key)
+		end
+		vehicleData[0][key] = true
+	end
+	
+	vehicleData[ID][key] = value
+	if (value ~= nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "UPDATE `vehicles` SET `??`=? WHERE ID=?", key, tostring(value), ID)
+		end
+	else
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "UPDATE `vehicles` SET `??`=NULL WHERE ID=?", key, account)
+		end
+	end
+	if (maxVehicleID < ID) then maxVehicleID = ID end
+	return true
+end
+
+function getVehicleData(ID, key)
+	if (not database1_online) then return nil end
+	if (not ID or not key) then return nil end
+	if (type(ID) ~= "number" or type(key) ~= "string") then return nil end
+	
+	if (vehicleData[ID] == nil) then return nil end
+	if (vehicleData[ID][key] == nil or vehicleData[ID][key] == "nil") then return nil end
+	
+	return tonumber(vehicleData[ID][key]) or vehicleData[ID][key]
+end
+
+-- Vehicle Owner Data Exports
+------------------------------>>
+
+function setVehicleOwnerData(account, key, value)
+	if (not database2_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	local account = getAccountName(account)
+	
+	if (type(vehicleOwnerData[account]) ~= "table") then
+		vehicleOwnerData[account] = {}
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "INSERT INTO `vehicle_owners`(name) VALUES(?)", account)
+		end
+	end
+	
+	if (vehicleOwnerData["Console"][key] == nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "ALTER TABLE `vehicle_owners` ADD `??` text", key)
+		end
+		vehicleOwnerData["Console"][key] = true
+	end
+	
+	vehicleOwnerData[account][key] = value
+	if (value ~= nil) then
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "UPDATE `vehicle_owners` SET `??`=? WHERE name=?", key, tostring(value), account)
+		end
+	else
+		if (getServerPort() == SERVER_PORT) then
+			dbExec(db, "UPDATE `vehicle_owners` SET `??`=NULL WHERE name=?", key, account)
+		end
+	end
+	return true
+end
+
+function getVehicleOwnerData(account, key)
+	if (not database2_online) then return nil end
+	if (not account or not key) then return nil end
+	if (isGuestAccount(account) or type(key) ~= "string") then return nil end
+	
+	local account = getAccountName(account)
+	if (vehicleOwnerData[account] == nil) then return nil end
+	if (vehicleOwnerData[account][key] == nil or vehicleOwnerData[account][key] == "nil") then return nil end
+	
+	return tonumber(vehicleOwnerData[account][key]) or vehicleOwnerData[account][key]
+end
+
+function deleteVehicleOwnerData(account, key)
+	if (not database2_online) then return false end
+	if (not account or not key) then return false end
+	if (isGuestAccount(account) or type(key) ~= "string") then return false end
+	
+	local account = getAccountName(account)
+	if (vehicleOwnerData[account] == nil) then return false end
+	if (vehicleOwnerData[account][key] == nil or vehicleOwnerData[account][key] == "nil") then return false end
+	
+	if (getServerPort() == SERVER_PORT) then
+		dbExec(db, "UPDATE `vehicle_owners` SET `??`=NULL WHERE name=?", key, account)
+	end
+	vehicleOwnerData[account][key] = nil
+end
+
+function getAllVehicleOwnerData(account)
+	if (not database2_online) then return false end
+	if (not account or isGuestAccount(account)) then return false end
+	local account = getAccountName(account)
+	if (vehicleOwnerData[account] == nil) then return nil end
+	local vehTable = {}
+	for i,v in pairs(vehicleOwnerData[account]) do
+		if (v and v ~= "nil" and i ~= "id") then
+			vehTable[i] = tonumber(v) or v
+		end
+	end
+	return vehTable
+end
+
+function sortVehicleOwnerData(account)
+	if (not database2_online) then return false end
+	if (not account or isGuestAccount(account)) then return false end
+	
+	local slot = 1
+	for i=1,maxVehOwnerID do
+		local value = getVehicleOwnerData(account, "vehicle"..i)
+		if (value) then
+			setVehicleOwnerData(account, "vehicle"..i, nil)
+			setVehicleOwnerData(account, "vehicle"..slot, value)
+			slot = slot + 1
+		end
+	end
+	return true
+end
+
+addEventHandler("onDatabaseLoad", root, function(database)
+	if (database ~= "vehicle_owners") then return end
+	for i,player in ipairs(getElementsByType("player")) do
+		local account = getPlayerAccount(player)
+		sortVehicleOwnerData(account)
+	end
+end)
+
+addEventHandler("onPlayerLogin", root, function(_, account)
+	sortVehicleOwnerData(account)
+end)
+
+addEvent("onAccountDelete")
+addEventHandler("onAccountDelete", root, function(account)
+		-- Vehicles
+	local vehIDs = getAllVehicleOwnerData(account)
+	for _,id in pairs(vehIDs) do
+		dbExec(db, "DELETE FROM `vehicles` WHERE ID=?", id)
+		vehicleData[id] = nil
+	end
+		-- Vehicle Owners
+	dbExec(db, "DELETE FROM `vehicle_owners` WHERE name=?", account)
+	vehicleOwnerData[account] = nil
+end)

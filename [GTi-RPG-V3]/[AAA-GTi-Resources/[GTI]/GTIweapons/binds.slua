@@ -1,0 +1,35 @@
+addEvent("WepBinds:setWeaponBindsEnabled",true)
+
+function onStart()
+	for k,v in ipairs(getElementsByType("player")) do
+		if exports.GTIutil:isPlayerLoggedIn(v) then
+			local setting = exports.GTIaccounts:invGet(getPlayerAccount(v),"weapon-bind")
+			
+			if setting then
+				setting = true
+			else
+				setting = false
+			end
+			
+			setTimer(triggerClientEvent,750,1,v,"WepBinds:onSettingsReceived",v,setting)
+		end
+	end
+end
+addEventHandler("onResourceStart",resourceRoot,onStart)
+
+function onPlayerLoggedIn()
+	local setting = exports.GTIaccounts:invGet(getPlayerAccount(source),"weapon-bind") or false
+	if setting then
+		setting = true
+	else
+		setting = false
+	end
+	
+	triggerClientEvent(source,"WepBinds:onSettingsReceived",source,setting)
+end
+addEventHandler("onPlayerLogin",root,onPlayerLoggedIn)
+
+function setWeaponBindsEnabled(state)
+	exports.GTIaccounts:invSet(getPlayerAccount(client),"weapon-bind", state)
+end
+addEventHandler("WepBinds:setWeaponBindsEnabled",root,setWeaponBindsEnabled)

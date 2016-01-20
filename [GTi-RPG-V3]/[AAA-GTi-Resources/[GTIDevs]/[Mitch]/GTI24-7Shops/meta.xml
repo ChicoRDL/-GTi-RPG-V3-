@@ -1,0 +1,5 @@
+<meta>
+<info author="Mitch" name="24/7 Shops" autostart="true" />
+<script src="24-7shops_c.luac" type="client" />
+<script src="24-7shops_s.lua" type="server" />
+</meta>

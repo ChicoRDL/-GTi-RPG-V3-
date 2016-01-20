@@ -1,0 +1,31 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    label = {},
+    staticimage = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(599, 224, 270, 36, ":GTIsettingsApp/bkgr_black.png", false)
+
+        GUIEditor.label[1] = guiCreateLabel(47, 10, 172, 16, "GTI SMS Application", false, GUIEditor.staticimage[1])
+        local font_0 = guiCreateFont(":GTIclockApp/robo.ttf")
+        guiSetFont(GUIEditor.label[1], font_0)
+        guiLabelSetColor(GUIEditor.label[1], 254, 254, 254)
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+        GUIEditor.staticimage[2] = guiCreateStaticImage(240, 5, 25, 25, ":GTIMessagingApp/images/friend.png", false, GUIEditor.staticimage[1])
+        GUIEditor.staticimage[3] = guiCreateStaticImage(10, 6, 32, 25, ":GTIMessagingApp/images/msg.png", false, GUIEditor.staticimage[1])
+
+
+        GUIEditor.staticimage[4] = guiCreateStaticImage(599, 260, 270, 389, ":GTIMessagingApp/images/bckgrnd.png", false)    
+    end
+)

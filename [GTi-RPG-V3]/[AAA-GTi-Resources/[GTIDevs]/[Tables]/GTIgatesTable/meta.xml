@@ -1,0 +1,5 @@
+<meta>
+    <script src="gateTable.lua" />
+    <export function="getGatesTable" type="server" />
+    <info author="LilDolla" name="Gates System Table" autostart="true"></info>
+</meta>

@@ -1,0 +1,9 @@
+<meta>
+	<info author="JTPenn"	name="[GTI2] GTIdroid: Phone App"	autostart="false" />
+	<file src="images/phone_bkgd.png"		/>
+	<file src="images/back_icon.png"		/>
+	<file src="images/contacts_icon.png"	/>
+	<file src="images/phone_icon.png"		/>
+	
+	<script src="phone.luac"	type="client"	/>
+</meta>

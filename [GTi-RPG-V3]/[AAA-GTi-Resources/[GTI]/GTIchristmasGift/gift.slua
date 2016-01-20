@@ -1,0 +1,64 @@
+local gifts = { 
+	[1] = {75000, 1},
+	[2] = {65000, 1},
+	[3] = {75000, 1},
+	[4] = {65000, 1},
+	[5] = {85000, 1},
+}
+
+local hatsIDs = {
+	[1] = 2476,
+}
+
+local hatsOffsets = {
+	[1] = {0, .0375, 0.1, 0, 25, 90}
+}
+
+local hats = {}
+
+addCommandHandler("opengift", 
+	function (player)
+		if ( isGuestAccount(getPlayerAccount(player)) ) then return end
+		if ( exports.GTIaccounts:GAD(getPlayerAccount(player), "2015s_Christmas") ) then return end
+		local giftID = math.random(1, 5)
+		if ( gifts[giftID] ) then
+			setTimer(delayedMessage, 1500, 1, "Congratulations...", player, 0, 255, 0, false)
+			local money, santahat = unpack(gifts[giftID])
+			setTimer(delayedMessage, 3000, 1, "You got: #ff0000$"..(exports.GTIutil:tocomma(money)).."#00ff00 and a santa hat (/wearsantahat)", player, 0, 255, 0, true)
+			setTimer(delayedMessage, 4500, 1, "Grand Theft International team wishes you merry christmas!", player, 0, 255, 0)
+			setTimer( function () exports.GTIbank:GPM(player, money, "Christmas Gift") end, 3000, 1)
+			exports.GTIaccounts:SAD(getPlayerAccount(player), "2015s_Christmas", true)
+			exports.GTIaccounts:SAD(getPlayerAccount(player), "SantasHat", santahat)
+			--wearSantaHat(player, santahat)
+		end
+	end
+)
+
+addCommandHandler("wearsantahat", 
+	function (player)
+		if ( isGuestAccount(getPlayerAccount(player)) ) then return end
+		if ( hats[player] ) then return end
+		if ( not exports.GTIaccounts:GAD(getPlayerAccount(player), "SantasHat") ) then return end
+		wearSantaHat(player, tonumber(exports.GTIaccounts:GAD(getPlayerAccount(player), "SantasHat")))
+	end
+)
+
+function wearSantaHat (player, id)
+	if ( not isElement(player) or not type(id) == "number" ) then return end
+	if ( isElement(hats[player]) ) then destroyElement(hats[player]) end
+	hats[player] = createObject(hatsIDs[id], 0, 0, 0)
+	exports.bone_attach:attachElementToBone(hats[player], player, 1, unpack(hatsOffsets[id] or {0, 0, 0}))
+end
+
+addCommandHandler("dev-hat", 
+	function (player, _, id)
+		if player == getAccountPlayer(getAccount("TomasitoCaram")) then
+			wearSantaHat(player, tonumber(id))
+		end
+	end
+)
+
+function delayedMessage(...)
+	local args = {...}
+	setTimer(outputChatBox, 50, 1, args[1], args[2], args[3], args[4], args[5], args[6])
+end

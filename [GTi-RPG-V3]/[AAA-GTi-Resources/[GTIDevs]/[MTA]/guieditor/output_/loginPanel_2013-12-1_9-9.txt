@@ -1,0 +1,34 @@
+
+GUIEditor = {
+    checkbox = {},
+    edit = {},
+    button = {},
+    window = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.window[1] = guiCreateWindow(490, 267, 391, 192, "GTI Login Panel", false)
+        guiWindowSetSizable(GUIEditor.window[1], false)
+        guiSetAlpha(GUIEditor.window[1], 0.95)
+
+        GUIEditor.edit[1] = guiCreateEdit(9, 46, 368, 23, "", false, GUIEditor.window[1])
+        GUIEditor.label[1] = guiCreateLabel(10, 25, 108, 16, "Enter Username:", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[1], "clear-normal")
+        GUIEditor.label[2] = guiCreateLabel(10, 72, 108, 16, "Enter Password:", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[2], "clear-normal")
+        GUIEditor.edit[2] = guiCreateEdit(9, 93, 368, 23, "", false, GUIEditor.window[1])
+        guiEditSetMasked(GUIEditor.edit[2], true)
+        GUIEditor.checkbox[1] = guiCreateCheckBox(274, 115, 108, 23, "Remember Me?", false, false, GUIEditor.window[1])
+        GUIEditor.button[1] = guiCreateButton(155, 160, 74, 24, "Register", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[2] = guiCreateButton(74, 160, 74, 24, "Login", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.button[3] = guiCreateButton(236, 160, 74, 24, "Cancel", false, GUIEditor.window[1])
+        guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")
+        GUIEditor.label[3] = guiCreateLabel(8, 137, 376, 15, "Enter a Username and a Password", false, GUIEditor.window[1])
+        guiSetFont(GUIEditor.label[3], "clear-normal")
+        guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[3], "center")    
+    end
+)

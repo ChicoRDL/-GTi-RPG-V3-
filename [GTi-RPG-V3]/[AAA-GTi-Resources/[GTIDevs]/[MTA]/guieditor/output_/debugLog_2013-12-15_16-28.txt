@@ -1,0 +1,21 @@
+
+GUIEditor = {
+    tab = {},
+    window = {},
+    tabpanel = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(352, 132, 682, 496, "GTI Debug Log", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(8, 25, 666, 31, "This panel contains all debug strings that have been triggered on this server. Debugs can and should be used to detect cheaters, which we can see here. Please fix your debugs. Click outside the box to close.", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+
+GUIEditor.label[2] = guiCreateLabel(607, 19, 46, 15, "", false, GUIEditor.label[1])
+
+GUIEditor.tabpanel[1] = guiCreateTabPanel(9, 59, 664, 428, false, GUIEditor.window[1])
+
+GUIEditor.tab[1] = guiCreateTab("Server Debugs", GUIEditor.tabpanel[1])
+GUIEditor.label[3] = guiCreateLabel(562, 3, 56, 15, "", false, GUIEditor.tabpanel[1])
+GUIEditor.tab[2] = guiCreateTab("Client Debugs", GUIEditor.tabpanel[1])

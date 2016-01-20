@@ -1,0 +1,6 @@
+<meta>
+	<script src="respawn/respawn.slua"/>
+	
+	<export function="getRespawnPoints" type="server"/>
+	<info autostart="true"/>
+</meta>

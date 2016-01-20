@@ -1,0 +1,9 @@
+<meta>
+    <info name="Bounty System" author="Mitch" description="Bounty Sys" version="420.69" type="script"></info>
+    
+	<script src="Bounty_C.lua" type="client"></script>
+    <script src="Bounty_S.lua" type="server"></script>
+	
+	<file src="img.png"/>
+	<file src="logo.png"/>
+</meta>

@@ -1,0 +1,39 @@
+
+GUIEditor = {
+    checkbox = {},
+    label = {},
+    edit = {},
+    button = {},
+    window = {},
+    gridlist = {},
+    memo = {}
+}
+local screenW, screenH = guiGetScreenSize()
+GUIEditor.window[1] = guiCreateWindow((screenW - 306) / 2, (screenH - 580) / 2, 306, 580, "GTI - Bug Report System", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+
+GUIEditor.label[1] = guiCreateLabel(10, 35, 132, 15, "Bug Name: ", false, GUIEditor.window[1])
+GUIEditor.label[2] = guiCreateLabel(10, 200, 132, 15, "Description: ", false, GUIEditor.window[1])
+GUIEditor.label[3] = guiCreateLabel(10, 387, 132, 15, "Priority: ", false, GUIEditor.window[1])
+GUIEditor.edit[1] = guiCreateEdit(71, 31, 142, 24, "", false, GUIEditor.window[1])
+GUIEditor.memo[1] = guiCreateMemo(10, 215, 286, 82, "", false, GUIEditor.window[1])
+GUIEditor.gridlist[1] = guiCreateGridList(58, 387, 174, 95, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "", 0.9)
+for i = 1, 3 do
+    guiGridListAddRow(GUIEditor.gridlist[1])
+end
+guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "Low", false, false)
+guiGridListSetItemText(GUIEditor.gridlist[1], 1, 1, "Medium", false, false)
+guiGridListSetItemText(GUIEditor.gridlist[1], 2, 1, "High", false, false)
+GUIEditor.checkbox[1] = guiCreateCheckBox(10, 492, 174, 15, "Location [If Applicable]", false, false, GUIEditor.window[1])
+GUIEditor.checkbox[2] = guiCreateCheckBox(10, 510, 174, 15, "Exploitable", false, false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(187, 529, 109, 38, "Submit Bug", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(68, 539, 109, 28, "Cancel", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[4] = guiCreateLabel(10, 60, 132, 15, "Short Description: ", false, GUIEditor.window[1])
+GUIEditor.memo[2] = guiCreateMemo(10, 75, 286, 56, "", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(10, 131, 132, 15, "Steps to Reproduce: ", false, GUIEditor.window[1])
+GUIEditor.memo[3] = guiCreateMemo(10, 146, 286, 56, "", false, GUIEditor.window[1])
+GUIEditor.label[6] = guiCreateLabel(13, 297, 132, 15, "Additional Information: ", false, GUIEditor.window[1])
+GUIEditor.memo[4] = guiCreateMemo(10, 314, 286, 58, "", false, GUIEditor.window[1])

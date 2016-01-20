@@ -1,0 +1,140 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Author: JT Pennington (JTPenn)
+-- Date: 30 Nov 2013
+-- RePlayer: GTIaccounts/start_screen.slua
+-- Version: 2.0
+----------------------------------------->>
+
+local startScreen = {	-- Static Start Screen
+{ pos={0, 0, 5000}, lookAt={0, 1, 5000}, },
+}
+
+-- Text Display
+---------------->>
+
+display = textCreateDisplay()
+
+--[[textDisplayAddText(display, 
+	textCreateTextItem("Welcome to", 0.5, 0.20, "medium", 255, 255, 255, 255, 1.5, "center", "center")
+)
+textDisplayAddText(display,
+	textCreateTextItem("Grand Theft International", 0.5, 0.25, "medium", 255, 255, 255, 255, 3, "center", "center")
+)
+textDisplayAddText(display,
+	textCreateTextItem("Visit the forum @ GTIrpg.net | Join IRC @ irc.GTIrpg.net | Visit TS3 at ts3.GTIrpg.net", 0.5, 0.30, "medium", 255, 255, 255, 255, 1.25, "center", "center")
+)]]
+textDisplayAddText(display,
+	textCreateTextItem("Server files are being downloaded. Please wait...", 0.5, 0.80, "medium", 255, 255, 255, 255, 1.5, "center", "center")
+)
+
+--[[ocal messages = {
+	"You are encouraged to roleplay, but roleplay is not forced.",
+	"GTI is a multi-gamemode RPG server.",
+	"All information about GTI can be found in F9.",
+	"Be respectful to your fellow players, don't ruin their fun.",
+	"Deathmatching is not allowed on this server.",
+	"Speaking non-English languages in the main chats is not allowed.",
+	"We need your help to make GTI better! Post all ideas you have on our forum.",
+	"Report all bugs you come across to the Quality Control Agency (QCA)",
+	"Play the game fairly and as intended.",
+	"Like what you see? Thank the GTI government for their hard work.",
+	"Follow the rules in F9, it makes the server more enjoyable for everyone.",
+	"Our admins are here to assist you. Questions? Don't be afraid to ask.",
+	"GTI is constantly being updated with the features you've suggested.",
+}
+
+function newMessage()
+	if (message) then
+		textDestroyTextItem(message)
+	end
+	repeat textNew = messages[math.random(#messages)] until textNew ~= text
+	message = textCreateTextItem(textNew, 0.5, 0.50, "medium", 255, 255, 255, 255, 2, "center", "center")
+	textDisplayAddText(display, message)
+	text = textNew
+	textNew = nil
+end
+newMessage()
+setTimer(newMessage, 10000, 0)]]
+
+-- Start Screen
+---------------->>
+
+local ban_display = {}
+
+function setStartScreen()
+	local i = math.random(#startScreen)
+	setCameraMatrix(source, startScreen[i].pos[1], startScreen[i].pos[2], startScreen[i].pos[3],
+		startScreen[i].lookAt[1], startScreen[i].lookAt[2], startScreen[i].lookAt[3])
+	
+	if (getServerPort() == 22003 and exports.GTIgovt:isPlayerBanned(source)) then
+		ban_display[source] = textCreateDisplay()
+		textDisplayAddText(ban_display[source], 
+			textCreateTextItem("Welcome to", 0.5, 0.20, "medium", 255, 255, 255, 255, 1.5, "center", "center")
+		)
+		textDisplayAddText(ban_display[source],
+			textCreateTextItem("Grand Theft International", 0.5, 0.25, "medium", 255, 255, 255, 255, 3, "center", "center")
+		)
+		textDisplayAddText(ban_display[source],
+			textCreateTextItem("Visit the forum @ GTIrpg.net | Join IRC @ irc.GTIrpg.net | Visit TS3 at ts3.GTIrpg.net", 0.5, 0.30, "medium", 255, 255, 255, 255, 1.25, "center", "center")
+		)
+		textDisplayAddText(ban_display[source],
+			textCreateTextItem("Appeal this ban @ GTIrpg.net", 0.5, 0.80, "medium", 255, 255, 255, 255, 1.5, "center", "center")
+		)
+		
+		local ban_id
+		if (exports.GTIgovt:isPlayerBanned(getPlayerIP(source))) then
+			textDisplayAddText(ban_display[source],
+				textCreateTextItem("Your IP Address is banned", 0.5, 0.40, "medium", 255, 25, 25, 255, 2, "center", "center")
+			)
+			textDisplayAddText(ban_display[source],
+				textCreateTextItem("IP Address: "..getPlayerIP(source), 0.5, 0.45, "medium", 255, 255, 255, 255, 2, "center", "center")
+			)
+			ban_id = exports.GTIgovt:getBanID(getPlayerIP(source))	
+		else
+			textDisplayAddText(ban_display[source],
+				textCreateTextItem("Your Serial is banned", 0.5, 0.40, "medium", 255, 25, 25, 255, 2, "center", "center")
+			)
+			textDisplayAddText(ban_display[source],
+				textCreateTextItem("Serial: "..getPlayerSerial(source), 0.5, 0.45, "medium", 255, 255, 255, 255, 2, "center", "center")
+			)
+			ban_id = exports.GTIgovt:getBanID(getPlayerSerial(source))
+		end
+		
+		textDisplayAddText(ban_display[source],
+			textCreateTextItem("Ban Issued by: "..exports.GTIgovt:getBanAdmin(ban_id), 0.5, 0.50, "medium", 255, 255, 255, 255, 2, "center", "center")
+		)
+		textDisplayAddText(ban_display[source],
+			textCreateTextItem("Reason: "..exports.GTIgovt:getBanReason(ban_id), 0.5, 0.55, "medium", 255, 255, 255, 255, 2, "center", "center")
+		)
+			
+		local time_ = exports.GTIgovt:getUnbanTime(ban_id)
+		local timeDisplay = ""
+		if (time_ == 0) then
+			timeDisplay = "Permanent"
+		else
+			time_ = time_ - getRealTime().timestamp
+			timeDisplay = exports.GTIgovt:sentenceToTime(time_)
+		end
+		textDisplayAddText(ban_display[source],
+			textCreateTextItem("Duration: "..timeDisplay, 0.5, 0.60, "medium", 255, 255, 255, 255, 2, "center", "center")
+		)
+		
+		textDisplayAddObserver(ban_display[source], source)
+	else
+		textDisplayAddObserver(display, source)
+	end
+	
+	showPlayerHudComponent(source, "all", false)
+	showChat(source, false)
+	fadeCamera(source, false, 0)
+	setElementDimension(source, 6969)
+	setElementFrozen(source, true)
+end
+addEventHandler("onPlayerJoin", root, setStartScreen)
+
+addEventHandler("onPlayerQuit", root, function()
+	if (ban_display[source]) then
+		ban_display[source] = nil
+	end
+end)

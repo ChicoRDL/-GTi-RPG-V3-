@@ -1,0 +1,29 @@
+
+GUIEditor = {
+    edit = {},
+    button = {},
+    window = {},
+    label = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(646, 256, 300, 391, "GTI Group System — Invite Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(21, 37, 249, 43, "Below is a list of all groupless players. You can only invite players to your group if they are within 25 meters of you.", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 100, 100)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.edit[1] = guiCreateEdit(23, 99, 213, 26, "Search...", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.edit[1], "clear-normal")
+guiSetProperty(GUIEditor.edit[1], "Font", "clear-normal")
+guiEditSetMaxLength(GUIEditor.edit[1], 20)
+GUIEditor.gridlist[1] = guiCreateGridList(24, 137, 248, 194, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Player List", 0.9)
+GUIEditor.button[1] = guiCreateButton(53, 341, 93, 23, "Invite", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFFF6464")
+GUIEditor.button[2] = guiCreateButton(157, 341, 93, 23, "Close", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[3] = guiCreateButton(245, 99, 25, 25, "", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[3], "NormalTextColour", "FFAAAAAA")

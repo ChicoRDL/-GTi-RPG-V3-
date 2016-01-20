@@ -1,0 +1,38 @@
+
+GUIEditor = {
+    button = {},
+    window = {},
+    edit = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(549, 200, 287, 377, "GTI Account Settings", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(76, 23, 134, 15, "Change E-mail Address:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(11, 42, 152, 15, "Old E-mail Address (If Any):", false, GUIEditor.window[1])
+GUIEditor.edit[1] = guiCreateEdit(9, 59, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.label[3] = guiCreateLabel(10, 86, 152, 15, "New E-mail Address:", false, GUIEditor.window[1])
+GUIEditor.edit[2] = guiCreateEdit(9, 103, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.button[1] = guiCreateButton(104, 134, 75, 32, "Change\nE-mail", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[1], "default-bold-small")
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[4] = guiCreateLabel(6, 161, 275, 15, "_________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(76, 181, 134, 15, "Change Password:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "center", false)
+GUIEditor.label[6] = guiCreateLabel(11, 289, 152, 15, "Confirm Password:", false, GUIEditor.window[1])
+GUIEditor.label[7] = guiCreateLabel(11, 244, 152, 15, "New Password:", false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(11, 200, 152, 15, "Current Password:", false, GUIEditor.window[1])
+GUIEditor.edit[3] = guiCreateEdit(9, 307, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.edit[4] = guiCreateEdit(9, 262, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.edit[5] = guiCreateEdit(9, 217, 268, 23, "", false, GUIEditor.window[1])
+GUIEditor.button[2] = guiCreateButton(104, 337, 75, 32, "Change Password", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.button[2], "default-bold-small")
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")
+GUIEditor.label[9] = guiCreateLabel(253, 23, 24, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[9], "default-small")

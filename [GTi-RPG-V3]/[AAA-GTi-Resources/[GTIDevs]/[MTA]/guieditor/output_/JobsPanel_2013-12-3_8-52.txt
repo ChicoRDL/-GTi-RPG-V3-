@@ -1,0 +1,40 @@
+
+GUIEditor = {
+    scrollpane = {},
+    label = {},
+    button = {},
+    window = {},
+    gridlist = {}
+}
+GUIEditor.window[1] = guiCreateWindow(524, 154, 296, 491, "GTI Employment Panel", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(8, 22, 278, 15, "XXX Job", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "clear-normal")
+guiLabelSetColor(GUIEditor.label[1], 255, 200, 0)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+GUIEditor.label[2] = guiCreateLabel(238, 42, 48, 15, "Level XX", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[2], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[2], 255, 25, 25)
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "right", false)
+GUIEditor.label[3] = guiCreateLabel(11, 42, 34, 15, "Rank:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[3], 255, 25, 25)
+GUIEditor.label[4] = guiCreateLabel(51, 42, 181, 15, "Rank Name", false, GUIEditor.window[1])
+GUIEditor.label[5] = guiCreateLabel(11, 66, 54, 15, "Progress:", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[5], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[5], 255, 25, 25)
+GUIEditor.label[6] = guiCreateLabel(70, 66, 216, 15, "XXX,XXX Units of Unit", false, GUIEditor.window[1])
+GUIEditor.label[7] = guiCreateLabel(11, 85, 275, 15, "____________________________________________________", false, GUIEditor.window[1])
+GUIEditor.label[8] = guiCreateLabel(262, 23, 24, 15, "Close", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[8], "default-small")
+GUIEditor.scrollpane[1] = guiCreateScrollPane(10, 107, 277, 236, false, GUIEditor.window[1])
+
+GUIEditor.label[9] = guiCreateLabel(3, 2, 254, 231, "", false, GUIEditor.scrollpane[1])
+
+GUIEditor.gridlist[1] = guiCreateGridList(9, 349, 278, 98, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Skin ID", 0.4)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Skin Name", 0.4)
+GUIEditor.button[1] = guiCreateButton(99, 453, 97, 29, "Take Job", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")

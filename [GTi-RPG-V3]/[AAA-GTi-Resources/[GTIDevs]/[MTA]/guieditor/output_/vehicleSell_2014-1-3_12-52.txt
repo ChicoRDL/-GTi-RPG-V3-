@@ -1,0 +1,22 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(541, 234, 290, 379, "GTI Car Dealership — Sell Vehicle", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.95)
+
+GUIEditor.label[1] = guiCreateLabel(7, 23, 275, 45, "Select a Vehicle Below that you wish to sell. Vehicle value decreases with damage, so make sure your car is fully repaired before selling", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[1], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[1], 200, 0, 255)
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.gridlist[1] = guiCreateGridList(9, 75, 272, 265, false, GUIEditor.window[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Vehicle Name", 0.4)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Value", 0.4)
+GUIEditor.button[1] = guiCreateButton(51, 345, 89, 26, "Sell Vehicle", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(146, 345, 89, 26, "Cancel Sell", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

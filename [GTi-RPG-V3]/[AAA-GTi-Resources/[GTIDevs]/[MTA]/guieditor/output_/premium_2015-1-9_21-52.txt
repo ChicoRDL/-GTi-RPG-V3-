@@ -1,0 +1,24 @@
+
+GUIEditor = {
+    gridlist = {},
+    window = {},
+    button = {},
+    label = {}
+}
+GUIEditor.window[1] = guiCreateWindow(627, 335, 340, 183, "GTI Premium — Conflict Warning", false)
+guiWindowSetSizable(GUIEditor.window[1], false)
+guiSetAlpha(GUIEditor.window[1], 0.90)
+
+GUIEditor.label[1] = guiCreateLabel(17, 31, 306, 31, "WARNING: Purchasing this premium feature will cause you to lose the following one:", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", true)
+GUIEditor.label[2] = guiCreateLabel(24, 99, 297, 31, "You will not be refunded for this loss. Are you sure you want to continue?", false, GUIEditor.window[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "center", true)
+GUIEditor.gridlist[1] = guiCreateGridList(12, 65, 319, 32, false, GUIEditor.window[1])
+GUIEditor.label[3] = guiCreateLabel(10, 71, 324, 15, "Access to buy exclusive weapon shaders & colors", false, GUIEditor.window[1])
+guiSetFont(GUIEditor.label[3], "clear-normal")
+guiLabelSetColor(GUIEditor.label[3], 0, 178, 240)
+guiLabelSetHorizontalAlign(GUIEditor.label[3], "center", false)
+GUIEditor.button[1] = guiCreateButton(97, 137, 69, 24, "Yes", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[1], "NormalTextColour", "FFAAAAAA")
+GUIEditor.button[2] = guiCreateButton(177, 137, 69, 24, "No", false, GUIEditor.window[1])
+guiSetProperty(GUIEditor.button[2], "NormalTextColour", "FFAAAAAA")

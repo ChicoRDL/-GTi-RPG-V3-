@@ -1,0 +1,46 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    label = {},
+    radiobutton = {}
+}
+GUIEditor.staticimage[1] = guiCreateStaticImage(656, 226, 270, 429, ":GTIdroid/wallpapers/bkgr_black.png", false)
+
+GUIEditor.label[1] = guiCreateLabel(0, 20, 270, 15, "______________________________________________", false, GUIEditor.staticimage[1])
+GUIEditor.label[2] = guiCreateLabel(0, 39, 266, 15, "99 Contacts (66 Friends, 33 Blocked)", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[2], "right", false)
+GUIEditor.label[3] = guiCreateLabel(0, 379, 270, 15, "______________________________________________", false, GUIEditor.staticimage[1])
+GUIEditor.label[4] = guiCreateLabel(135, 396, 15, 30, "|  |  |  |", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[4], "left", true)
+GUIEditor.label[5] = guiCreateLabel(135, 407, 15, 15, "|  |  |  |", false, GUIEditor.staticimage[1])
+guiLabelSetHorizontalAlign(GUIEditor.label[5], "left", true)
+GUIEditor.label[6] = guiCreateLabel(0, 393, 137, 33, "Add Contact", false, GUIEditor.staticimage[1])
+guiSetFont(GUIEditor.label[6], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[6], 50, 180, 230)
+guiLabelSetHorizontalAlign(GUIEditor.label[6], "center", false)
+guiLabelSetVerticalAlign(GUIEditor.label[6], "center")
+GUIEditor.label[7] = guiCreateLabel(138, 393, 132, 33, "Remove Contact", false, GUIEditor.staticimage[1])
+guiSetFont(GUIEditor.label[7], "default-bold-small")
+guiLabelSetColor(GUIEditor.label[7], 50, 180, 230)
+guiLabelSetHorizontalAlign(GUIEditor.label[7], "center", false)
+guiLabelSetVerticalAlign(GUIEditor.label[7], "center")
+GUIEditor.radiobutton[1] = guiCreateRadioButton(8, 371, 80, 15, "Friend", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.radiobutton[1], "NormalTextColour", "FF19FF19")
+GUIEditor.radiobutton[2] = guiCreateRadioButton(182, 371, 80, 15, "Blocked", false, GUIEditor.staticimage[1])
+guiSetProperty(GUIEditor.radiobutton[2], "NormalTextColour", "FFFF1919")
+guiRadioButtonSetSelected(GUIEditor.radiobutton[2], true)
+GUIEditor.radiobutton[3] = guiCreateRadioButton(99, 371, 80, 15, "Neutral", false, GUIEditor.staticimage[1])
+GUIEditor.gridlist[1] = guiCreateGridList(0, 61, 270, 301, false, GUIEditor.staticimage[1])
+guiGridListAddColumn(GUIEditor.gridlist[1], "Contact Name", 0.5)
+guiGridListAddColumn(GUIEditor.gridlist[1], "Status", 0.5)
+guiGridListAddRow(GUIEditor.gridlist[1])
+guiGridListSetItemText(GUIEditor.gridlist[1], 0, 1, "-", false, false)
+guiGridListSetItemText(GUIEditor.gridlist[1], 0, 2, "-", false, false)

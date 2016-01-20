@@ -1,0 +1,43 @@
+----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 01 Aug 2014
+-- Resource: GTIserverstats/server_stats.slua
+-- Version: 1.0
+----------------------------------------->>
+
+-- Peak Script
+--------------->>
+
+addEventHandler("onPlayerJoin", root, function()
+	local peak = getServerStat("peak") or 0
+	local players = #getElementsByType("player")
+	if (players > peak) then
+		exports.GTIhud:dm("PEAK: GTI's server peak is now "..players.."!", root, 25, 255, 25)
+		exports.GTIirc:outputIRC("PEAK: GTI's server peak is now "..players.."!")
+		setServerStat("peak", players)
+	end
+end)
+
+addCommandHandler("peak", function(player)
+	local peak = getServerStat("peak") or 0
+	exports.GTIhud:dm("PEAK: GTI's server peak is "..peak.."!", player, 25, 255, 25)
+end)
+
+
+addEvent("onDatabaseLoad", true)
+addEventHandler("onDatabaseLoad", resourceRoot, function(database)
+	if (database ~= "server_stats") then return end
+	local peak = getServerStat("peak") or 0
+	local players = #getElementsByType("player")
+	if (players > peak) then
+		exports.GTIhud:dm("PEAK: GTI's server peak is now "..players.."!", root, 25, 255, 25)
+		setServerStat("peak", players)
+	end
+end)
+
+function ircPeak (_, _, user )
+	exports.GTIirc:ircNotice(user, "GTI's server peak is " .. getServerStat("peak").."!")
+end
+
+exports.GTIirc:addIRCCommandHandler("!peak",'ircPeak', 0, false)

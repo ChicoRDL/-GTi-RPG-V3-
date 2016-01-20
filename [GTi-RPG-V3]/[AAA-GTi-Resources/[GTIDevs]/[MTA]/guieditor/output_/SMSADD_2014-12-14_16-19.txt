@@ -1,0 +1,39 @@
+--[[-------------------------------------------------
+Notes:
+
+> This code is using a custom font. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move custom fonts into your local resource and reference them there.
+> This code is using a relative image filepath. This will only work as long as the location it is from always exists, and the resource it is part of is running.
+    To ensure it does not break, it is highly encouraged to move images into your local resource and reference them there.
+--]]-------------------------------------------------
+
+
+GUIEditor = {
+    gridlist = {},
+    staticimage = {},
+    edit = {},
+    label = {}
+}
+addEventHandler("onClientResourceStart", resourceRoot,
+    function()
+        GUIEditor.staticimage[1] = guiCreateStaticImage(599, 260, 270, 389, ":GTIMessagingApp/images/bckgrnd.png", false)
+
+        GUIEditor.gridlist[1] = guiCreateGridList(0, 1, 270, 341, false, GUIEditor.staticimage[1])
+        guiGridListAddColumn(GUIEditor.gridlist[1], "Players", 0.9)
+        guiSetAlpha(GUIEditor.gridlist[1], 0.42)
+        GUIEditor.staticimage[2] = guiCreateStaticImage(0, 340, 270, 49, ":GTIMessagingApp/images/white.png", false, GUIEditor.staticimage[1])
+        guiSetAlpha(GUIEditor.staticimage[2], 0.62)
+
+        GUIEditor.label[1] = guiCreateLabel(0, -1, 270, 50, "Add", false, GUIEditor.staticimage[2])
+        local font_0 = guiCreateFont(":GTIMessagingApp/images/font1.ttf")
+        guiSetFont(GUIEditor.label[1], font_0)
+        guiLabelSetColor(GUIEditor.label[1], 233, 0, 0)
+        guiLabelSetHorizontalAlign(GUIEditor.label[1], "center", false)
+        guiLabelSetVerticalAlign(GUIEditor.label[1], "center")
+
+
+        GUIEditor.staticimage[3] = guiCreateStaticImage(599, 224, 270, 36, ":GTIMessagingApp/images/bckgrnd3.png", false)
+
+        GUIEditor.edit[1] = guiCreateEdit(22, 13, 225, 25, "", false, GUIEditor.staticimage[3])    
+    end
+)

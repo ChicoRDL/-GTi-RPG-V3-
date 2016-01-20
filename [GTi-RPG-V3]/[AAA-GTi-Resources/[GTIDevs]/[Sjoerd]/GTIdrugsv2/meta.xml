@@ -1,0 +1,36 @@
+<meta>
+	<info author="Sjoerd" type="misc" name="Drugs System" version="1.0.0" />
+    <script src="drugs_c.lua" type="client" />
+    <script src="drug-table_c.lua" type="client" />
+    <script src="drugsTake_c.lua" type="client" />
+
+    <script src="drugs_s.lua" type="server" />
+    <script src="database.lua" type="server" />
+    <script src="drugsTake_s.lua" type="server" />
+    
+    <file src="images/window.png" />
+    <file src="images/Acid.png" />
+    <file src="images/Adderal.png" />
+    <file src="images/Cocaine.png" />
+    <file src="images/Ecstasy.png" />
+    <file src="images/Tylenol.png" />
+    <file src="images/Oxycodone.png" />
+    <file src="images/PCP.png" />
+    <file src="images/Marijuana.png" />
+	<file src="images/Meth.png" />
+
+    <export function="enableBlackWhite" type="client" />
+    <export function="givePlayerDrug" type="server" />
+    <export function="takePlayerDrug" type="server" />
+    <export function="getPlayerDrugAmount" type="server" />
+
+    <script src="effects/motion_c.lua" type="client" />
+	<script src="effects/c_ped_wall.lua" type="client" />
+	<script src="effects/c_switch.lua" type="client" />
+	<file src="effects/fx/ped_wall.fx"/>
+	<file src="effects/fx/mta-helper.fx"/>
+
+    <file src="effects/motion.fx" />
+
+    <min_mta_version server="1.3.4-0.00000" client="1.3.4-0.00000"></min_mta_version>
+</meta>
