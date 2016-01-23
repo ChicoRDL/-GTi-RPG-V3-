@@ -18,4 +18,5 @@ Soon as possible all compiled files are going to be removed.
 - Nickelz
 - Derek
 - Noki
+- Creator of Main Interiors: Flower Power.
 - We had more developers, more names will be added, soon as possible.
