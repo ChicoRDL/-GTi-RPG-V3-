@@ -13,6 +13,7 @@ Soon as possible all compiled files are going to be removed.
 - Sjoerd
 - Mitch
 - Ares
+- LilDolla
 - Jack
 - Emile
 - Nickelz
