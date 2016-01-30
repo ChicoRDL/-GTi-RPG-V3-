@@ -7,6 +7,7 @@ From now on all GTis Features are open source and free download, of course you s
 Daily, more information will be added, features are going to be updated.
 Soon as possible all compiled files are going to be removed.
 
+Do you have question or doubt, verific MTA Topic: https://forum.mtasa.com/viewtopic.php?f=108&t=96020
 # Developers of GTi
 
 - JTPenn
