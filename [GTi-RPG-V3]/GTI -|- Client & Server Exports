@@ -1,0 +1,302 @@
+Server Side Exports
+ 
+Account Data Database
+   -- For critical account data that may be used offline or must be available onPlayerJoin
+exports.GTIaccounts:SAD(account, key, value)
+exports.GTIaccounts:GAD(account, key)
+   -- For all other account data
+exports.GTIaccounts:invGet(account, key, value)
+exports.GTIaccounts:invSet(account, key)
+ 
+Animations System
+exports.GTIanims:setJobAnimation(ped, [block, anim, time, loop, updatePosition, interruptable, freezeLastFrame])
+ 
+Banking System
+exports.GTIbank:GPM(player, amount, log)
+-> givePlayerMoney is blocked, use this function
+exports.GTIbank:TPM(player, amount, log)
+-> takePlayerMoney is blocked, use this function
+exports.GTIbank:getPlayerBankBalance(player)
+exports.GTIbank:modifyPlayerBankBalance(player, amount, log)
+exports.GTIbank:modifyAccountBankBalance(account, amount, log)
+exports.GTIbank:getPlayerLastBankTransaction(player)
+-> Returns the time of the last transaction
+exports.GTIbank:getGroupBankBalance(groupID)
+exports.GTIbank:modifyGroupBankBalance(groupID, amount, log)
+exports.GTIbank:getGroupLastBankTransaction(groupID)
+-> Returns the time of the last transaction
+ 
+Blips
+exports.GTIblips:setPlayerNameColor(player, r, g, b)
+exports.GTIblips:destroyBlip(player)
+ 
+Chat
+exports.GTIchat:getPlayerCity(player)
+-> Returns "LS", "SF", or "LV"
+exports.GTIchat:outputGridlist(player1, player2, chatName, message)
+-> player1 = sendTo
+-> player2 = The source of the event
+ 
+Damage System
+exports.GTIdamage:getLastAttacker(victim)
+exports.GTIdamage:getLastAttackedPlayer(attacker)
+exports.GTIdamage:getLastAttackerWeapon(victim)
+exports.GTIdamage:getLastAttackerDamage(victim)
+ 
+Employment System
+exports.GTIemployment:getPlayerJob(player, [ isWorking, isValid ])
+-> If isWorking set to true, it will only return the job name if the player is also on duty, else it returns false
+exports.GTIemployment:setPlayerJob(player, job_name, team_name, [ division_name, skinID ])
+-> Do not use this function outside of debugging/testing purposes
+exports.GTIemployment:getPlayerJobDivision(player)
+exports.GTIemployment:togglePlayerShift(player)
+-> Player will go off duty if they are on duty and vice versa
+exports.GTIemployment:resign(player)
+ 
+exports.GTIemployment:getJobRankFromLevel(job, level)
+exports.GTIemployment:getJobMaxLevel(job)
+exports.GTIemployment:getJobLevelFromProgress(job, progress)
+exports.GTIemployment:getJobLevelRequirement(job, level)
+exports.GTIemployment:getJobUnitName(job)
+ 
+exports.GTIemployment:getPlayerJobLevel(player, job)
+exports.GTIemployment:getPlayerJobRank(player, job)
+exports.GTIemployment:getPlayerJobProgress(player, job)
+exports.GTIemployment:getPlayerJobMoney(player, job)
+exports.GTIemployment:modifyPlayerJobProgress(player, job, progress)
+exports.GTIemployment:givePlayerJobMoney(player, job, amount)
+exports.GTIemployment:getPlayerOutstandingPay(player)
+exports.GTIemployment:getPlayerJobTime(player, job)
+-> Returns time spent on duty in seconds
+ 
+exports.GTIemployment:getEmploymentLevelFromExp(experience)
+exports.GTIemployment:getEmploymentLevelRequirement(level)
+exports.GTIemployment:getHourlyExperience()
+exports.GTIemployment:getPlayerJobPayment(player, job)
+exports.GTIemployment:getPlayerHourlyPay(player)
+exports.GTIemployment:getPlayerEmploymentLevel(player)
+exports.GTIemployment:getPlayerEmploymentExp(player, [ job ])
+exports.GTIemployment:modifyPlayerEmploymentExp(player, experience,  [ job ])
+ 
+Event System
+exports.GTIeventsys:isPlayerInEvent(player)
+ 
+Turfing System
+exports.GTIgangTerritories:canPlayerTurf(player)
+exports.GTIgangTerritories:isGangster(player)
+exports.GTIgangTerritories:isSWAT(player)
+exports.GTIgangTerritories:isPlayerInTurf(player)
+ 
+Groups System
+exports.GTIgroups:getGroupData(groupID, key)
+exports.GTIgroups:getGroupMemberData(account, key)
+exports.GTIgroups:getGroupRankData(rankID, key)
+ 
+exports.GTIgroups:getGroupColor(groupID)
+-> Returns r, g, b
+exports.GTIgroups:getGroupCreationDate(groupID)
+exports.GTIgroups:getGroupInformation(groupID)
+exports.GTIgroups:getGroupName(groupID)
+exports.GTIgroups:getGroupNews(groupID)
+exports.GTIgroups:getGroupAccount(groupID)
+exports.GTIgroups:setGroupColor(groupID, r, g, b)
+exports.GTIgroups:setGroupInformation(groupID, text)
+exports.GTIgroups:setGroupName(groupID, text)
+exports.GTIgroups:setGroupNews(groupID, text)
+ 
+exports.GTIgroups:getGroupMembers(groupID)
+exports.GTIgroups:getPlayerGroup(player, [ name? ])
+-> name = false for group ID, name = true for group name
+exports.GTIgroups:isPlayerInGroup(player)
+exports.GTIgroups:outputGroupChat(text, groupID, [ text_display ])
+-> if text_display = true, the chat will output at the bottom of the screen
+ 
+exports.GTIgroups:hasMemberPermissionTo(player, permission)
+ 
+exports.GTIgroups:getGroupRanks(groupID)
+-> Returns table
+exports.GTIgroups:getGroupRankIDByName(group, rankName)
+exports.GTIgroups:getPlayerGroupRank(player)
+exports.GTIgroups:getRankGroup(rankID)
+exports.GTIgroups:getRankName(rankID)
+ 
+exports.GTIgroups:getGroupExperience(groupID)
+exports.GTIgroups:modifyGroupExperience(groupID, experience)
+exports.GTIgroups:getGroupLevel(groupID)
+exports.GTIgroups:getGroupLevelXPRequirement(level)
+exports.GTIgroups:setGroupLevel(groupID, level)
+exports.GTIgroups:getGroupStat(groupID, key)
+exports.GTIgroups:modifyGroupStat(groupID, key, value)
+exports.GTIgroups:setGroupStat(groupID, key, value)
+ 
+Heads Up Display
+exports.GTIhud:dm(text, player, r, g, b)
+-> Displays a dx-Based message to the player lasting 7.5 seconds
+exports.GTIhud:drawNote(ID, text, player, r, g, b, time)
+-> Displays a dx-Based notification at the bottom right of the player's screen. Allows for usage of color codes
+exports.GTIhud:drawProgressBar(id, text, player, r, g, b, time)
+-> Draws a progress bar on the side of the screen. Important: This uses the SAME IDs as drawStat.
+exports.GTIhud:drawStat(ID, columnA, columnB, player, r, g, b, time)
+-> Displays a dx-Based stats just under the player's money/wanted level
+exports.GTIhud:showHud()
+ 
+Logging System
+exports.GTIlogs:outputLog(text, category, player OR account_name)
+-> Logs information in a server log, organized by dates and categorized by folders. If a player is provided, log info will be recorded in the player's account log as well. Do not use outputServerLog
+ 
+Police Arrest System
+exports.GTIpoliceArrest:canPlayerArrest(player)
+-> Checks if the player is a cop with the ability to arrest
+exports.GTIpoliceArrest:isPlayerInPoliceCustody(player, [ arrestable, arrested, tased, surrendered, inJail ])
+-> Checks if the player is arrestable (a cop can press Z to arrest them), arrested, tased, surrendered, or in jail
+-> All args true by default, set the args you don't want to check for to false.
+exports.GTIpoliceArrest:setPlayerArrestable(player, state, ignoreAnim)
+-> Sets the player in the crouched position and allows arrest on Z
+-> If ignoreAnim is set to true, the player will not crouch
+exports.GTIpoliceArrest:setPlayerArrested(player, arrestor)
+exports.GTIpoliceArrest:releasePlayer(player)
+ 
+Wanted Level System
+exports.GTIpoliceWanted:chargePlayer(player, crimeID)
+exports.GTIpoliceWanted:isPlayerWanted(player)
+exports.GTIpoliceWanted:getCrimeName(crimeID)
+exports.GTIpoliceWanted:getPlayerWantedLevel(player, points?)
+exports.GTIpoliceWanted:clearPlayerWantedLevel(player)
+ 
+Prison System
+exports.GTIprison:jailPlayer(player, time, [ jailer ])
+exports.GTIprison:releasePlayer(player, x, y, z, rot)
+exports.GTIprison:isPlayerInJail(player)
+exports.GTIprison:getRemainingJailTime(player)
+ 
+Rental System
+exports.GTIrentals:getPlayerRentalVehicle(player)
+-> Returns player's rental vehicle, false otherwise.
+exports.GTIrentals:isVehicleRental(vehicle)
+-> Returns true if it is a rental vehicle, false otherwise.
+ 
+Player Stats System
+exports.GTIstats:getStatData(account, stat)
+exports.GTIstats:setStatData(account, stat, value)
+exports.GTIstats:modifyStatData(account, stat, value)
+ 
+Teams System
+exports.GTIteams:assignTeam(player, teamName)
+ 
+Other Useful Functions
+exports.GTIutil:findPlayer(player_name)
+exports.GTIutil:findRotation(x1, y1, x2, y2)
+exports.GTIutil:generatePassword(length, numbers?, symbols?)
+-> Returns a randomly generated string of the specified length
+-> Only does letters. If 'numbers?' is true, it will include numbers. If 'symbols?' is true, it will include symbols
+exports.GTIutil:getDistanceBetweenElements2D(element1, element2)
+exports.GTIutil:getDistanceBetweenElements3D(element1, element2)
+exports.GTIutil:getElementSpeed(element, unit)
+-> Use "mph" or "kph" for unit.
+exports.GTIutil:getIPCountry(ip_address)
+exports.GTIutil:getMonthName(month_int, [ length ])
+-> month_int: month of the year (1-12)
+-> length: how long the string should be (3 = "Jan")
+exports.GTIutil:getObjectLOD(object_id)
+exports.GTIutil:getPedWeapons(ped)
+exports.GTIutil:getPlayerCountry(player)
+exports.GTIutil:isPlayerInACLGroup(player, acl1, [ acl2, ... ])
+exports.GTIutil:isPlayerInTeam(player, teamName)
+exports.GTIutil:isPlayerLoggedIn(player)
+exports.GTIutil:getPlayersInDimension(dim)
+exports.GTIutil:RGBToHex(r, g, b, [ a ])
+exports.GTIutil:tocomma(number)
+exports.GTIutil:todate(timestamp)
+exports.GTIutil:totime(timestamp)
+ 
+Vehicles System
+exports.GTIvehicles:doesPlayerOwnVehicleModel(player, model)
+exports.GTIvehicles:getVehicleCost(vehicle)
+exports.GTIvehicles:getVehicleOwner(vehicle)
+exports.GTIvehicles:getVehicleSaleValue(vehicle)
+-> Gets the amount of money a player will get if they sell the vehicle to a dealership
+exports.GTIvehicles:getVehicleValue(vehicle)
+-> Returns the worth of the vehicle, which is different from the cost as value depreciates with mileage
+ 
+exports.GTIvehicles:getVehicleEngineDamage(vehicle)
+exports.GTIvehicles:getVehicleEngineRepairCost(vehicle)
+exports.GTIvehicles:getVehicleBodyDamage(vehicle)
+exports.GTIvehicles:getVehicleBodyRepairCost(vehicle)
+exports.GTIvehicles:getVehicleRepairCost(vehicle)
+exports.GTIvehicles:repairVehicle(vehicle)
+ 
+Weapons System
+exports.GTIweapons:getWeaponMaxAmmo(weaponID)
+exports.GTIweapons:loadWeapons(player)
+exports.GTIweapons:saveWeapons(player)
+ 
+Client Side Exports
+ 
+Accounts & Login System
+exports.GTIaccounts:isPlayerLoggedIn()
+ 
+Blips
+Detailed Information: http://wiki.multitheftauto.com/wiki/Resource:Customblips
+exports.GTIblips:createCustomBlip(x, y, width, hieght, filepath, visibleDistance)
+-> Returns customblip element
+exports.GTIblips:destroyCustomBlip(customblip)
+exports.GTIblips:getCustomBlipPosition(customblip)
+-> Returns worldX, worldY
+exports.GTIblips:getCustomBlipStreamRadius(customblip)
+exports.GTIblips:guiConvertToCustomBlip(blip_gui, x, y, visibleDistance)
+exports.GTIblips:isCustomBlipVisible(customblip)
+exports.GTIblips:setCustomBlipAlpha(customblip, alpha)
+exports.GTIblips:setCustomBlipPosition(customblip, x, y)
+exports.GTIblips:setCustomBlipRadarScale(customblip, scale)
+exports.GTIblips:setCustomBlipStreamRadius(customblip, radius)
+exports.GTIblips:setCustomBlipVisible(customblip, bool)
+ 
+Chat
+exports.GTIchat:getPlayerCity(player)
+-> Returns "LS", "SF", or "LV"
+ 
+GTIdroid Smartphone
+exports.GTIdroid:getGTIDroid()
+exports.GTIdroid:getGTIDroidMainMenu()
+exports.GTIdroid:getGTIDroidAppButton(AppName)
+exports.GTIdroid:showMainMenu(show?)
+ 
+Employment System
+exports.GTIemployment:getPlayerJob([ isWorking ])
+-> If isWorking set to true, it will only return the job name if the player is also on duty, else it returns false
+ 
+Turfing System
+exports.GTIgangTerritories:canPlayerTurf(player)
+exports.GTIgangTerritories:isGangster(player)
+exports.GTIgangTerritories:isSWAT(player)
+ 
+Heads Up Display
+exports.GTIhud:isCustomHudEnabled()
+exports.GTIhud:dm(text, [ red, green, blue)
+exports.GTIhud:drawNote(ID, text, red, green, blue, displayTime)
+exports.GTIhud:drawProgressBar(id, text, r, g, b, time)
+exports.GTIhud:drawStat(ID, columnA, columnB, red, green, blue, displayTime)
+exports.GTIhud:showHud()
+ 
+Other Useful Functions
+exports.GTIutil:findPlayer(player_name)
+exports.GTIutil:findRotation(x1, y1, x2, y2)
+exports.GTIutil:generatePassword(length, numbers?, symbols?)
+-> Returns a randomly generated string of the specified length
+-> Only does letters. If 'numbers?' is true, it will include numbers. If 'symbols?' is true, it will include symbols
+exports.GTIutil:getDistanceBetweenElements2D(element1, element2)
+exports.GTIutil:getDistanceBetweenElements3D(element1, element2)
+exports.GTIutil:getElementSpeed(element, unit)
+-> Use "mph" or "kph" for unit.
+exports.GTIutil:getGenericName()
+-> Returns a random name (used for RP purposes)
+exports.GTIutil:getMonthName(month_int, [ length ])
+-> month_int: month of the year (1-12)
+-> length: how long the string should be (3 = "Jan")
+exports.GTIutil:getPedWeapons(ped)
+exports.GTIutil:isPlayerInTeam(player, teamName)
+exports.GTIutil:getPlayersInDimension(dim)
+exports.GTIutil:RGBToHex(r, g, b, [ a ])
+exports.GTIutil:tocomma(number)
+exports.GTIutil:todate(timestamp)
+exports.GTIutil:totime(timestamp)
