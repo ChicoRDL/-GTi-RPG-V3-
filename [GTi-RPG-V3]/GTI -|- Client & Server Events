@@ -1,0 +1,135 @@
+Server Side Events
+ 
+Accounts System
+onPlayerFirstTimeSpawn 
+-> Event triggers after the player is logged in AND spawns
+-> source: The source of this event is the player that spawned
+ 
+Employment System
+onPlayerGetJob — jobName, newJob
+-> newJob: Returns true if the player got a new job, false if the player is just going on duty
+-> source: The source of this event is the player that received the job
+ 
+onPlayerJobDivisionChange — oldDivision, currentDivision
+-> source: The player whose division changed.
+ 
+onPlayerQuitJob — jobName, resignJob
+-> resignJob: Returns true if the player resigned from their job, false if the player ended their shift
+-> source: The source of this event is the player that quit their job
+ 
+Global Databases
+onDatabaseLoad — datatable
+-> datatable: The name of the database table
+-> source: The source of this event is the resourceRoot of the resoruce the database is in OR the player who's datatable is being loaded
+ 
+Interiors
+onInteriorEnter — player
+-> source: The source of this event is the interior marker
+ 
+onInteriorExit — player
+-> source: The source of this event is the interior marker
+ 
+Arrest System
+onPlayerArrested — cop
+-> source: The player who was arrested
+ 
+onPlayerReleased
+-> source: The player that was released from custody
+ 
+onPlayerSurrender
+-> source: The player that surrendered
+ 
+onPlayerStartTase
+-> Triggered when a player is tased
+-> source: The player who was tased
+ 
+onPlayerEndTase
+-> Triggered when a player is no longer tased
+-> source: The player who was tased
+ 
+Prison System
+onPlayerJailed — sentence, jailer
+-> source: The player who was jailed
+ 
+Spawn/Safezones
+onSafeZoneEnter — hospital
+-> source: The player that enters the safezone
+ 
+onSafeZoneExit — hospital
+-> source: The player that exits the safezone
+ 
+onSafeZoneDamage — attacker, weapon, bodypart, damage
+-> source: The player that was attacked
+ 
+Wanted Levels System
+onPlayerCommitCrime — crimeID
+-> source: The source of this event is the player that was charged
+ 
+Vehicles System
+onVehicleEngineBreakDown
+-> Triggers when a vehicle's health falls to 30% and the car breaks down
+-> source: The vehicle that broke down
+ 
+onVehicleEngineStart
+-> source: The vehicle whose engine was started
+ 
+Wanted Level System
+onPlayerCommitCrime — crimeID
+-> source: The source of this event is the player that was charged
+ 
+onPlayerFined 
+-> source: The player who paid the fine
+ 
+Utils
+onPlayerChangeInterior — previousInt, newInt
+-> Event is triggered when a player changes interior.
+-> Source: player who changed interior.
+ 
+Rental System
+onRentalVehicleHide— player
+-> source: The vehicle that was hidden.
+ 
+Client Side Events
+ 
+Employment System
+onClientPlayerGetJob — jobName, newJob
+-> newJob: Returns true if the player got a new job, false if the player is just going on duty
+-> source: The source of this event is the player that received the job
+ 
+onClientPlayerQuitJob — jobName, resignJob
+-> resignJob: Returns true if the player resigned from their job, false if the player ended their shift
+-> source: The source of this event is the player that quit their job
+ 
+GTIdroid Smartphone
+onGTIDroidClickBack
+-> The event is triggered whenever the player clicks the menu bar on the GTIdroid
+-> source: The source of this event is the GTI menu bar static image
+ 
+onGTIDroidClose
+-> The event is triggered whenever the player closes the GTIdroid
+-> source: The source of this event is the GTI Phone static image
+ 
+Interiors
+onClientInteriorEnter — player
+-> source: The source of this event is the interior marker
+ 
+onClientInteriorExit — player
+-> source: The source of this event is the interior marker
+ 
+onClientPlayerChangeInterior — previousInt, newInt
+-> The event is triggered when a player enters a different interior.
+-> source: The player that changed interior
+ 
+Rental System
+onClientRentalVehicleHide— player
+-> source: The vehicle that was hidden.
+ 
+Safezone/Spawn
+onClientSafeZoneEnter — hospital
+-> source: The player that enters the safezone
+ 
+onClientSafeZoneExit — hospital
+-> source: The player that exits the safezone
+ 
+onClientSafeZoneDamage — player, weapon, bodypart, damage
+-> source: The player that was attacked
